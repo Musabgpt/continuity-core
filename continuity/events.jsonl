@@ -48,3 +48,7 @@
 {"ts":"2026-09-21T14:35:30Z","type":"success","message":"Added a clean aggregate-audit regression asserting stable valid JSON, exit code 0, and byte-for-byte non-mutation for a valid project."}
 {"ts":"2026-09-21T14:35:30Z","type":"success","message":"Documented --audit, --audit-transaction, and --audit-all output and exit-code semantics in README.md."}
 {"ts":"2026-09-21T14:35:30Z","type":"note","message":"CI for commits 04757217c1f062c55c3511a156353b6a36ec2448 and 768e7c5438572b7817137c437825302c35e83814 remains unverified; success is intentionally unclaimed until GitHub reports it."}
+{"ts":"2026-09-21T15:37:00Z","type":"success","message":"Verified CI runs 35613289852 and 35613318811 completed successfully for the aggregate-audit regression and documentation commits."}
+{"ts":"2026-09-21T15:37:00Z","type":"success","message":"Hardened event-chain auditing so the first protected record must explicitly reference GENESIS; orphaned protected chains are rejected even when the individual chain hash is valid."}
+{"ts":"2026-09-21T15:37:00Z","type":"success","message":"Added regression coverage for orphaned protected event chains and retained legacy unprotected event readability."}
+{"ts":"2026-09-21T15:37:00Z","type":"note","message":"CI for commits ca1b04fbe84bd41fb122d4d866a684ed95d83fb5 and 4a10ea0e92d1d55dc6d9323cd06d0104d1008ef1 is pending; success remains unclaimed until GitHub reports it."}
