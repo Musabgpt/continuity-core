@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "project": "Continuity Core",
+  "goal": "Provide deterministic, compact project continuity across AI work sessions.",
+  "status": "active",
+  "constraints": [
+    "Keep state human-readable",
+    "Use Python standard library only",
+    "Never store secrets",
+    "Prefer evidence over narrative"
+  ],
+  "decisions": [
+    "Canonical current state is continuity/state.json",
+    "History is append-only continuity/events.jsonl"
+  ],
+  "next_action": "Run the CLI tests and extend only when a real continuity failure is observed.",
+  "updated_at": "2026-09-21T00:00:00Z"
+}
