@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "Continuity Core",
   "goal": "Provide deterministic, compact project continuity across AI work sessions.",
   "status": "active",
@@ -14,8 +14,10 @@
     "History is append-only continuity/events.jsonl",
     "Integrity validation is a first-class command and must fail closed on malformed state or events.",
     "Every push and pull request is intended to run unit tests plus continuity validation in GitHub Actions.",
-    "Machine-readable handoffs use canonical compact JSON without volatile timestamps and include up to five recent failures."
+    "Machine-readable handoffs use canonical compact JSON without volatile timestamps and include up to five recent failures.",
+    "Schema v2 adds a monotonic revision counter; v1 remains readable but must be explicitly migrated before mutation."
   ],
-  "next_action": "Verify CI run 35554749652 completes successfully, then design backward-compatible schema migration before introducing schema version 2.",
-  "updated_at": "2026-09-21T02:37:00Z"
+  "next_action": "Verify CI for schema-v2 migration and then add optimistic revision preconditions to mutations so stale workers cannot silently overwrite newer state.",
+  "revision": 0,
+  "updated_at": "2026-09-21T03:38:00Z"
 }
