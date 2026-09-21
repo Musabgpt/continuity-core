@@ -14,7 +14,6 @@ def digest(value): return hashlib.sha256(canonical(value).encode("utf-8")).hexdi
 
 @contextmanager
 def project_lock():
-    """Cross-platform advisory process lock. The lock file is intentionally persistent."""
     DIR.mkdir(parents=True,exist_ok=True); f=LOCK.open("a+b")
     try:
         if os.name=="nt":
@@ -53,8 +52,19 @@ def event_ids():
             if row.get("txid"): ids.add(row["txid"])
     return ids
 
+def last_chain_hash():
+    if not EVENTS.exists(): return "GENESIS"
+    previous="GENESIS"
+    for line in EVENTS.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            row=json.loads(line)
+            if row.get("chain_hash"): previous=row["chain_hash"]
+    return previous
+
 def append_row(row):
     DIR.mkdir(parents=True,exist_ok=True)
+    if "chain_hash" not in row:
+        row=dict(row); row["prev_hash"]=last_chain_hash(); row["chain_hash"]=digest(row)
     with EVENTS.open("a",encoding="utf-8") as f:
         f.write(json.dumps(row,ensure_ascii=False,separators=(",",":"))+"\n"); f.flush(); os.fsync(f.fileno())
 
