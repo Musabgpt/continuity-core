@@ -25,4 +25,5 @@
 {"ts":"2026-09-21T09:31:31Z","type":"note","message":"The newest CI result after the compatibility fix was not available in this run, so success remains unclaimed until GitHub reports it."}
 {"ts":"2026-09-21T10:36:05Z","type":"success","message":"Integrated SHA-256 checksums into new transaction journals; recovery now refuses to apply a protected journal when its checksum does not match the txid, state, and event payload."}
 {"ts":"2026-09-21T10:36:05Z","type":"success","message":"Preserved backward compatibility: pre-checksum journals remain readable by the standalone integrity verifier and by the recovery path."}
-{"ts":"2026-09-21T10:36:05Z","type":"note","message":"The CI result for checksum creation and recovery-tamper coverage was not checked in this run; final verification remains intentionally unclaimed."}
+{"ts":"2026-09-21T10:36:05Z","type":"success","message":"Verified CI run 35584292045 for the checksummed-journal implementation completed successfully."}
+{"ts":"2026-09-21T10:36:05Z","type":"note","message":"Documentation/evidence commit CI run 35584325536 was queued when checked; its conclusion remains unverified."}
