@@ -52,3 +52,5 @@
 {"ts":"2026-09-21T15:37:00Z","type":"success","message":"Hardened event-chain auditing so the first protected record must explicitly reference GENESIS; orphaned protected chains are rejected even when the individual chain hash is valid."}
 {"ts":"2026-09-21T15:37:00Z","type":"success","message":"Added regression coverage for orphaned protected event chains and retained legacy unprotected event readability."}
 {"ts":"2026-09-21T15:37:00Z","type":"note","message":"CI for commits ca1b04fbe84bd41fb122d4d866a684ed95d83fb5 and 4a10ea0e92d1d55dc6d9323cd06d0104d1008ef1 is pending; success remains unclaimed until GitHub reports it."}
+{"ts":"2026-09-21T15:39:00Z","type":"success","message":"Verified CI runs 35620281522 and 35620294578 completed successfully for the orphaned-chain hardening and evidence commits."}
+{"ts":"2026-09-21T15:39:00Z","type":"decision","message":"Next highest-value step is to make aggregate audit output self-describing with an explicit schema version and a stable top-level first_break summary, while preserving all legacy exit codes and fields."}
