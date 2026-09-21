@@ -23,9 +23,10 @@
     "CI failures are recorded as evidence and fixed before claiming the feature verified.",
     "Pre-checksum transaction journals remain readable; new checksum enforcement can be introduced without breaking existing state.",
     "The integrity verifier must distinguish legacy-readable data from tampered protected data.",
-    "New transaction journals are checksummed at creation and recovery fails closed on checksum mismatch."
+    "New transaction journals are checksummed at creation and recovery fails closed on checksum mismatch.",
+    "New event records emit an optional prev_hash/chain_hash link so append-only history can be tamper-evident while legacy events remain readable."
   ],
-  "next_action": "Wait for the documentation/evidence commit CI run to finish; if green, add optional hash-chain emission to the event writer with migration-safe tests.",
-  "revision": 8,
-  "updated_at": "2026-09-21T10:36:05Z"
+  "next_action": "Verify the new hash-chain regression and CI result; if green, add a repair/audit command that reports the first broken chain link without mutating files.",
+  "revision": 9,
+  "updated_at": "2026-09-21T11:35:25Z"
 }
