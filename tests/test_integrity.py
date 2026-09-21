@@ -150,4 +150,20 @@ class IntegrityTests(unittest.TestCase):
             self.assertEqual(events.read_text(encoding="utf-8"), json.dumps(row)+"\n")
             self.assertEqual(journal.read_text(encoding="utf-8"), before_tx)
 
+    def test_non_object_event_record_is_rejected_deterministically(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            (root/"continuity/events.jsonl").write_text("[]\n", encoding="utf-8")
+            r=self.execute(root, "--audit")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertEqual(json.loads(r.stdout)["first_break"]["reason"], "event record must be an object")
+
+    def test_non_object_transaction_is_rejected_deterministically(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            (root/"continuity/transaction.json").write_text("[]\n", encoding="utf-8")
+            r=self.execute(root, "--audit-transaction")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertEqual(json.loads(r.stdout)["first_break"]["reason"], "transaction journal must be an object")
+
 if __name__=="__main__": unittest.main()
