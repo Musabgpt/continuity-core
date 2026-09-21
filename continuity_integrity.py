@@ -26,6 +26,8 @@ def audit_events(path):
             row = json.loads(line)
         except json.JSONDecodeError:
             return diagnostic(False, checked, {"line": number, "reason": "invalid event JSON"})
+        if not isinstance(row, dict):
+            return diagnostic(False, checked, {"line": number, "reason": "event record must be an object"})
         protected = "chain_hash" in row or "prev_hash" in row
         if not protected:
             continue
@@ -54,6 +56,8 @@ def audit_transaction(path):
         tx = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return diagnostic(False, 1, {"line": 1, "reason": "invalid transaction JSON"})
+    if not isinstance(tx, dict):
+        return diagnostic(False, 1, {"line": 1, "reason": "transaction journal must be an object"})
     if "checksum" not in tx:
         return diagnostic(True, 1, None)
     required = {"txid": str, "state": dict, "event": dict}
