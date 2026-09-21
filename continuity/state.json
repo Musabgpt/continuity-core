@@ -17,9 +17,10 @@
     "Machine-readable handoffs use canonical compact JSON without volatile timestamps and include up to five recent failures.",
     "Schema v2 adds a monotonic revision counter; v1 remains readable but must be explicitly migrated before mutation.",
     "Mutating commands accept --expect-revision and reject stale writers before any state or event side effect.",
-    "Mutations use a durable transaction journal with idempotent recovery so interrupted state/event writes converge to one logical commit."
+    "Mutations use a durable transaction journal with idempotent recovery so interrupted state/event writes converge to one logical commit.",
+    "All recovery and mutation critical sections are serialized by a standard-library cross-platform interprocess advisory lock."
   ],
-  "next_action": "Verify CI run 35565040277, add explicit crash-point recovery regression tests, then close the remaining simultaneous-process race with a standard-library interprocess lock.",
-  "revision": 2,
-  "updated_at": "2026-09-21T05:35:00Z"
+  "next_action": "Verify CI run 35569031916; if green, harden transaction validation against malformed or tampered journals before recovery can write state, and add regression tests for invalid transaction structure.",
+  "revision": 3,
+  "updated_at": "2026-09-21T06:34:00Z"
 }
