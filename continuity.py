@@ -68,6 +68,12 @@ def append_row(row):
     with EVENTS.open("a",encoding="utf-8") as f:
         f.write(json.dumps(row,ensure_ascii=False,separators=(",",":"))+"\n"); f.flush(); os.fsync(f.fileno())
 
+def verify_tx_shape(tx):
+    required={"txid":str,"state":dict,"event":dict}
+    for key, expected in required.items():
+        if key not in tx or not isinstance(tx[key], expected):
+            raise SystemExit(f"Transaction journal shape invalid: {key} must be {expected.__name__}.")
+
 def verify_tx_checksum(tx):
     checksum=tx.get("checksum")
     if checksum is None: return
@@ -76,7 +82,7 @@ def verify_tx_checksum(tx):
 
 def recover_unlocked():
     if not TXN.exists(): return False
-    tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_checksum(tx); txid=tx["txid"]
+    tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx); txid=tx["txid"]
     if txid not in event_ids(): append_row(tx["event"])
     atomic_text(STATE,json.dumps(tx["state"],indent=2,ensure_ascii=False)+"\n"); TXN.unlink(); return True
 
