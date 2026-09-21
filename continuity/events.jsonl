@@ -4,3 +4,6 @@
 {"ts":"2026-09-21T02:37:00Z","type":"success","message":"Confirmed GitHub Actions is active; earlier continuity-ci push runs completed successfully."}
 {"ts":"2026-09-21T02:37:00Z","type":"success","message":"Added deterministic machine-readable handoff JSON, recent-failure transfer, and rejection of unsupported schema versions."}
 {"ts":"2026-09-21T02:37:00Z","type":"note","message":"CI run 35554749652 for the expanded six-test suite was queued when last checked; final result intentionally not claimed yet."}
+{"ts":"2026-09-21T03:38:00Z","type":"success","message":"Verified CI run 35554749652 completed successfully."}
+{"ts":"2026-09-21T03:38:00Z","type":"success","message":"Added backward-compatible v1-to-v2 migration; v2 introduces a monotonic revision counter and v1 is read-compatible but write-guarded until migrated."}
+{"ts":"2026-09-21T03:38:00Z","type":"note","message":"Migration test workflow run 35558149939 was queued when last checked; final result intentionally not claimed yet."}
