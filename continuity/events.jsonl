@@ -60,3 +60,5 @@
 {"ts":"2026-09-21T17:36:36Z","type":"decision","message":"Next action is to verify the versioned aggregate-audit implementation in GitHub Actions; if green, document schema-versioned examples before selecting the next continuity hardening step."}
 {"ts":"2026-09-21T17:36:36Z","type":"success","message":"Verified CI run 35626854032 completed successfully for the versioned audit implementation and regression suite."}
 {"ts":"2026-09-21T17:36:36Z","type":"note","message":"Evidence-only CI run 35626881973 for the append-only history update was queued at the last check; its conclusion remains unverified."}
+{"ts":"2026-09-21T17:32:37Z","type":"success","message":"Documented schema-versioned integrity-audit output examples, deterministic aggregate first_break selection, and backward-compatible exit-code behavior in README.md (commit 3931ba644745d770e59cc4967b29fd7ef61307ca)."}
+{"ts":"2026-09-21T17:32:37Z","type":"note","message":"CI for documentation commit 3931ba644745d770e59cc4967b29fd7ef61307ca is not yet verified; success remains limited to the committed documentation change until GitHub reports a green run."}
