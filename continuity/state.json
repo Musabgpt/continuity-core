@@ -35,9 +35,10 @@
     "Audit diagnostics use schema version 1 and aggregate first_break selects the earliest available domain diagnostic without changing legacy exit codes.",
     "CI run 35626854032 completed successfully for the versioned audit implementation and its regression suite.",
     "Schema-versioned audit examples belong in README.md and must show deterministic valid and broken aggregate outputs without implying runtime verification.",
-    "Contract tests must lock the documented audit schema keys and serialization order before further audit changes."
+    "Contract tests must lock the documented audit schema keys and serialization order before further audit changes.",
+    "CI run 35639287923 completed successfully for the contract-test implementation."
   ],
-  "next_action": "Verify CI for contract-test commit b2b9bba8b71f5165a64c43b178738dd510749273; if green, select the next continuity hardening step from observed gaps without changing legacy audit behavior.",
-  "revision": 21,
+  "next_action": "Verify the evidence-only history update run 35639321312; if green, inspect remaining continuity gaps and choose the next hardening step without changing legacy audit behavior.",
+  "revision": 22,
   "updated_at": "2026-09-21T18:34:07Z"
 }
