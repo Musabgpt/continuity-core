@@ -16,7 +16,7 @@
     "Every push and pull request is intended to run unit tests plus continuity validation in GitHub Actions.",
     "Machine-readable handoffs use canonical compact JSON without volatile timestamps and include up to five recent failures.",
     "Schema v2 adds a monotonic revision counter; v1 remains readable but must be explicitly migrated before mutation.",
-    "Mutating commands accept --expect-revision and reject stale writers before any state or event side effect.",
+    "Mutating commands accept --expect-revision and reject stale writers before state or event side effects.",
     "Mutations use a durable transaction journal with idempotent recovery so interrupted state/event writes converge to one logical commit.",
     "All recovery and mutation critical sections are serialized by a standard-library cross-platform interprocess advisory lock.",
     "A standalone integrity verifier audits transaction checksums and optional event hash chains without mutating project state.",
@@ -38,9 +38,10 @@
     "Contract tests must lock the documented audit schema keys and serialization order before further audit changes.",
     "CI run 35639287923 completed successfully for the contract-test implementation.",
     "Protected event hash fields must be strings, and chain_hash must be exactly 64 lowercase hexadecimal characters before link or digest validation.",
-    "Recovery-boundary regressions must prove malformed transaction journals fail closed without mutating canonical state or append-only history."
+    "Recovery-boundary regressions must prove malformed transaction journals fail closed without mutating canonical state or append-only history.",
+    "Transaction recovery and standalone auditing now validate txid, state, and event shapes before checksum or mutation, with stable field-specific diagnostics."
   ],
-  "next_action": "Run and verify CI for the recovery-boundary regression; if green, harden transaction-shape validation in recovery with an explicit stable error contract.",
-  "revision": 24,
-  "updated_at": "2026-09-21T20:32:46Z"
+  "next_action": "Verify CI for commits 92cac7e3eeeb1fbee9dfbcbc398511e7d89e5313, 737b408cdbbda71c07e70b3a23221534f08f4a14, and 04a6d4d4df565ab068889d900e4db1ccc5e814f9; if green, harden transaction checksum field type and document the stable recovery error contract.",
+  "revision": 25,
+  "updated_at": "2026-09-21T22:36:36Z"
 }
