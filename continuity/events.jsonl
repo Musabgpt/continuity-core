@@ -1,3 +1,6 @@
 {"ts":"2026-09-21T00:00:00Z","type":"decision","message":"Created Continuity Core with explicit state plus append-only event history.","why":"Chat transcripts are too large and implicit for reliable project handoff."}
 {"ts":"2026-09-21T01:45:00Z","type":"success","message":"Added fail-closed integrity validation with corruption regression coverage."}
 {"ts":"2026-09-21T01:45:00Z","type":"note","message":"Added GitHub Actions CI definition; API currently reports zero workflow runs, so execution remains unverified."}
+{"ts":"2026-09-21T02:37:00Z","type":"success","message":"Confirmed GitHub Actions is active; earlier continuity-ci push runs completed successfully."}
+{"ts":"2026-09-21T02:37:00Z","type":"success","message":"Added deterministic machine-readable handoff JSON, recent-failure transfer, and rejection of unsupported schema versions."}
+{"ts":"2026-09-21T02:37:00Z","type":"note","message":"CI run 35554749652 for the expanded six-test suite was queued when last checked; final result intentionally not claimed yet."}
