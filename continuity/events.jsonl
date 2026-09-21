@@ -23,3 +23,6 @@
 {"ts":"2026-09-21T09:31:31Z","type":"success","message":"Fixed a compatibility bug in the standalone integrity verifier: pre-checksum transaction journals are now readable instead of being falsely rejected, while protected journals with a checksum are still verified."}
 {"ts":"2026-09-21T09:31:31Z","type":"success","message":"Added regression coverage for legacy pre-checksum transaction journals."}
 {"ts":"2026-09-21T09:31:31Z","type":"note","message":"The newest CI result after the compatibility fix was not available in this run, so success remains unclaimed until GitHub reports it."}
+{"ts":"2026-09-21T10:36:05Z","type":"success","message":"Integrated SHA-256 checksums into new transaction journals; recovery now refuses to apply a protected journal when its checksum does not match the txid, state, and event payload."}
+{"ts":"2026-09-21T10:36:05Z","type":"success","message":"Preserved backward compatibility: pre-checksum journals remain readable by the standalone integrity verifier and by the recovery path."}
+{"ts":"2026-09-21T10:36:05Z","type":"note","message":"The CI result for checksum creation and recovery-tamper coverage was not checked in this run; final verification remains intentionally unclaimed."}
