@@ -18,9 +18,10 @@
     "Schema v2 adds a monotonic revision counter; v1 remains readable but must be explicitly migrated before mutation.",
     "Mutating commands accept --expect-revision and reject stale writers before any state or event side effect.",
     "Mutations use a durable transaction journal with idempotent recovery so interrupted state/event writes converge to one logical commit.",
-    "All recovery and mutation critical sections are serialized by a standard-library cross-platform interprocess advisory lock."
+    "All recovery and mutation critical sections are serialized by a standard-library cross-platform interprocess advisory lock.",
+    "A standalone integrity verifier audits transaction checksums and optional event hash chains without mutating project state."
   ],
-  "next_action": "Verify CI run 35569031916; if green, harden transaction validation against malformed or tampered journals before recovery can write state, and add regression tests for invalid transaction structure.",
-  "revision": 3,
-  "updated_at": "2026-09-21T06:34:00Z"
+  "next_action": "Verify the new integrity verifier in CI; if green, integrate checksum creation and hash-chain emission into the mutating writer while preserving legacy-read compatibility.",
+  "revision": 4,
+  "updated_at": "2026-09-21T08:35:48Z"
 }
