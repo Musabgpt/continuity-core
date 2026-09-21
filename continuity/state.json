@@ -26,9 +26,10 @@
     "New transaction journals are checksummed at creation and recovery fails closed on checksum mismatch.",
     "New event records emit an optional prev_hash/chain_hash link so append-only history can be tamper-evident while legacy events remain readable.",
     "The integrity verifier exposes a non-mutating audit mode that reports the first broken event-chain link as machine-readable JSON.",
-    "Transaction-journal audit uses the same stable valid/checked/first_break schema and remains non-mutating."
+    "Transaction-journal audit uses the same stable valid/checked/first_break schema and remains non-mutating.",
+    "A CI regression is not considered resolved until the corrected test suite reports success."
   ],
-  "next_action": "Verify the CI run triggered by commits 78353ab9d5c4283a2df9350fc13ed031588c1ad7 and 922297e8760f0063d7cadf1cf09aa88ea65fe1b7; if green, add an aggregate audit command that reports event and transaction diagnostics together without changing legacy exit behavior.",
-  "revision": 11,
-  "updated_at": "2026-09-21T12:32:32Z"
+  "next_action": "Verify the corrective CI run for commit 843943448fda2ec46f77b05581d74fa41f2fbb9a; if green, add an aggregate audit command that reports event and transaction diagnostics together without changing legacy exit behavior.",
+  "revision": 12,
+  "updated_at": "2026-09-21T12:35:30Z"
 }
