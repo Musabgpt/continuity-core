@@ -60,8 +60,13 @@ def audit_transaction(path):
     for key, expected in required.items():
         if key not in tx or not isinstance(tx[key], expected):
             return diagnostic(False, 1, {"line": 1, "reason": f"transaction journal shape invalid: {key} must be {expected.__name__}"})
+    checksum = tx.get("checksum")
+    if not isinstance(checksum, str):
+        return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be a string"})
+    if len(checksum) != 64 or any(char not in "0123456789abcdef" for char in checksum):
+        return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be 64 lowercase hex characters"})
     material = {"txid": tx.get("txid"), "state": tx.get("state"), "event": tx.get("event")}
-    if tx.get("checksum") != digest(material):
+    if checksum != digest(material):
         return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum mismatch"})
     return diagnostic(True, 1, None)
 
