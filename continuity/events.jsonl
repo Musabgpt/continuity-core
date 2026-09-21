@@ -1,0 +1,1 @@
+{"ts":"2026-09-21T00:00:00Z","type":"decision","message":"Created Continuity Core with explicit state plus append-only event history.","why":"Chat transcripts are too large and implicit for reliable project handoff."}
