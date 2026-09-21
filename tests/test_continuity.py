@@ -25,4 +25,14 @@ class ContinuityTests(unittest.TestCase):
             self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
             self.assertNotEqual(self.run_cli(root,"init","--project","X","--goal","Y").returncode,0)
 
+    def test_force_resets_history(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); root.joinpath("continuity.py").write_text(SOURCE.read_text(encoding="utf-8"),encoding="utf-8")
+            self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
+            self.assertEqual(self.run_cli(root,"event","failure","old failure").returncode,0)
+            self.assertEqual(self.run_cli(root,"init","--project","X","--goal","Y","--force").returncode,0)
+            history=(root/"continuity/events.jsonl").read_text(encoding="utf-8")
+            self.assertNotIn("old failure",history)
+            self.assertEqual(len(history.strip().splitlines()),1)
+
 if __name__=="__main__": unittest.main()
