@@ -1,0 +1,12 @@
+{
+  "change": "Standalone integrity auditing now rejects non-object event records and non-object transaction journals with deterministic diagnostics.",
+  "implementation_commit": "2aedcd1bb690e71edf0ef8968ce5275600ecbefd",
+  "test_commit": "d4a9d663e3e01e685212d9a1fdd03061f0bf1122",
+  "state_commit": "462bceae29f8e3718914f86ac01654640416c553",
+  "verification": {
+    "local": "not run in this automation turn",
+    "ci": "not yet reported; verify the workflow run for the test commit before claiming success"
+  },
+  "next_action": "Verify GitHub Actions for the hardening commits, then inspect validate/recovery integration for paths that can bypass standalone integrity diagnostics.",
+  "scope_guard": "No repository other than Musabgpt/continuity-core was accessed."
+}
