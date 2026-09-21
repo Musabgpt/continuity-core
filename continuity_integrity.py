@@ -34,33 +34,42 @@ def audit_events(path):
         previous = row.get("chain_hash")
     return {"valid": True, "checked": checked, "first_break": None}
 
+def audit_transaction(path):
+    """Return stable, non-mutating diagnostics for the transaction journal."""
+    if not path.exists():
+        return {"valid": True, "checked": 0, "first_break": None}
+    try:
+        tx = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"valid": False, "checked": 1, "first_break": {"line": 1, "reason": "invalid transaction JSON"}}
+    if "checksum" not in tx:
+        return {"valid": True, "checked": 1, "first_break": None}
+    material = {"txid": tx.get("txid"), "state": tx.get("state"), "event": tx.get("event")}
+    if tx.get("checksum") != digest(material):
+        return {"valid": False, "checked": 1, "first_break": {"line": 1, "reason": "transaction journal checksum mismatch"}}
+    if not isinstance(tx.get("txid"), str) or not isinstance(tx.get("state"), dict) or not isinstance(tx.get("event"), dict):
+        return {"valid": False, "checked": 1, "first_break": {"line": 1, "reason": "transaction journal shape is invalid"}}
+    return {"valid": True, "checked": 1, "first_break": None}
+
 def verify_events(path):
     audit = audit_events(path)
     return [] if audit["valid"] else [f"{audit['first_break']['reason']} at line {audit['first_break']['line']}"]
 
 def verify_transaction(path):
-    if not path.exists():
-        return []
-    try:
-        tx=json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return ["transaction journal is invalid JSON"]
-    if "checksum" not in tx:
-        return []
-    material={"txid":tx.get("txid"),"state":tx.get("state"),"event":tx.get("event")}
-    errors=[]
-    if tx.get("checksum") != digest(material):
-        errors.append("transaction journal checksum mismatch")
-    if not isinstance(tx.get("txid"), str) or not isinstance(tx.get("state"), dict) or not isinstance(tx.get("event"), dict):
-        errors.append("transaction journal shape is invalid")
-    return errors
+    audit = audit_transaction(path)
+    return [] if audit["valid"] else [f"{audit['first_break']['reason']} at line {audit['first_break']['line']}"]
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--root", default="."); p.add_argument("--audit", action="store_true")
+    p=argparse.ArgumentParser(); p.add_argument("--root", default="."); p.add_argument("--audit", action="store_true"); p.add_argument("--audit-transaction", action="store_true")
     args=p.parse_args(); root=Path(args.root)
     if args.audit:
-        print(json.dumps(audit_events(root/"continuity/events.jsonl"), sort_keys=True, separators=(",", ":")))
-        return 0 if audit_events(root/"continuity/events.jsonl")["valid"] else 1
+        result = audit_events(root/"continuity/events.jsonl")
+        print(json.dumps(result, sort_keys=True, separators=(",", ":")))
+        return 0 if result["valid"] else 1
+    if args.audit_transaction:
+        result = audit_transaction(root/"continuity/transaction.json")
+        print(json.dumps(result, sort_keys=True, separators=(",", ":")))
+        return 0 if result["valid"] else 1
     errors=verify_events(root/"continuity/events.jsonl")+verify_transaction(root/"continuity/transaction.json")
     if errors:
         print("INVALID")
