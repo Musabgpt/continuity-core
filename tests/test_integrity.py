@@ -50,7 +50,7 @@ class IntegrityTests(unittest.TestCase):
             r=self.execute(root, "--audit-all")
             payload=json.loads(r.stdout)
             self.assertEqual(payload["schema_version"], 1)
-            self.assertEqual(payload["first_break"], {"scope":"events","line":1,"reason":"event hash mismatch"})
+            self.assertEqual(payload["first_break"], {"scope":"events","line":1,"reason":"event chain_hash must be 64 lowercase hex characters"})
 
     def test_versioned_audit_contract_keys_and_order(self):
         with tempfile.TemporaryDirectory() as d:
@@ -75,7 +75,25 @@ class IntegrityTests(unittest.TestCase):
             row={"type":"note","message":"ok","prev_hash":"GENESIS"}
             row["chain_hash"]="bad"
             (root/"continuity/events.jsonl").write_text(json.dumps(row)+"\n", encoding="utf-8")
-            r=self.execute(root); self.assertNotEqual(r.returncode, 0); self.assertIn("hash mismatch", r.stdout)
+            r=self.execute(root); self.assertNotEqual(r.returncode, 0); self.assertIn("chain_hash must be 64", r.stdout)
+
+    def test_event_hash_fields_must_be_strings(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            row={"type":"note","message":"ok","prev_hash":1,"chain_hash":"0"*64}
+            (root/"continuity/events.jsonl").write_text(json.dumps(row)+"\n", encoding="utf-8")
+            r=self.execute(root, "--audit")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertEqual(json.loads(r.stdout)["first_break"]["reason"], "event hash fields must be strings")
+
+    def test_event_chain_hash_requires_lowercase_hex(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            row={"type":"note","message":"ok","prev_hash":"GENESIS","chain_hash":"A"*64}
+            (root/"continuity/events.jsonl").write_text(json.dumps(row)+"\n", encoding="utf-8")
+            r=self.execute(root, "--audit")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertEqual(json.loads(r.stdout)["first_break"]["reason"], "event chain_hash must be 64 lowercase hex characters")
 
     def test_orphaned_event_chain_is_rejected(self):
         with tempfile.TemporaryDirectory() as d:
@@ -126,8 +144,8 @@ class IntegrityTests(unittest.TestCase):
             r=self.execute(root, "--audit-all")
             payload=json.loads(r.stdout)
             self.assertFalse(payload["valid"])
-            self.assertEqual(payload["first_break"], {"scope":"events","line":1,"reason":"event hash mismatch"})
-            self.assertEqual(payload["events"]["first_break"]["reason"], "event hash mismatch")
+            self.assertEqual(payload["first_break"], {"scope":"events","line":1,"reason":"event chain_hash must be 64 lowercase hex characters"})
+            self.assertEqual(payload["events"]["first_break"]["reason"], "event chain_hash must be 64 lowercase hex characters")
             self.assertEqual(payload["transaction"]["first_break"]["reason"], "transaction journal checksum mismatch")
             self.assertEqual(events.read_text(encoding="utf-8"), json.dumps(row)+"\n")
             self.assertEqual(journal.read_text(encoding="utf-8"), before_tx)
