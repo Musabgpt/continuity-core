@@ -46,13 +46,19 @@ def require_latest(s):
     if version != LATEST_SCHEMA:
         raise SystemExit(f"State schema {version} is read-compatible but not writable; run: python continuity.py migrate")
 
+def require_revision(s, expected):
+    if expected is not None and s["revision"] != expected:
+        raise SystemExit(f"Revision conflict: expected {expected}, current {s['revision']}. Reload state before writing.")
+
 def event(args):
-    s=load_state(); require_latest(s); append_event(args.kind,args.message,args.why)
+    s=load_state(); require_latest(s); require_revision(s,args.expect_revision)
+    append_event(args.kind,args.message,args.why)
     if args.kind=="decision" and args.message not in s["decisions"]: s["decisions"].append(args.message)
     s["revision"] += 1; save_state(s)
 
 def set_next(args):
-    s=load_state(); require_latest(s); s["next_action"]=args.action; s["revision"] += 1; save_state(s)
+    s=load_state(); require_latest(s); require_revision(s,args.expect_revision)
+    s["next_action"]=args.action; s["revision"] += 1; save_state(s)
     append_event("note","Next action set: "+args.action)
 
 def validate(_):
@@ -124,8 +130,8 @@ def build_parser():
     p=argparse.ArgumentParser(description="Compact project continuity ledger")
     sp=p.add_subparsers(dest="cmd",required=True)
     i=sp.add_parser("init"); i.add_argument("--project",required=True); i.add_argument("--goal",required=True); i.add_argument("--force",action="store_true"); i.set_defaults(func=init)
-    e=sp.add_parser("event"); e.add_argument("kind",choices=["decision","success","failure","note"]); e.add_argument("message"); e.add_argument("--why"); e.set_defaults(func=event)
-    n=sp.add_parser("next"); n.add_argument("action"); n.set_defaults(func=set_next)
+    e=sp.add_parser("event"); e.add_argument("kind",choices=["decision","success","failure","note"]); e.add_argument("message"); e.add_argument("--why"); e.add_argument("--expect-revision",type=int); e.set_defaults(func=event)
+    n=sp.add_parser("next"); n.add_argument("action"); n.add_argument("--expect-revision",type=int); n.set_defaults(func=set_next)
     h=sp.add_parser("handoff"); h.add_argument("--format",choices=["text","json"],default="text"); h.set_defaults(func=handoff)
     v=sp.add_parser("validate"); v.set_defaults(func=validate)
     m=sp.add_parser("migrate"); m.set_defaults(func=migrate)
