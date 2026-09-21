@@ -1,16 +1,21 @@
 import argparse, hashlib, json
 from pathlib import Path
 
+AUDIT_SCHEMA_VERSION = 1
+
 def canonical(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 def digest(value):
     return hashlib.sha256(canonical(value).encode("utf-8")).hexdigest()
 
+def diagnostic(valid, checked, first_break):
+    return {"schema_version": AUDIT_SCHEMA_VERSION, "valid": valid, "checked": checked, "first_break": first_break}
+
 def audit_events(path):
     """Return structured, non-mutating diagnostics for the first broken hash link."""
     if not path.exists():
-        return {"valid": False, "checked": 0, "first_break": {"line": None, "reason": "events file is missing"}}
+        return diagnostic(False, 0, {"line": None, "reason": "events file is missing"})
     previous = None
     checked = 0
     for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -20,43 +25,55 @@ def audit_events(path):
         try:
             row = json.loads(line)
         except json.JSONDecodeError:
-            return {"valid": False, "checked": checked, "first_break": {"line": number, "reason": "invalid event JSON"}}
+            return diagnostic(False, checked, {"line": number, "reason": "invalid event JSON"})
         protected = "chain_hash" in row or "prev_hash" in row
         if not protected:
             continue
         prev = row.get("prev_hash", "GENESIS")
         if previous is None and prev != "GENESIS":
-            return {"valid": False, "checked": checked, "first_break": {"line": number, "reason": "event chain does not start at GENESIS"}}
+            return diagnostic(False, checked, {"line": number, "reason": "event chain does not start at GENESIS"})
         if previous is not None and prev != previous:
-            return {"valid": False, "checked": checked, "first_break": {"line": number, "reason": "event chain break"}}
+            return diagnostic(False, checked, {"line": number, "reason": "event chain break"})
         material = dict(row)
         material.pop("chain_hash", None)
         if row.get("chain_hash") != digest(material):
-            return {"valid": False, "checked": checked, "first_break": {"line": number, "reason": "event hash mismatch"}}
+            return diagnostic(False, checked, {"line": number, "reason": "event hash mismatch"})
         previous = row.get("chain_hash")
-    return {"valid": True, "checked": checked, "first_break": None}
+    return diagnostic(True, checked, None)
 
 def audit_transaction(path):
     """Return stable, non-mutating diagnostics for the transaction journal."""
     if not path.exists():
-        return {"valid": True, "checked": 0, "first_break": None}
+        return diagnostic(True, 0, None)
     try:
         tx = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
-        return {"valid": False, "checked": 1, "first_break": {"line": 1, "reason": "invalid transaction JSON"}}
+        return diagnostic(False, 1, {"line": 1, "reason": "invalid transaction JSON"})
     if "checksum" not in tx:
-        return {"valid": True, "checked": 1, "first_break": None}
+        return diagnostic(True, 1, None)
     material = {"txid": tx.get("txid"), "state": tx.get("state"), "event": tx.get("event")}
     if tx.get("checksum") != digest(material):
-        return {"valid": False, "checked": 1, "first_break": {"line": 1, "reason": "transaction journal checksum mismatch"}}
+        return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum mismatch"})
     if not isinstance(tx.get("txid"), str) or not isinstance(tx.get("state"), dict) or not isinstance(tx.get("event"), dict):
-        return {"valid": False, "checked": 1, "first_break": {"line": 1, "reason": "transaction journal shape is invalid"}}
-    return {"valid": True, "checked": 1, "first_break": None}
+        return diagnostic(False, 1, {"line": 1, "reason": "transaction journal shape is invalid"})
+    return diagnostic(True, 1, None)
 
 def audit_all(root):
     events = audit_events(root/"continuity/events.jsonl")
     transaction = audit_transaction(root/"continuity/transaction.json")
-    return {"valid": events["valid"] and transaction["valid"], "events": events, "transaction": transaction}
+    breaks = []
+    if events["first_break"] is not None:
+        breaks.append({"scope": "events", **events["first_break"]})
+    if transaction["first_break"] is not None:
+        breaks.append({"scope": "transaction", **transaction["first_break"]})
+    first_break = breaks[0] if breaks else None
+    return {
+        "schema_version": AUDIT_SCHEMA_VERSION,
+        "valid": events["valid"] and transaction["valid"],
+        "first_break": first_break,
+        "events": events,
+        "transaction": transaction,
+    }
 
 def verify_events(path):
     audit = audit_events(path)
