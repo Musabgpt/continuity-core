@@ -28,9 +28,10 @@
     "The integrity verifier exposes a non-mutating audit mode that reports the first broken event-chain link as machine-readable JSON.",
     "Transaction-journal audit uses the same stable valid/checked/first_break schema and remains non-mutating.",
     "A CI regression is not considered resolved until the corrected test suite reports success.",
-    "Aggregate audit output must report event and transaction diagnostics together while preserving legacy command behavior."
+    "Aggregate audit output must report event and transaction diagnostics together while preserving legacy command behavior.",
+    "Regression fixtures must write the intended corrupted bytes before invoking an audit command; passing tests must exercise the claimed failure mode."
   ],
-  "next_action": "Verify CI for commits 4d36e27fd87dced98412ea5f9cc7386d1a502603 and d393d6f73ff54abc83c1a006d1751ad40b90d8a5; if green, add documented exit-code semantics and a clean-project aggregate-audit regression.",
-  "revision": 13,
-  "updated_at": "2026-09-21T13:36:47Z"
+  "next_action": "Verify corrective CI for commit 9f6254be83d117ecc5556292578b7fbc0ca16cfa; if green, add documented exit-code semantics and a clean-project aggregate-audit regression.",
+  "revision": 14,
+  "updated_at": "2026-09-21T14:34:42Z"
 }
