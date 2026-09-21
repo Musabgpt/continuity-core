@@ -20,3 +20,6 @@
 {"ts":"2026-09-21T08:35:48Z","type":"failure","message":"CI run 35573802928 failed because tests/test_integrity.py overrode unittest.TestCase.run and received a TextTestResult instead of a temp-root path.","why":"The new test helper used the reserved unittest lifecycle method name run."}
 {"ts":"2026-09-21T08:35:48Z","type":"success","message":"Renamed the integrity test helper to execute; corrective commit d8f8c73146c7608fd20d653c981e94439862c53a started CI run 35573845754."}
 {"ts":"2026-09-21T08:35:48Z","type":"note","message":"CI run 35573845754 was queued at the end of this run; its conclusion remains unverified."}
+{"ts":"2026-09-21T09:31:31Z","type":"success","message":"Fixed a compatibility bug in the standalone integrity verifier: pre-checksum transaction journals are now readable instead of being falsely rejected, while protected journals with a checksum are still verified."}
+{"ts":"2026-09-21T09:31:31Z","type":"success","message":"Added regression coverage for legacy pre-checksum transaction journals."}
+{"ts":"2026-09-21T09:31:31Z","type":"note","message":"The newest CI result after the compatibility fix was not available in this run, so success remains unclaimed until GitHub reports it."}
