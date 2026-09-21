@@ -25,7 +25,7 @@
     "The integrity verifier must distinguish legacy-readable data from tampered protected data.",
     "New transaction journals are checksummed at creation and recovery fails closed on checksum mismatch."
   ],
-  "next_action": "Verify the CI run for checksum creation and recovery-tamper coverage; if green, add optional hash-chain emission to the event writer with migration-safe tests.",
-  "revision": 7,
+  "next_action": "Wait for the documentation/evidence commit CI run to finish; if green, add optional hash-chain emission to the event writer with migration-safe tests.",
+  "revision": 8,
   "updated_at": "2026-09-21T10:36:05Z"
 }
