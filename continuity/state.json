@@ -34,9 +34,10 @@
     "A protected event chain must begin at GENESIS; orphaned first links are invalid even when their individual hash matches.",
     "Audit diagnostics use schema version 1 and aggregate first_break selects the earliest available domain diagnostic without changing legacy exit codes.",
     "CI run 35626854032 completed successfully for the versioned audit implementation and its regression suite.",
-    "Schema-versioned audit examples belong in README.md and must show deterministic valid and broken aggregate outputs without implying runtime verification."
+    "Schema-versioned audit examples belong in README.md and must show deterministic valid and broken aggregate outputs without implying runtime verification.",
+    "Contract tests must lock the documented audit schema keys and serialization order before further audit changes."
   ],
-  "next_action": "Verify CI for documentation commit 3931ba644745d770e59cc4967b29fd7ef61307ca; if green, add a small contract test that locks the documented schema keys and output ordering before selecting the next continuity hardening step.",
-  "revision": 20,
-  "updated_at": "2026-09-21T17:32:37Z"
+  "next_action": "Verify CI for contract-test commit b2b9bba8b71f5165a64c43b178738dd510749273; if green, select the next continuity hardening step from observed gaps without changing legacy audit behavior.",
+  "revision": 21,
+  "updated_at": "2026-09-21T18:34:07Z"
 }
