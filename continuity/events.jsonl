@@ -58,3 +58,5 @@
 {"ts":"2026-09-21T17:36:36Z","type":"success","message":"Added regression coverage for versioned diagnostics, deterministic aggregate first_break selection, and non-mutating behavior."}
 {"ts":"2026-09-21T17:36:36Z","type":"note","message":"CI verification for commits 092cd6254b2b83a0722f2752c0c21895383060ba and e6b8867a2c11609018ee0210760f16f5cc74b28a remains pending; success is intentionally unclaimed until GitHub reports it."}
 {"ts":"2026-09-21T17:36:36Z","type":"decision","message":"Next action is to verify the versioned aggregate-audit implementation in GitHub Actions; if green, document schema-versioned examples before selecting the next continuity hardening step."}
+{"ts":"2026-09-21T17:36:36Z","type":"success","message":"Verified CI run 35626854032 completed successfully for the versioned audit implementation and regression suite."}
+{"ts":"2026-09-21T17:36:36Z","type":"note","message":"Evidence-only CI run 35626881973 for the append-only history update was queued at the last check; its conclusion remains unverified."}
