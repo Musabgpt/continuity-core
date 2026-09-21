@@ -15,9 +15,10 @@
     "Integrity validation is a first-class command and must fail closed on malformed state or events.",
     "Every push and pull request is intended to run unit tests plus continuity validation in GitHub Actions.",
     "Machine-readable handoffs use canonical compact JSON without volatile timestamps and include up to five recent failures.",
-    "Schema v2 adds a monotonic revision counter; v1 remains readable but must be explicitly migrated before mutation."
+    "Schema v2 adds a monotonic revision counter; v1 remains readable but must be explicitly migrated before mutation.",
+    "Mutating commands accept --expect-revision and reject stale writers before any state or event side effect."
   ],
-  "next_action": "Verify CI for schema-v2 migration and then add optimistic revision preconditions to mutations so stale workers cannot silently overwrite newer state.",
-  "revision": 0,
-  "updated_at": "2026-09-21T03:38:00Z"
+  "next_action": "Verify CI run 35561582654 for stale-writer regression coverage, then make state/event updates crash-safe as one logical transaction so partial writes cannot create contradictory continuity evidence.",
+  "revision": 1,
+  "updated_at": "2026-09-21T04:36:00Z"
 }
