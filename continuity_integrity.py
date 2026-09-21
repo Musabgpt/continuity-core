@@ -56,11 +56,13 @@ def audit_transaction(path):
         return diagnostic(False, 1, {"line": 1, "reason": "invalid transaction JSON"})
     if "checksum" not in tx:
         return diagnostic(True, 1, None)
+    required = {"txid": str, "state": dict, "event": dict}
+    for key, expected in required.items():
+        if key not in tx or not isinstance(tx[key], expected):
+            return diagnostic(False, 1, {"line": 1, "reason": f"transaction journal shape invalid: {key} must be {expected.__name__}"})
     material = {"txid": tx.get("txid"), "state": tx.get("state"), "event": tx.get("event")}
     if tx.get("checksum") != digest(material):
         return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum mismatch"})
-    if not isinstance(tx.get("txid"), str) or not isinstance(tx.get("state"), dict) or not isinstance(tx.get("event"), dict):
-        return diagnostic(False, 1, {"line": 1, "reason": "transaction journal shape is invalid"})
     return diagnostic(True, 1, None)
 
 def audit_all(root):
