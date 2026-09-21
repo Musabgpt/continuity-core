@@ -27,20 +27,21 @@ def append_event(kind, message, why=None):
     with EVENTS.open("a",encoding="utf-8") as f:
         f.write(json.dumps(row,ensure_ascii=False)+"\n")
 
+def read_events():
+    if not EVENTS.exists(): return []
+    return [json.loads(line) for line in EVENTS.read_text(encoding="utf-8").splitlines() if line.strip()]
+
 def init(args):
     if STATE.exists() and not args.force:
         raise SystemExit("State already exists; use --force to replace it.")
-    if args.force and EVENTS.exists():
-        EVENTS.unlink()
+    if args.force and EVENTS.exists(): EVENTS.unlink()
     s={"schema_version":1,"project":args.project,"goal":args.goal,"status":"active",
        "constraints":[],"decisions":[],"next_action":None}
     save_state(s); append_event("success","Continuity state initialized.")
 
 def event(args):
-    s=load_state()
-    append_event(args.kind,args.message,args.why)
-    if args.kind=="decision" and args.message not in s["decisions"]:
-        s["decisions"].append(args.message)
+    s=load_state(); append_event(args.kind,args.message,args.why)
+    if args.kind=="decision" and args.message not in s["decisions"]: s["decisions"].append(args.message)
     save_state(s)
 
 def set_next(args):
@@ -49,14 +50,14 @@ def set_next(args):
 
 def validate(_):
     errors=[]
-    try:
-        s=load_state()
+    try: s=load_state()
     except (SystemExit, json.JSONDecodeError) as exc:
         print("INVALID: "+str(exc)); return 1
     required={"schema_version":int,"project":str,"goal":str,"status":str,"constraints":list,"decisions":list,"next_action":(str,type(None)),"updated_at":str}
     for key,typ in required.items():
         if key not in s: errors.append("missing state field: "+key)
         elif not isinstance(s[key],typ): errors.append("wrong type for state field: "+key)
+    if s.get("schema_version") != 1: errors.append("unsupported schema_version")
     if isinstance(s.get("project"),str) and not s["project"].strip(): errors.append("project is empty")
     if isinstance(s.get("goal"),str) and not s["goal"].strip(): errors.append("goal is empty")
     if isinstance(s.get("constraints"),list) and not all(isinstance(x,str) and x.strip() for x in s["constraints"]): errors.append("constraints must be non-empty strings")
@@ -72,21 +73,29 @@ def validate(_):
         print("INVALID")
         for e in errors: print("- "+e)
         return 1
-    print("VALID")
-    return 0
+    print("VALID"); return 0
 
-def handoff(_):
-    s=load_state()
-    print(f"# {s['project']} — handoff")
-    print(f"Goal: {s['goal']}")
-    print(f"Status: {s['status']}")
-    if s["constraints"]:
-        print("Constraints: " + "; ".join(s["constraints"]))
-    if s["decisions"]:
+def handoff_payload():
+    s=load_state(); events=read_events()
+    failures=[{"message":e["message"], **({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]
+    return {"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],
+            "constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,
+            "next_action":s.get("next_action")}
+
+def handoff(args):
+    p=handoff_payload()
+    if args.format=="json":
+        print(json.dumps(p,ensure_ascii=False,sort_keys=True,separators=(",",":"))); return 0
+    print(f"# {p['project']} — handoff")
+    print(f"Goal: {p['goal']}"); print(f"Status: {p['status']}")
+    if p["constraints"]: print("Constraints: " + "; ".join(p["constraints"]))
+    if p["decisions"]:
         print("Decisions:")
-        for x in s["decisions"][-8:]: print("- "+x)
-    print("Next action: " + (s.get("next_action") or "UNSET"))
-    print("Updated: " + s["updated_at"])
+        for x in p["decisions"]: print("- "+x)
+    if p["recent_failures"]:
+        print("Recent failures:")
+        for x in p["recent_failures"]: print("- "+x["message"]+(" — "+x["why"] if x.get("why") else ""))
+    print("Next action: " + (p.get("next_action") or "UNSET")); return 0
 
 def build_parser():
     p=argparse.ArgumentParser(description="Compact project continuity ledger")
@@ -94,7 +103,7 @@ def build_parser():
     i=sp.add_parser("init"); i.add_argument("--project",required=True); i.add_argument("--goal",required=True); i.add_argument("--force",action="store_true"); i.set_defaults(func=init)
     e=sp.add_parser("event"); e.add_argument("kind",choices=["decision","success","failure","note"]); e.add_argument("message"); e.add_argument("--why"); e.set_defaults(func=event)
     n=sp.add_parser("next"); n.add_argument("action"); n.set_defaults(func=set_next)
-    h=sp.add_parser("handoff"); h.set_defaults(func=handoff)
+    h=sp.add_parser("handoff"); h.add_argument("--format",choices=["text","json"],default="text"); h.set_defaults(func=handoff)
     v=sp.add_parser("validate"); v.set_defaults(func=validate)
     return p
 
