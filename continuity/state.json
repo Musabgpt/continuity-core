@@ -31,9 +31,10 @@
     "Aggregate audit output must report event and transaction diagnostics together while preserving legacy command behavior.",
     "Regression fixtures must write the intended corrupted bytes before invoking an audit command; passing tests must exercise the claimed failure mode.",
     "Integrity audit exit codes are documented: 0 for valid selected scope and 1 for malformed or tampered protected data.",
-    "A protected event chain must begin at GENESIS; orphaned first links are invalid even when their individual hash matches."
+    "A protected event chain must begin at GENESIS; orphaned first links are invalid even when their individual hash matches.",
+    "Audit diagnostics use schema version 1 and aggregate first_break selects the earliest available domain diagnostic without changing legacy exit codes."
   ],
-  "next_action": "Add an explicit audit schema version and aggregate first_break summary without changing legacy exit codes; verify the new regression with CI before claiming it complete.",
-  "revision": 17,
-  "updated_at": "2026-09-21T15:39:00Z"
+  "next_action": "Verify the versioned aggregate-audit implementation in GitHub Actions; if green, add README examples for schema-versioned output and then select the next highest-value continuity hardening step.",
+  "revision": 18,
+  "updated_at": "2026-09-21T17:36:36Z"
 }
