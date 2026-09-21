@@ -31,11 +31,26 @@ class IntegrityTests(unittest.TestCase):
             r=self.execute(root, "--audit-all")
             self.assertEqual(r.returncode, 0, r.stdout+r.stderr)
             self.assertEqual(json.loads(r.stdout), {
+                "schema_version": 1,
                 "valid": True,
-                "events": {"valid": True, "checked": 1, "first_break": None},
-                "transaction": {"valid": True, "checked": 0, "first_break": None},
+                "first_break": None,
+                "events": {"schema_version": 1, "valid": True, "checked": 1, "first_break": None},
+                "transaction": {"schema_version": 1, "valid": True, "checked": 0, "first_break": None},
             })
             self.assertEqual(before_events, events.read_text(encoding="utf-8"))
+
+    def test_aggregate_audit_first_break_summary_is_deterministic(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            events=root/"continuity/events.jsonl"
+            events.write_text(json.dumps({"type":"note","message":"ok","prev_hash":"GENESIS","chain_hash":"bad"})+"\n", encoding="utf-8")
+            material={"txid":"x","state":{"revision":1},"event":{"type":"note","message":"ok"}}
+            tx=dict(material); tx["checksum"]="0"*64
+            (root/"continuity/transaction.json").write_text(json.dumps(tx), encoding="utf-8")
+            r=self.execute(root, "--audit-all")
+            payload=json.loads(r.stdout)
+            self.assertEqual(payload["schema_version"], 1)
+            self.assertEqual(payload["first_break"], {"scope":"events","line":1,"reason":"event hash mismatch"})
 
     def test_transaction_checksum_tampering_is_rejected(self):
         with tempfile.TemporaryDirectory() as d:
@@ -87,7 +102,7 @@ class IntegrityTests(unittest.TestCase):
             before=journal.read_text(encoding="utf-8")
             r=self.execute(root, "--audit-transaction")
             self.assertNotEqual(r.returncode, 0)
-            self.assertEqual(json.loads(r.stdout), {"valid":False,"checked":1,"first_break":{"line":1,"reason":"transaction journal checksum mismatch"}})
+            self.assertEqual(json.loads(r.stdout), {"schema_version":1,"valid":False,"checked":1,"first_break":{"line":1,"reason":"transaction journal checksum mismatch"}})
             self.assertEqual(before, journal.read_text(encoding="utf-8"))
 
     def test_aggregate_audit_reports_both_domains_without_mutation(self):
@@ -102,6 +117,7 @@ class IntegrityTests(unittest.TestCase):
             r=self.execute(root, "--audit-all")
             payload=json.loads(r.stdout)
             self.assertFalse(payload["valid"])
+            self.assertEqual(payload["first_break"], {"scope":"events","line":1,"reason":"event hash mismatch"})
             self.assertEqual(payload["events"]["first_break"]["reason"], "event hash mismatch")
             self.assertEqual(payload["transaction"]["first_break"]["reason"], "transaction journal checksum mismatch")
             self.assertEqual(events.read_text(encoding="utf-8"), json.dumps(row)+"\n")
