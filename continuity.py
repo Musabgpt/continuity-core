@@ -77,6 +77,10 @@ def verify_tx_shape(tx):
 def verify_tx_checksum(tx):
     checksum=tx.get("checksum")
     if checksum is None: return
+    if not isinstance(checksum, str):
+        raise SystemExit("Transaction journal checksum invalid: checksum must be a string.")
+    if len(checksum) != 64 or any(char not in "0123456789abcdef" for char in checksum):
+        raise SystemExit("Transaction journal checksum invalid: checksum must be 64 lowercase hex characters.")
     material={"txid":tx.get("txid"),"state":tx.get("state"),"event":tx.get("event")}
     if checksum!=digest(material): raise SystemExit("Transaction journal checksum mismatch; refusing recovery.")
 
