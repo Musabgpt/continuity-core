@@ -4,8 +4,8 @@ from pathlib import Path
 SOURCE=Path(__file__).resolve().parents[1]/"continuity_integrity.py"
 
 class IntegrityTests(unittest.TestCase):
-    def execute(self, root):
-        return subprocess.run([sys.executable, str(root/"continuity_integrity.py"), "--root", str(root)], text=True, capture_output=True)
+    def execute(self, root, *args):
+        return subprocess.run([sys.executable, str(root/"continuity_integrity.py"), "--root", str(root), *args], text=True, capture_output=True)
 
     def setup(self, root):
         root.joinpath("continuity_integrity.py").write_text(SOURCE.read_text(encoding="utf-8"), encoding="utf-8")
@@ -39,5 +39,16 @@ class IntegrityTests(unittest.TestCase):
             row["chain_hash"]="bad"
             (root/"continuity/events.jsonl").write_text(json.dumps(row)+"\n", encoding="utf-8")
             r=self.execute(root); self.assertNotEqual(r.returncode, 0); self.assertIn("hash mismatch", r.stdout)
+
+    def test_audit_reports_first_broken_line_without_mutation(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            row={"type":"note","message":"ok","prev_hash":"GENESIS"}
+            row["chain_hash"]="bad"
+            events=root/"continuity/events.jsonl"; before=events.read_text(encoding="utf-8")
+            r=self.execute(root, "--audit")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn('"line":1', r.stdout)
+            self.assertEqual(before, events.read_text(encoding="utf-8"))
 
 if __name__=="__main__": unittest.main()
