@@ -51,4 +51,17 @@ class IntegrityTests(unittest.TestCase):
             self.assertIn('"line":1', r.stdout)
             self.assertEqual(before, events.read_text(encoding="utf-8"))
 
+    def test_transaction_audit_reports_stable_checksum_error(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            material={"txid":"x","state":{"revision":1},"event":{"type":"note","message":"ok"}}
+            tx=dict(material); tx["checksum"]="0"*64
+            journal=root/"continuity/transaction.json"
+            journal.write_text(json.dumps(tx), encoding="utf-8")
+            before=journal.read_text(encoding="utf-8")
+            r=self.execute(root, "--audit-transaction")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertEqual(json.loads(r.stdout), {"valid":False,"checked":1,"first_break":{"line":1,"reason":"transaction journal checksum mismatch"}})
+            self.assertEqual(before, journal.read_text(encoding="utf-8"))
+
 if __name__=="__main__": unittest.main()
