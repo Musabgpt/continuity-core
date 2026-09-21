@@ -25,9 +25,10 @@
     "The integrity verifier must distinguish legacy-readable data from tampered protected data.",
     "New transaction journals are checksummed at creation and recovery fails closed on checksum mismatch.",
     "New event records emit an optional prev_hash/chain_hash link so append-only history can be tamper-evident while legacy events remain readable.",
-    "The integrity verifier exposes a non-mutating audit mode that reports the first broken event-chain link as machine-readable JSON."
+    "The integrity verifier exposes a non-mutating audit mode that reports the first broken event-chain link as machine-readable JSON.",
+    "Transaction-journal audit uses the same stable valid/checked/first_break schema and remains non-mutating."
   ],
-  "next_action": "Verify CI run 35595050050 for the audit implementation; if green, add audit output for transaction-journal integrity with a stable error schema.",
-  "revision": 10,
-  "updated_at": "2026-09-21T12:36:41Z"
+  "next_action": "Verify the CI run triggered by commits 78353ab9d5c4283a2df9350fc13ed031588c1ad7 and 922297e8760f0063d7cadf1cf09aa88ea65fe1b7; if green, add an aggregate audit command that reports event and transaction diagnostics together without changing legacy exit behavior.",
+  "revision": 11,
+  "updated_at": "2026-09-21T12:32:32Z"
 }
