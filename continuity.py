@@ -1,13 +1,38 @@
 #!/usr/bin/env python3
 import argparse, json, os, uuid
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
-DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"
+DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
 LATEST_SCHEMA=2; SUPPORTED_SCHEMAS={1,2}
 
 def now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
+
+@contextmanager
+def project_lock():
+    """Cross-platform advisory process lock. The lock file is intentionally persistent."""
+    DIR.mkdir(parents=True,exist_ok=True)
+    f=LOCK.open("a+b")
+    try:
+        if os.name=="nt":
+            import msvcrt
+            if f.tell()==0: f.write(b"0"); f.flush()
+            f.seek(0); msvcrt.locking(f.fileno(),msvcrt.LK_LOCK,1)
+        else:
+            import fcntl
+            fcntl.flock(f.fileno(),fcntl.LOCK_EX)
+        yield
+    finally:
+        try:
+            if os.name=="nt":
+                import msvcrt
+                f.seek(0); msvcrt.locking(f.fileno(),msvcrt.LK_UNLCK,1)
+            else:
+                import fcntl
+                fcntl.flock(f.fileno(),fcntl.LOCK_UN)
+        finally: f.close()
 
 def atomic_text(path,text):
     path.parent.mkdir(parents=True,exist_ok=True); tmp=path.with_name(path.name+".tmp")
@@ -32,16 +57,19 @@ def append_row(row):
     with EVENTS.open("a",encoding="utf-8") as f:
         f.write(json.dumps(row,ensure_ascii=False,separators=(",",":"))+"\n"); f.flush(); os.fsync(f.fileno())
 
-def recover():
+def recover_unlocked():
     if not TXN.exists(): return False
     tx=json.loads(TXN.read_text(encoding="utf-8")); txid=tx["txid"]
     if txid not in event_ids(): append_row(tx["event"])
     atomic_text(STATE,json.dumps(tx["state"],indent=2,ensure_ascii=False)+"\n")
     TXN.unlink(); return True
 
-def load_state(): recover(); return raw_state()
+def load_state_unlocked(): recover_unlocked(); return raw_state()
 
-def save_state(s):
+def load_state():
+    with project_lock(): return load_state_unlocked()
+
+def save_state_unlocked(s):
     s["updated_at"]=now(); atomic_text(STATE,json.dumps(s,indent=2,ensure_ascii=False)+"\n")
 
 def make_event(kind,message,why=None,txid=None):
@@ -52,25 +80,25 @@ def make_event(kind,message,why=None,txid=None):
 
 def append_event(kind,message,why=None): append_row(make_event(kind,message,why))
 
-def transact(s,kind,message,why=None):
+def transact_unlocked(s,kind,message,why=None):
     txid=str(uuid.uuid4()); s["updated_at"]=now(); row=make_event(kind,message,why,txid)
     tx={"txid":txid,"state":s,"event":row}
     atomic_text(TXN,json.dumps(tx,ensure_ascii=False,separators=(",",":"))+"\n")
-    recover()
+    recover_unlocked()
 
-def read_events():
-    recover()
+def read_events_unlocked():
+    recover_unlocked()
     if not EVENTS.exists(): return []
     return [json.loads(x) for x in EVENTS.read_text(encoding="utf-8").splitlines() if x.strip()]
 
 def init(args):
-    if STATE.exists() and not args.force: raise SystemExit("State already exists; use --force to replace it.")
-    DIR.mkdir(parents=True,exist_ok=True)
-    if args.force:
-        for p in (EVENTS,TXN):
-            if p.exists(): p.unlink()
-    s={"schema_version":LATEST_SCHEMA,"project":args.project,"goal":args.goal,"status":"active","constraints":[],"decisions":[],"next_action":None,"revision":0}
-    save_state(s); append_event("success","Continuity state initialized.")
+    with project_lock():
+        if STATE.exists() and not args.force: raise SystemExit("State already exists; use --force to replace it.")
+        if args.force:
+            for p in (EVENTS,TXN):
+                if p.exists(): p.unlink()
+        s={"schema_version":LATEST_SCHEMA,"project":args.project,"goal":args.goal,"status":"active","constraints":[],"decisions":[],"next_action":None,"revision":0}
+        save_state_unlocked(s); append_event("success","Continuity state initialized.")
 
 def require_latest(s):
     v=s.get("schema_version")
@@ -80,53 +108,59 @@ def require_revision(s,expected):
     if expected is not None and s["revision"]!=expected: raise SystemExit(f"Revision conflict: expected {expected}, current {s['revision']}. Reload state before writing.")
 
 def event(args):
-    s=load_state(); require_latest(s); require_revision(s,args.expect_revision)
-    if args.kind=="decision" and args.message not in s["decisions"]: s["decisions"].append(args.message)
-    s["revision"]+=1; transact(s,args.kind,args.message,args.why)
+    with project_lock():
+        s=load_state_unlocked(); require_latest(s); require_revision(s,args.expect_revision)
+        if args.kind=="decision" and args.message not in s["decisions"]: s["decisions"].append(args.message)
+        s["revision"]+=1; transact_unlocked(s,args.kind,args.message,args.why)
 
 def set_next(args):
-    s=load_state(); require_latest(s); require_revision(s,args.expect_revision)
-    s["next_action"]=args.action; s["revision"]+=1; transact(s,"note","Next action set: "+args.action)
+    with project_lock():
+        s=load_state_unlocked(); require_latest(s); require_revision(s,args.expect_revision)
+        s["next_action"]=args.action; s["revision"]+=1; transact_unlocked(s,"note","Next action set: "+args.action)
 
 def validate(_):
     errors=[]
-    try: recover(); s=raw_state()
-    except (SystemExit,json.JSONDecodeError,KeyError) as exc: print("INVALID: "+str(exc)); return 1
-    req={"schema_version":int,"project":str,"goal":str,"status":str,"constraints":list,"decisions":list,"next_action":(str,type(None)),"updated_at":str}
-    for k,t in req.items():
-        if k not in s: errors.append("missing state field: "+k)
-        elif not isinstance(s[k],t): errors.append("wrong type for state field: "+k)
-    if s.get("schema_version") not in SUPPORTED_SCHEMAS: errors.append("unsupported schema_version")
-    if s.get("schema_version")==2 and (not isinstance(s.get("revision"),int) or isinstance(s.get("revision"),bool) or s.get("revision",-1)<0): errors.append("schema v2 requires non-negative integer revision")
-    if isinstance(s.get("project"),str) and not s["project"].strip(): errors.append("project is empty")
-    if isinstance(s.get("goal"),str) and not s["goal"].strip(): errors.append("goal is empty")
-    if isinstance(s.get("constraints"),list) and not all(isinstance(x,str) and x.strip() for x in s["constraints"]): errors.append("constraints must be non-empty strings")
-    if isinstance(s.get("decisions"),list) and not all(isinstance(x,str) and x.strip() for x in s["decisions"]): errors.append("decisions must be non-empty strings")
-    if EVENTS.exists():
-        for n,line in enumerate(EVENTS.read_text(encoding="utf-8").splitlines(),1):
-            try: row=json.loads(line)
-            except json.JSONDecodeError: errors.append(f"invalid event JSON at line {n}"); continue
-            if row.get("type") not in {"decision","success","failure","note"}: errors.append(f"invalid event type at line {n}")
-            if not isinstance(row.get("message"),str) or not row["message"].strip(): errors.append(f"invalid event message at line {n}")
-    else: errors.append("events file is missing")
+    with project_lock():
+        try: recover_unlocked(); s=raw_state()
+        except (SystemExit,json.JSONDecodeError,KeyError) as exc: print("INVALID: "+str(exc)); return 1
+        req={"schema_version":int,"project":str,"goal":str,"status":str,"constraints":list,"decisions":list,"next_action":(str,type(None)),"updated_at":str}
+        for k,t in req.items():
+            if k not in s: errors.append("missing state field: "+k)
+            elif not isinstance(s[k],t): errors.append("wrong type for state field: "+k)
+        if s.get("schema_version") not in SUPPORTED_SCHEMAS: errors.append("unsupported schema_version")
+        if s.get("schema_version")==2 and (not isinstance(s.get("revision"),int) or isinstance(s.get("revision"),bool) or s.get("revision",-1)<0): errors.append("schema v2 requires non-negative integer revision")
+        if isinstance(s.get("project"),str) and not s["project"].strip(): errors.append("project is empty")
+        if isinstance(s.get("goal"),str) and not s["goal"].strip(): errors.append("goal is empty")
+        if isinstance(s.get("constraints"),list) and not all(isinstance(x,str) and x.strip() for x in s["constraints"]): errors.append("constraints must be non-empty strings")
+        if isinstance(s.get("decisions"),list) and not all(isinstance(x,str) and x.strip() for x in s["decisions"]): errors.append("decisions must be non-empty strings")
+        if EVENTS.exists():
+            for n,line in enumerate(EVENTS.read_text(encoding="utf-8").splitlines(),1):
+                try: row=json.loads(line)
+                except json.JSONDecodeError: errors.append(f"invalid event JSON at line {n}"); continue
+                if row.get("type") not in {"decision","success","failure","note"}: errors.append(f"invalid event type at line {n}")
+                if not isinstance(row.get("message"),str) or not row["message"].strip(): errors.append(f"invalid event message at line {n}")
+        else: errors.append("events file is missing")
     if errors:
         print("INVALID"); [print("- "+e) for e in errors]; return 1
     print("VALID"); return 0
 
 def migrate(_):
-    s=load_state(); v=s.get("schema_version")
-    if v not in SUPPORTED_SCHEMAS: print(f"Cannot migrate unsupported schema_version {v}"); return 1
-    if v==LATEST_SCHEMA: print(f"Already at schema_version {LATEST_SCHEMA}"); return 0
-    if v==1:
-        s["schema_version"]=2; s["revision"]=0; transact(s,"success","Migrated state schema from v1 to v2.","v2 adds a monotonic revision counter for stale-state detection.")
-        print("Migrated schema_version 1 -> 2"); return 0
+    with project_lock():
+        s=load_state_unlocked(); v=s.get("schema_version")
+        if v not in SUPPORTED_SCHEMAS: print(f"Cannot migrate unsupported schema_version {v}"); return 1
+        if v==LATEST_SCHEMA: print(f"Already at schema_version {LATEST_SCHEMA}"); return 0
+        if v==1:
+            s["schema_version"]=2; s["revision"]=0; transact_unlocked(s,"success","Migrated state schema from v1 to v2.","v2 adds a monotonic revision counter for stale-state detection.")
+            print("Migrated schema_version 1 -> 2"); return 0
     return 1
 
 def handoff_payload():
-    s=load_state(); events=read_events(); failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]
-    p={"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],"constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,"next_action":s.get("next_action")}
-    if s["schema_version"]>=2: p["revision"]=s["revision"]
-    return p
+    with project_lock():
+        s=load_state_unlocked(); events=read_events_unlocked()
+        failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]
+        p={"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],"constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,"next_action":s.get("next_action")}
+        if s["schema_version"]>=2: p["revision"]=s["revision"]
+        return p
 
 def handoff(args):
     p=handoff_payload()
