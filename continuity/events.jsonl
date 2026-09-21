@@ -30,3 +30,6 @@
 {"ts":"2026-09-21T11:35:25Z","type":"success","message":"Added optional prev_hash/chain_hash emission to new event records; legacy events remain readable and the standalone verifier can validate the chain."}
 {"ts":"2026-09-21T11:35:25Z","type":"success","message":"Added regression coverage proving new events form a verifiable chain and remain compatible with continuity_integrity.py."}
 {"ts":"2026-09-21T11:35:25Z","type":"note","message":"CI result for the hash-chain change was not yet available in this run; success remains unclaimed until GitHub reports it."}
+{"ts":"2026-09-21T12:36:41Z","type":"success","message":"Added non-mutating --audit mode to continuity_integrity.py; it reports the first broken event-chain link with stable JSON fields and never rewrites project files."}
+{"ts":"2026-09-21T12:36:41Z","type":"success","message":"Added regression coverage proving audit diagnostics identify the first broken line and preserve the original events file byte-for-byte."}
+{"ts":"2026-09-21T12:36:41Z","type":"note","message":"CI run 35595050050 for the audit implementation was in progress when last checked; its conclusion remains unverified."}
