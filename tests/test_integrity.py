@@ -47,7 +47,7 @@ class IntegrityTests(unittest.TestCase):
             row["chain_hash"]="bad"
             events=root/"continuity/events.jsonl"; before=events.read_text(encoding="utf-8")
             r=self.execute(root, "--audit")
-            self.assertNotEqual(r.returncode, 0)
+            self.assertEqual(json.loads(r.stdout)["valid"], False)
             self.assertIn('"line":1', r.stdout)
             self.assertEqual(before, events.read_text(encoding="utf-8"))
 
