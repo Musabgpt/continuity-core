@@ -30,6 +30,11 @@ def audit_events(path):
         if not protected:
             continue
         prev = row.get("prev_hash", "GENESIS")
+        chain = row.get("chain_hash")
+        if not isinstance(prev, str) or not isinstance(chain, str):
+            return diagnostic(False, checked, {"line": number, "reason": "event hash fields must be strings"})
+        if len(chain) != 64 or any(char not in "0123456789abcdef" for char in chain):
+            return diagnostic(False, checked, {"line": number, "reason": "event chain_hash must be 64 lowercase hex characters"})
         if previous is None and prev != "GENESIS":
             return diagnostic(False, checked, {"line": number, "reason": "event chain does not start at GENESIS"})
         if previous is not None and prev != previous:
