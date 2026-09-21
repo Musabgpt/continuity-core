@@ -40,9 +40,10 @@
     "Protected event hash fields must be strings, and chain_hash must be exactly 64 lowercase hexadecimal characters before link or digest validation.",
     "Recovery-boundary regressions must prove malformed transaction journals fail closed without mutating canonical state or append-only history.",
     "Transaction recovery and standalone auditing now validate txid, state, and event shapes before checksum or mutation, with stable field-specific diagnostics.",
-    "Protected transaction checksums must be strings and exactly 64 lowercase hexadecimal characters before comparison; legacy journals without checksums remain readable."
+    "Protected transaction checksums must be strings and exactly 64 lowercase hexadecimal characters before comparison; legacy journals without checksums remain readable.",
+    "Standalone integrity auditing must reject non-object event records and non-object transaction journals with deterministic diagnostics instead of uncaught type errors."
   ],
-  "next_action": "Verify CI for commits deb00d4b486725ee39a34739ebcb5418c8d1de3e, 33f3c465f88799ee08e9d7b7de2b1ec1762545ba, 82a825d2705b51d4c33ea33d124382cb8705226f, and 3464bea3b389e07eb71deb1bfabdfb7dbed08a81; if green, continue with the next evidence-backed mutation/recovery boundary gap.",
-  "revision": 26,
-  "updated_at": "2026-09-21T23:34:24Z"
+  "next_action": "Verify the new non-object audit hardening through GitHub Actions; if green, inspect validate/recovery integration for any remaining path that can bypass standalone integrity diagnostics.",
+  "revision": 27,
+  "updated_at": "2026-09-22T00:37:06Z"
 }
