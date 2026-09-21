@@ -18,6 +18,17 @@ python continuity.py handoff
 python -m unittest discover -s tests -v
 ```
 
+## Integrity audit
+`continuity_integrity.py` provides non-mutating machine-readable audits:
+
+```bash
+python continuity_integrity.py --audit --root .
+python continuity_integrity.py --audit-transaction --root .
+python continuity_integrity.py --audit-all --root .
+```
+
+Each audit prints compact JSON with `valid`, `checked`, and `first_break`. The process exits `0` when the selected scope is valid and `1` when malformed or tampered protected data is detected. Legacy events and pre-checksum transaction journals remain readable, so audit adoption is backward-compatible.
+
 ## Design rules
 1. State is small and inspectable.
 2. Events are append-only evidence.
