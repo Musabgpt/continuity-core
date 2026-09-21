@@ -83,4 +83,18 @@ class ContinuityTests(unittest.TestCase):
             path=root/"continuity/state.json"; state=json.loads(path.read_text(encoding="utf-8")); state["revision"]=-1; path.write_text(json.dumps(state),encoding="utf-8")
             r=self.run_cli(root,"validate"); self.assertNotEqual(r.returncode,0); self.assertIn("revision",r.stdout)
 
+    def test_expected_revision_rejects_stale_writer_without_side_effects(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup_cli(root)
+            self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
+            self.assertEqual(self.run_cli(root,"event","note","fresh","--expect-revision","0").returncode,0)
+            state_before=(root/"continuity/state.json").read_text(encoding="utf-8")
+            events_before=(root/"continuity/events.jsonl").read_text(encoding="utf-8")
+            stale=self.run_cli(root,"event","failure","stale write","--expect-revision","0")
+            self.assertNotEqual(stale.returncode,0); self.assertIn("Revision conflict",stale.stderr)
+            self.assertEqual((root/"continuity/state.json").read_text(encoding="utf-8"),state_before)
+            self.assertEqual((root/"continuity/events.jsonl").read_text(encoding="utf-8"),events_before)
+            self.assertEqual(self.run_cli(root,"next","safe","--expect-revision","1").returncode,0)
+            state=json.loads((root/"continuity/state.json").read_text(encoding="utf-8")); self.assertEqual(state["revision"],2); self.assertEqual(state["next_action"],"safe")
+
 if __name__=="__main__": unittest.main()
