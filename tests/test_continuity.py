@@ -97,4 +97,19 @@ class ContinuityTests(unittest.TestCase):
             self.assertEqual(self.run_cli(root,"next","safe","--expect-revision","1").returncode,0)
             state=json.loads((root/"continuity/state.json").read_text(encoding="utf-8")); self.assertEqual(state["revision"],2); self.assertEqual(state["next_action"],"safe")
 
+    def test_new_events_emit_verifiable_hash_chain(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup_cli(root)
+            self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
+            self.assertEqual(self.run_cli(root,"event","note","one").returncode,0)
+            self.assertEqual(self.run_cli(root,"event","note","two").returncode,0)
+            rows=[json.loads(x) for x in (root/"continuity/events.jsonl").read_text(encoding="utf-8").splitlines()]
+            self.assertTrue(all("chain_hash" in row and "prev_hash" in row for row in rows))
+            self.assertEqual(rows[0]["prev_hash"],"GENESIS")
+            self.assertEqual(rows[1]["prev_hash"],rows[0]["chain_hash"])
+            verifier=root/"continuity_integrity.py"
+            verifier.write_text(Path(__file__).resolve().parents[1].joinpath("continuity_integrity.py").read_text(encoding="utf-8"),encoding="utf-8")
+            r=subprocess.run([sys.executable,str(verifier),"--root",str(root)],text=True,capture_output=True)
+            self.assertEqual(r.returncode,0,r.stderr)
+
 if __name__=="__main__": unittest.main()
