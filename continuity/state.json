@@ -11,8 +11,10 @@
   ],
   "decisions": [
     "Canonical current state is continuity/state.json",
-    "History is append-only continuity/events.jsonl"
+    "History is append-only continuity/events.jsonl",
+    "Integrity validation is a first-class command and must fail closed on malformed state or events.",
+    "Every push and pull request is intended to run unit tests plus continuity validation in GitHub Actions."
   ],
-  "next_action": "Run the CLI tests and extend only when a real continuity failure is observed.",
-  "updated_at": "2026-09-21T00:00:00Z"
+  "next_action": "Investigate why the newly added GitHub Actions workflow has not produced a run, then add deterministic handoff export and schema migration support.",
+  "updated_at": "2026-09-21T01:45:00Z"
 }
