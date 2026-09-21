@@ -9,3 +9,6 @@
 {"ts":"2026-09-21T03:38:00Z","type":"success","message":"Verified migration test workflow run 35558149939 completed successfully."}
 {"ts":"2026-09-21T04:36:00Z","type":"success","message":"Added optimistic revision preconditions to event and next mutations; stale writers are rejected before state or event side effects."}
 {"ts":"2026-09-21T04:36:00Z","type":"note","message":"CI run 35561582654 for stale-writer regression coverage was still in progress when last checked; final result intentionally not claimed yet."}
+{"ts":"2026-09-21T05:35:00Z","type":"success","message":"Verified stale-writer CI run 35561582654 completed successfully."}
+{"ts":"2026-09-21T05:35:00Z","type":"success","message":"Added durable transaction journal, atomic state replacement, fsync-backed event append, transaction IDs, and idempotent recovery for interrupted logical mutations."}
+{"ts":"2026-09-21T05:35:00Z","type":"note","message":"CI run 35565040277 for crash-recovery implementation was still in progress when last checked; final result intentionally not claimed yet."}
