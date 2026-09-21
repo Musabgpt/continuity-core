@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "type": "implementation_evidence",
+  "created_at": "2026-09-21T23:34:24Z",
+  "scope": "transaction checksum validation",
+  "changes": [
+    "Recovery rejects non-string checksum values with a stable error.",
+    "Recovery rejects checksum values that are not exactly 64 lowercase hexadecimal characters.",
+    "Standalone audit emits matching deterministic first_break reasons without mutation.",
+    "README documents validation order and stable recovery error contract.",
+    "Regression tests cover non-string and malformed-format checksums and byte-for-byte non-mutation."
+  ],
+  "commits": [
+    "deb00d4b486725ee39a34739ebcb5418c8d1de3e",
+    "33f3c465f88799ee08e9d7b7de2b1ec1762545ba",
+    "82a825d2705b51d4c33ea33d124382cb8705226f",
+    "3464bea3b389e07eb71deb1bfabdfb7dbed08a81"
+  ],
+  "verification": {
+    "local": "Not executed in this automation environment; GitHub Actions is the authoritative repository test path.",
+    "ci": "Pending verification for the listed commits; no success claim is made yet."
+  },
+  "next_action": "Check GitHub Actions for the listed commits, record any failure evidence, and only then select the next mutation/recovery hardening step."
+}
