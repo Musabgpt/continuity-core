@@ -53,6 +53,17 @@ class IntegrityTests(unittest.TestCase):
             (root/"continuity/events.jsonl").write_text(json.dumps(row)+"\n", encoding="utf-8")
             r=self.execute(root); self.assertNotEqual(r.returncode, 0); self.assertIn("hash mismatch", r.stdout)
 
+    def test_orphaned_event_chain_is_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            row={"type":"note","message":"ok","prev_hash":"orphan"}
+            material=dict(row)
+            row["chain_hash"] = __import__("hashlib").sha256(json.dumps(material, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+            (root/"continuity/events.jsonl").write_text(json.dumps(row)+"\n", encoding="utf-8")
+            r=self.execute(root, "--audit")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertEqual(json.loads(r.stdout)["first_break"]["reason"], "event chain does not start at GENESIS")
+
     def test_audit_reports_first_broken_line_without_mutation(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d); self.setup(root)
