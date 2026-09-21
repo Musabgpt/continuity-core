@@ -51,6 +51,11 @@ def audit_transaction(path):
         return {"valid": False, "checked": 1, "first_break": {"line": 1, "reason": "transaction journal shape is invalid"}}
     return {"valid": True, "checked": 1, "first_break": None}
 
+def audit_all(root):
+    events = audit_events(root/"continuity/events.jsonl")
+    transaction = audit_transaction(root/"continuity/transaction.json")
+    return {"valid": events["valid"] and transaction["valid"], "events": events, "transaction": transaction}
+
 def verify_events(path):
     audit = audit_events(path)
     return [] if audit["valid"] else [f"{audit['first_break']['reason']} at line {audit['first_break']['line']}"]
@@ -60,7 +65,7 @@ def verify_transaction(path):
     return [] if audit["valid"] else [f"{audit['first_break']['reason']} at line {audit['first_break']['line']}"]
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--root", default="."); p.add_argument("--audit", action="store_true"); p.add_argument("--audit-transaction", action="store_true")
+    p=argparse.ArgumentParser(); p.add_argument("--root", default="."); p.add_argument("--audit", action="store_true"); p.add_argument("--audit-transaction", action="store_true"); p.add_argument("--audit-all", action="store_true")
     args=p.parse_args(); root=Path(args.root)
     if args.audit:
         result = audit_events(root/"continuity/events.jsonl")
@@ -68,6 +73,10 @@ def main():
         return 0 if result["valid"] else 1
     if args.audit_transaction:
         result = audit_transaction(root/"continuity/transaction.json")
+        print(json.dumps(result, sort_keys=True, separators=(",", ":")))
+        return 0 if result["valid"] else 1
+    if args.audit_all:
+        result = audit_all(root)
         print(json.dumps(result, sort_keys=True, separators=(",", ":")))
         return 0 if result["valid"] else 1
     errors=verify_events(root/"continuity/events.jsonl")+verify_transaction(root/"continuity/transaction.json")
