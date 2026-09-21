@@ -50,6 +50,23 @@ A broken aggregate audit identifies the earliest failing scope without modifying
 
 The top-level `first_break` is selected deterministically from the first invalid domain in audit order (`events`, then `transaction`). Existing command names, legacy fields, and exit codes remain unchanged.
 
+### Transaction recovery error contract
+New checksum-bearing transaction journals are validated in this order:
+
+1. `txid`, `state`, and `event` must have the expected types.
+2. `checksum` must be a string.
+3. `checksum` must be exactly 64 lowercase hexadecimal characters.
+4. The checksum must match the canonical transaction material.
+
+Recovery fails closed before changing `continuity/state.json` or `continuity/events.jsonl`. The stable diagnostics are:
+
+- `Transaction journal shape invalid: <field> must be <type>.`
+- `Transaction journal checksum invalid: checksum must be a string.`
+- `Transaction journal checksum invalid: checksum must be 64 lowercase hex characters.`
+- `Transaction journal checksum mismatch; refusing recovery.`
+
+The standalone audit reports the same conditions as machine-readable `first_break.reason` values without mutating files.
+
 ## Design rules
 1. State is small and inspectable.
 2. Events are append-only evidence.
