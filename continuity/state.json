@@ -13,8 +13,9 @@
     "Canonical current state is continuity/state.json",
     "History is append-only continuity/events.jsonl",
     "Integrity validation is a first-class command and must fail closed on malformed state or events.",
-    "Every push and pull request is intended to run unit tests plus continuity validation in GitHub Actions."
+    "Every push and pull request is intended to run unit tests plus continuity validation in GitHub Actions.",
+    "Machine-readable handoffs use canonical compact JSON without volatile timestamps and include up to five recent failures."
   ],
-  "next_action": "Investigate why the newly added GitHub Actions workflow has not produced a run, then add deterministic handoff export and schema migration support.",
-  "updated_at": "2026-09-21T01:45:00Z"
+  "next_action": "Verify CI run 35554749652 completes successfully, then design backward-compatible schema migration before introducing schema version 2.",
+  "updated_at": "2026-09-21T02:37:00Z"
 }
