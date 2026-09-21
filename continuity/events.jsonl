@@ -27,3 +27,6 @@
 {"ts":"2026-09-21T10:36:05Z","type":"success","message":"Preserved backward compatibility: pre-checksum journals remain readable by the standalone integrity verifier and by the recovery path."}
 {"ts":"2026-09-21T10:36:05Z","type":"success","message":"Verified CI run 35584292045 for the checksummed-journal implementation completed successfully."}
 {"ts":"2026-09-21T10:36:05Z","type":"note","message":"Documentation/evidence commit CI run 35584325536 was queued when checked; its conclusion remains unverified."}
+{"ts":"2026-09-21T11:35:25Z","type":"success","message":"Added optional prev_hash/chain_hash emission to new event records; legacy events remain readable and the standalone verifier can validate the chain."}
+{"ts":"2026-09-21T11:35:25Z","type":"success","message":"Added regression coverage proving new events form a verifiable chain and remain compatible with continuity_integrity.py."}
+{"ts":"2026-09-21T11:35:25Z","type":"note","message":"CI result for the hash-chain change was not yet available in this run; success remains unclaimed until GitHub reports it."}
