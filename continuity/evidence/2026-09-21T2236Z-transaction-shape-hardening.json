@@ -1,0 +1,19 @@
+{
+  "scope": "transaction recovery and standalone integrity audit",
+  "implemented": [
+    "Recovery validates txid as str, state as object, and event as object before checksum or mutation.",
+    "Standalone audit reports deterministic field-specific shape diagnostics under schema_version 1.",
+    "Regression coverage asserts fail-closed recovery and byte-for-byte preservation of state and events."
+  ],
+  "commits": [
+    "92cac7e3eeeb1fbee9dfbcbc398511e7d89e5313",
+    "737b408cdbbda71c07e70b3a23221534f08f4a14",
+    "04a6d4d4df565ab068889d900e4db1ccc5e814f9",
+    "813c5d2d99a788f0c3690c70d4b7cbe4b3f49409"
+  ],
+  "verification": {
+    "github_actions": "not yet visible for the recording commit; do not claim green CI",
+    "local_execution": "not available through the repository connector in this run"
+  },
+  "next_action": "Verify CI, then harden checksum type validation and document the stable recovery error contract."
+}
