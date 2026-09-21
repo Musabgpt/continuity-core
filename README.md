@@ -27,7 +27,28 @@ python continuity_integrity.py --audit-transaction --root .
 python continuity_integrity.py --audit-all --root .
 ```
 
-Each audit prints compact JSON with `valid`, `checked`, and `first_break`. The process exits `0` when the selected scope is valid and `1` when malformed or tampered protected data is detected. Legacy events and pre-checksum transaction journals remain readable, so audit adoption is backward-compatible.
+Each audit prints compact JSON with `schema_version`, `valid`, `checked`, and `first_break`. The process exits `0` when the selected scope is valid and `1` when malformed or tampered protected data is detected. Legacy events and pre-checksum transaction journals remain readable, so audit adoption is backward-compatible.
+
+### Versioned output examples
+A valid event-chain audit is deterministic and self-describing:
+
+```json
+{"checked":3,"first_break":null,"schema_version":1,"valid":true}
+```
+
+A broken aggregate audit identifies the earliest failing scope without modifying either file:
+
+```json
+{
+  "events": {"checked": 4, "first_break": {"line": 4, "reason": "event hash mismatch"}, "schema_version": 1, "valid": false},
+  "first_break": {"line": 4, "reason": "event hash mismatch", "scope": "events"},
+  "schema_version": 1,
+  "transaction": {"checked": 1, "first_break": null, "schema_version": 1, "valid": true},
+  "valid": false
+}
+```
+
+The top-level `first_break` is selected deterministically from the first invalid domain in audit order (`events`, then `transaction`). Existing command names, legacy fields, and exit codes remain unchanged.
 
 ## Design rules
 1. State is small and inspectable.
