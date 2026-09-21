@@ -29,9 +29,10 @@
     "Transaction-journal audit uses the same stable valid/checked/first_break schema and remains non-mutating.",
     "A CI regression is not considered resolved until the corrected test suite reports success.",
     "Aggregate audit output must report event and transaction diagnostics together while preserving legacy command behavior.",
-    "Regression fixtures must write the intended corrupted bytes before invoking an audit command; passing tests must exercise the claimed failure mode."
+    "Regression fixtures must write the intended corrupted bytes before invoking an audit command; passing tests must exercise the claimed failure mode.",
+    "Integrity audit exit codes are documented: 0 for valid selected scope and 1 for malformed or tampered protected data."
   ],
-  "next_action": "Verify corrective CI for commit 9f6254be83d117ecc5556292578b7fbc0ca16cfa; if green, add documented exit-code semantics and a clean-project aggregate-audit regression.",
-  "revision": 14,
+  "next_action": "Verify the corrective CI for commit 774d6bc905350a81ab91946ac813c1b1e78d2efe and the clean-audit/documentation CI that follows; only then claim the aggregate audit milestone complete.",
+  "revision": 15,
   "updated_at": "2026-09-21T14:34:42Z"
 }
