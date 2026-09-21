@@ -36,9 +36,10 @@
     "CI run 35626854032 completed successfully for the versioned audit implementation and its regression suite.",
     "Schema-versioned audit examples belong in README.md and must show deterministic valid and broken aggregate outputs without implying runtime verification.",
     "Contract tests must lock the documented audit schema keys and serialization order before further audit changes.",
-    "CI run 35639287923 completed successfully for the contract-test implementation."
+    "CI run 35639287923 completed successfully for the contract-test implementation.",
+    "Protected event hash fields must be strings, and chain_hash must be exactly 64 lowercase hexadecimal characters before link or digest validation."
   ],
-  "next_action": "Verify the evidence-only history update run 35639321312; if green, inspect remaining continuity gaps and choose the next hardening step without changing legacy audit behavior.",
-  "revision": 22,
-  "updated_at": "2026-09-21T18:34:07Z"
+  "next_action": "Run and verify CI for the strict protected-event hash-field hardening; if green, document the new stable diagnostics and inspect the mutation/recovery boundary for the next evidence-backed gap.",
+  "revision": 23,
+  "updated_at": "2026-09-21T20:32:46Z"
 }
