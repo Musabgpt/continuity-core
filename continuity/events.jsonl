@@ -33,3 +33,7 @@
 {"ts":"2026-09-21T12:36:41Z","type":"success","message":"Added non-mutating --audit mode to continuity_integrity.py; it reports the first broken event-chain link with stable JSON fields and never rewrites project files."}
 {"ts":"2026-09-21T12:36:41Z","type":"success","message":"Added regression coverage proving audit diagnostics identify the first broken line and preserve the original events file byte-for-byte."}
 {"ts":"2026-09-21T12:36:41Z","type":"note","message":"CI run 35595050050 for the audit implementation was in progress when last checked; its conclusion remains unverified."}
+{"ts":"2026-09-21T12:32:32Z","type":"success","message":"Verified CI run 35595050050 completed successfully for the non-mutating event-chain audit implementation."}
+{"ts":"2026-09-21T12:32:32Z","type":"success","message":"Added --audit-transaction with the same stable valid/checked/first_break JSON schema; protected journal checksum mismatches and malformed journals are reported without mutation, while legacy journals remain readable."}
+{"ts":"2026-09-21T12:32:32Z","type":"success","message":"Added regression coverage for stable transaction-audit diagnostics and byte-for-byte preservation of the journal."}
+{"ts":"2026-09-21T12:32:32Z","type":"note","message":"CI for commits 78353ab9d5c4283a2df9350fc13ed031588c1ad7, 922297e8760f0063d7cadf1cf09aa88ea65fe1b7, and f393808bd4a92479b75cc33ce8c60f41538a58c5 was not yet verified in this run; success remains unclaimed until GitHub reports it."}
