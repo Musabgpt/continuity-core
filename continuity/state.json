@@ -32,9 +32,10 @@
     "Regression fixtures must write the intended corrupted bytes before invoking an audit command; passing tests must exercise the claimed failure mode.",
     "Integrity audit exit codes are documented: 0 for valid selected scope and 1 for malformed or tampered protected data.",
     "A protected event chain must begin at GENESIS; orphaned first links are invalid even when their individual hash matches.",
-    "Audit diagnostics use schema version 1 and aggregate first_break selects the earliest available domain diagnostic without changing legacy exit codes."
+    "Audit diagnostics use schema version 1 and aggregate first_break selects the earliest available domain diagnostic without changing legacy exit codes.",
+    "CI run 35626854032 completed successfully for the versioned audit implementation and its regression suite."
   ],
-  "next_action": "Verify the versioned aggregate-audit implementation in GitHub Actions; if green, add README examples for schema-versioned output and then select the next highest-value continuity hardening step.",
-  "revision": 18,
+  "next_action": "Verify the pending evidence-only CI run for the final append-only history update; if green, add README examples for schema-versioned output and then select the next highest-value continuity hardening step.",
+  "revision": 19,
   "updated_at": "2026-09-21T17:36:36Z"
 }
