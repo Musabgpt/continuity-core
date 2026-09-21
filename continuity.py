@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, json, os, uuid
+import argparse, hashlib, json, os, uuid
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -9,12 +9,13 @@ DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DI
 LATEST_SCHEMA=2; SUPPORTED_SCHEMAS={1,2}
 
 def now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
+def canonical(value): return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(",",":"))
+def digest(value): return hashlib.sha256(canonical(value).encode("utf-8")).hexdigest()
 
 @contextmanager
 def project_lock():
     """Cross-platform advisory process lock. The lock file is intentionally persistent."""
-    DIR.mkdir(parents=True,exist_ok=True)
-    f=LOCK.open("a+b")
+    DIR.mkdir(parents=True,exist_ok=True); f=LOCK.open("a+b")
     try:
         if os.name=="nt":
             import msvcrt
@@ -57,34 +58,34 @@ def append_row(row):
     with EVENTS.open("a",encoding="utf-8") as f:
         f.write(json.dumps(row,ensure_ascii=False,separators=(",",":"))+"\n"); f.flush(); os.fsync(f.fileno())
 
+def verify_tx_checksum(tx):
+    checksum=tx.get("checksum")
+    if checksum is None: return
+    material={"txid":tx.get("txid"),"state":tx.get("state"),"event":tx.get("event")}
+    if checksum!=digest(material): raise SystemExit("Transaction journal checksum mismatch; refusing recovery.")
+
 def recover_unlocked():
     if not TXN.exists(): return False
-    tx=json.loads(TXN.read_text(encoding="utf-8")); txid=tx["txid"]
+    tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_checksum(tx); txid=tx["txid"]
     if txid not in event_ids(): append_row(tx["event"])
-    atomic_text(STATE,json.dumps(tx["state"],indent=2,ensure_ascii=False)+"\n")
-    TXN.unlink(); return True
+    atomic_text(STATE,json.dumps(tx["state"],indent=2,ensure_ascii=False)+"\n"); TXN.unlink(); return True
 
 def load_state_unlocked(): recover_unlocked(); return raw_state()
-
 def load_state():
     with project_lock(): return load_state_unlocked()
-
 def save_state_unlocked(s):
     s["updated_at"]=now(); atomic_text(STATE,json.dumps(s,indent=2,ensure_ascii=False)+"\n")
-
 def make_event(kind,message,why=None,txid=None):
     row={"ts":now(),"type":kind,"message":message}
     if why: row["why"]=why
     if txid: row["txid"]=txid
     return row
-
 def append_event(kind,message,why=None): append_row(make_event(kind,message,why))
 
 def transact_unlocked(s,kind,message,why=None):
     txid=str(uuid.uuid4()); s["updated_at"]=now(); row=make_event(kind,message,why,txid)
-    tx={"txid":txid,"state":s,"event":row}
-    atomic_text(TXN,json.dumps(tx,ensure_ascii=False,separators=(",",":"))+"\n")
-    recover_unlocked()
+    material={"txid":txid,"state":s,"event":row}; tx={**material,"checksum":digest(material)}
+    atomic_text(TXN,json.dumps(tx,ensure_ascii=False,separators=(",",":"))+"\n"); recover_unlocked()
 
 def read_events_unlocked():
     recover_unlocked()
@@ -103,7 +104,6 @@ def init(args):
 def require_latest(s):
     v=s.get("schema_version")
     if v!=LATEST_SCHEMA: raise SystemExit(f"State schema {v} is read-compatible but not writable; run: python continuity.py migrate")
-
 def require_revision(s,expected):
     if expected is not None and s["revision"]!=expected: raise SystemExit(f"Revision conflict: expected {expected}, current {s['revision']}. Reload state before writing.")
 
@@ -150,14 +150,12 @@ def migrate(_):
         if v not in SUPPORTED_SCHEMAS: print(f"Cannot migrate unsupported schema_version {v}"); return 1
         if v==LATEST_SCHEMA: print(f"Already at schema_version {LATEST_SCHEMA}"); return 0
         if v==1:
-            s["schema_version"]=2; s["revision"]=0; transact_unlocked(s,"success","Migrated state schema from v1 to v2.","v2 adds a monotonic revision counter for stale-state detection.")
-            print("Migrated schema_version 1 -> 2"); return 0
+            s["schema_version"]=2; s["revision"]=0; transact_unlocked(s,"success","Migrated state schema from v1 to v2.","v2 adds a monotonic revision counter for stale-state detection."); print("Migrated schema_version 1 -> 2"); return 0
     return 1
 
 def handoff_payload():
     with project_lock():
-        s=load_state_unlocked(); events=read_events_unlocked()
-        failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]
+        s=load_state_unlocked(); events=read_events_unlocked(); failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]
         p={"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],"constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,"next_action":s.get("next_action")}
         if s["schema_version"]>=2: p["revision"]=s["revision"]
         return p
@@ -168,10 +166,8 @@ def handoff(args):
     print(f"# {p['project']} — handoff\nGoal: {p['goal']}\nStatus: {p['status']}")
     if "revision" in p: print(f"Revision: {p['revision']}")
     if p["constraints"]: print("Constraints: "+"; ".join(p["constraints"]))
-    if p["decisions"]:
-        print("Decisions:"); [print("- "+x) for x in p["decisions"]]
-    if p["recent_failures"]:
-        print("Recent failures:"); [print("- "+x["message"]+(" — "+x["why"] if x.get("why") else "")) for x in p["recent_failures"]]
+    if p["decisions"]: print("Decisions:"); [print("- "+x) for x in p["decisions"]]
+    if p["recent_failures"]: print("Recent failures:"); [print("- "+x["message"]+(" — "+x["why"] if x.get("why") else "")) for x in p["recent_failures"]]
     print("Next action: "+(p.get("next_action") or "UNSET")); return 0
 
 def build_parser():
