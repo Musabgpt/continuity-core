@@ -12,3 +12,7 @@
 {"ts":"2026-09-21T05:35:00Z","type":"success","message":"Verified stale-writer CI run 35561582654 completed successfully."}
 {"ts":"2026-09-21T05:35:00Z","type":"success","message":"Added durable transaction journal, atomic state replacement, fsync-backed event append, transaction IDs, and idempotent recovery for interrupted logical mutations."}
 {"ts":"2026-09-21T05:35:00Z","type":"note","message":"CI run 35565040277 for crash-recovery implementation was still in progress when last checked; final result intentionally not claimed yet."}
+{"ts":"2026-09-21T06:34:00Z","type":"success","message":"Verified the prior crash-recovery evidence workflow run 35565074417 completed successfully."}
+{"ts":"2026-09-21T06:34:00Z","type":"success","message":"Added a cross-platform standard-library interprocess lock around recovery and mutation critical sections; the code-only CI run 35569016096 completed successfully."}
+{"ts":"2026-09-21T06:34:00Z","type":"success","message":"Added explicit regression tests for recovery after journal-only and event-before-state crash points plus two-process stale-writer serialization."}
+{"ts":"2026-09-21T06:34:00Z","type":"note","message":"CI run 35569031916 for the new crash-point and concurrency tests was still in progress when last checked; final result intentionally not claimed yet."}
