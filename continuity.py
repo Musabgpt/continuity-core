@@ -47,6 +47,34 @@ def set_next(args):
     s=load_state(); s["next_action"]=args.action; save_state(s)
     append_event("note","Next action set: "+args.action)
 
+def validate(_):
+    errors=[]
+    try:
+        s=load_state()
+    except (SystemExit, json.JSONDecodeError) as exc:
+        print("INVALID: "+str(exc)); return 1
+    required={"schema_version":int,"project":str,"goal":str,"status":str,"constraints":list,"decisions":list,"next_action":(str,type(None)),"updated_at":str}
+    for key,typ in required.items():
+        if key not in s: errors.append("missing state field: "+key)
+        elif not isinstance(s[key],typ): errors.append("wrong type for state field: "+key)
+    if isinstance(s.get("project"),str) and not s["project"].strip(): errors.append("project is empty")
+    if isinstance(s.get("goal"),str) and not s["goal"].strip(): errors.append("goal is empty")
+    if isinstance(s.get("constraints"),list) and not all(isinstance(x,str) and x.strip() for x in s["constraints"]): errors.append("constraints must be non-empty strings")
+    if isinstance(s.get("decisions"),list) and not all(isinstance(x,str) and x.strip() for x in s["decisions"]): errors.append("decisions must be non-empty strings")
+    if EVENTS.exists():
+        for n,line in enumerate(EVENTS.read_text(encoding="utf-8").splitlines(),1):
+            try: row=json.loads(line)
+            except json.JSONDecodeError: errors.append(f"invalid event JSON at line {n}"); continue
+            if row.get("type") not in {"decision","success","failure","note"}: errors.append(f"invalid event type at line {n}")
+            if not isinstance(row.get("message"),str) or not row["message"].strip(): errors.append(f"invalid event message at line {n}")
+    else: errors.append("events file is missing")
+    if errors:
+        print("INVALID")
+        for e in errors: print("- "+e)
+        return 1
+    print("VALID")
+    return 0
+
 def handoff(_):
     s=load_state()
     print(f"# {s['project']} — handoff")
@@ -67,7 +95,8 @@ def build_parser():
     e=sp.add_parser("event"); e.add_argument("kind",choices=["decision","success","failure","note"]); e.add_argument("message"); e.add_argument("--why"); e.set_defaults(func=event)
     n=sp.add_parser("next"); n.add_argument("action"); n.set_defaults(func=set_next)
     h=sp.add_parser("handoff"); h.set_defaults(func=handoff)
+    v=sp.add_parser("validate"); v.set_defaults(func=validate)
     return p
 
 if __name__=="__main__":
-    a=build_parser().parse_args(); a.func(a)
+    a=build_parser().parse_args(); result=a.func(a); raise SystemExit(result or 0)
