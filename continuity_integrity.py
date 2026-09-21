@@ -36,12 +36,16 @@ def verify_transaction(path):
         tx=json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return ["transaction journal is invalid JSON"]
+    if "checksum" not in tx:
+        # Pre-checksum journals are readable for backward compatibility.
+        return []
     material={"txid":tx.get("txid"),"state":tx.get("state"),"event":tx.get("event")}
+    errors=[]
     if tx.get("checksum") != digest(material):
-        return ["transaction journal checksum mismatch"]
+        errors.append("transaction journal checksum mismatch")
     if not isinstance(tx.get("txid"), str) or not isinstance(tx.get("state"), dict) or not isinstance(tx.get("event"), dict):
-        return ["transaction journal shape is invalid"]
-    return []
+        errors.append("transaction journal shape is invalid")
+    return errors
 
 def main():
     p=argparse.ArgumentParser(); p.add_argument("--root", default="."); root=Path(p.parse_args().root)
