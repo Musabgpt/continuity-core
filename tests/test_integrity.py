@@ -52,6 +52,15 @@ class IntegrityTests(unittest.TestCase):
             self.assertEqual(payload["schema_version"], 1)
             self.assertEqual(payload["first_break"], {"scope":"events","line":1,"reason":"event hash mismatch"})
 
+    def test_versioned_audit_contract_keys_and_order(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            r=self.execute(root, "--audit-all")
+            self.assertEqual(r.returncode, 0, r.stdout+r.stderr)
+            self.assertEqual(list(json.loads(r.stdout)), ["events", "first_break", "schema_version", "transaction", "valid"])
+            self.assertEqual(list(json.loads(r.stdout)["events"]), ["checked", "first_break", "schema_version", "valid"])
+            self.assertEqual(list(json.loads(r.stdout)["transaction"]), ["checked", "first_break", "schema_version", "valid"])
+
     def test_transaction_checksum_tampering_is_rejected(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d); self.setup(root)
