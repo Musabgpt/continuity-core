@@ -20,9 +20,11 @@
     "Mutations use a durable transaction journal with idempotent recovery so interrupted state/event writes converge to one logical commit.",
     "All recovery and mutation critical sections are serialized by a standard-library cross-platform interprocess advisory lock.",
     "A standalone integrity verifier audits transaction checksums and optional event hash chains without mutating project state.",
-    "CI failures are recorded as evidence and fixed before claiming the feature verified."
+    "CI failures are recorded as evidence and fixed before claiming the feature verified.",
+    "Pre-checksum transaction journals remain readable; new checksum enforcement can be introduced without breaking existing state.",
+    "The integrity verifier must distinguish legacy-readable data from tampered protected data."
   ],
-  "next_action": "Verify CI run 35573845754 after the test-runner fix; if green, integrate checksum creation and hash-chain emission into the mutating writer while preserving legacy-read compatibility.",
-  "revision": 5,
-  "updated_at": "2026-09-21T08:35:48Z"
+  "next_action": "Verify the newest CI run after the legacy-journal compatibility fix; if green, add checksum creation and optional hash-chain emission to the mutating writer with migration-safe tests.",
+  "revision": 6,
+  "updated_at": "2026-09-21T09:31:31Z"
 }
