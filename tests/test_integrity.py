@@ -64,4 +64,21 @@ class IntegrityTests(unittest.TestCase):
             self.assertEqual(json.loads(r.stdout), {"valid":False,"checked":1,"first_break":{"line":1,"reason":"transaction journal checksum mismatch"}})
             self.assertEqual(before, journal.read_text(encoding="utf-8"))
 
+    def test_aggregate_audit_reports_both_domains_without_mutation(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            row={"type":"note","message":"ok","prev_hash":"GENESIS","chain_hash":"bad"}
+            events=root/"continuity/events.jsonl"; before_events=events.read_text(encoding="utf-8")
+            material={"txid":"x","state":{"revision":1},"event":{"type":"note","message":"ok"}}
+            tx=dict(material); tx["checksum"]="0"*64
+            journal=root/"continuity/transaction.json"; journal.write_text(json.dumps(tx), encoding="utf-8"); before_tx=journal.read_text(encoding="utf-8")
+            events.write_text(json.dumps(row)+"\n", encoding="utf-8")
+            r=self.execute(root, "--audit-all")
+            payload=json.loads(r.stdout)
+            self.assertFalse(payload["valid"])
+            self.assertEqual(payload["events"]["first_break"]["reason"], "event hash mismatch")
+            self.assertEqual(payload["transaction"]["first_break"]["reason"], "transaction journal checksum mismatch")
+            self.assertEqual(events.read_text(encoding="utf-8"), json.dumps(row)+"\n")
+            self.assertEqual(journal.read_text(encoding="utf-8"), before_tx)
+
 if __name__=="__main__": unittest.main()
