@@ -25,6 +25,8 @@ def audit_events(path):
         if not protected:
             continue
         prev = row.get("prev_hash", "GENESIS")
+        if previous is None and prev != "GENESIS":
+            return {"valid": False, "checked": checked, "first_break": {"line": number, "reason": "event chain does not start at GENESIS"}}
         if previous is not None and prev != previous:
             return {"valid": False, "checked": checked, "first_break": {"line": number, "reason": "event chain break"}}
         material = dict(row)
