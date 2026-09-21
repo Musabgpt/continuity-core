@@ -35,4 +35,14 @@ class ContinuityTests(unittest.TestCase):
             self.assertNotIn("old failure",history)
             self.assertEqual(len(history.strip().splitlines()),1)
 
+    def test_validate_detects_corruption(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); root.joinpath("continuity.py").write_text(SOURCE.read_text(encoding="utf-8"),encoding="utf-8")
+            self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
+            self.assertEqual(self.run_cli(root,"validate").returncode,0)
+            (root/"continuity/events.jsonl").write_text("{broken}\n",encoding="utf-8")
+            r=self.run_cli(root,"validate")
+            self.assertNotEqual(r.returncode,0)
+            self.assertIn("invalid event JSON",r.stdout)
+
 if __name__=="__main__": unittest.main()
