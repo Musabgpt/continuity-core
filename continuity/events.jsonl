@@ -17,4 +17,6 @@
 {"ts":"2026-09-21T06:34:00Z","type":"success","message":"Added explicit regression tests for recovery after journal-only and event-before-state crash points plus two-process stale-writer serialization."}
 {"ts":"2026-09-21T06:34:00Z","type":"note","message":"CI run 35569031916 for the new crash-point and concurrency tests was still in progress when last checked; final result intentionally not claimed yet."}
 {"ts":"2026-09-21T08:35:48Z","type":"success","message":"Added standalone continuity_integrity.py verifier for transaction checksums and optional event hash-chain validation; legacy events remain readable and tampered journals are rejected."}
-{"ts":"2026-09-21T08:35:48Z","type":"note","message":"The verifier and its three regression tests are committed, but CI result for commit da88d2c42228638a81e6f832ed6dc64536923bc6 was not yet verified in this run."}
+{"ts":"2026-09-21T08:35:48Z","type":"failure","message":"CI run 35573802928 failed because tests/test_integrity.py overrode unittest.TestCase.run and received a TextTestResult instead of a temp-root path.","why":"The new test helper used the reserved unittest lifecycle method name run."}
+{"ts":"2026-09-21T08:35:48Z","type":"success","message":"Renamed the integrity test helper to execute; corrective commit d8f8c73146c7608fd20d653c981e94439862c53a started CI run 35573845754."}
+{"ts":"2026-09-21T08:35:48Z","type":"note","message":"CI run 35573845754 was queued at the end of this run; its conclusion remains unverified."}
