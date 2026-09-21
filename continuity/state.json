@@ -30,9 +30,10 @@
     "A CI regression is not considered resolved until the corrected test suite reports success.",
     "Aggregate audit output must report event and transaction diagnostics together while preserving legacy command behavior.",
     "Regression fixtures must write the intended corrupted bytes before invoking an audit command; passing tests must exercise the claimed failure mode.",
-    "Integrity audit exit codes are documented: 0 for valid selected scope and 1 for malformed or tampered protected data."
+    "Integrity audit exit codes are documented: 0 for valid selected scope and 1 for malformed or tampered protected data.",
+    "A protected event chain must begin at GENESIS; orphaned first links are invalid even when their individual hash matches."
   ],
-  "next_action": "Verify the corrective CI for commit 774d6bc905350a81ab91946ac813c1b1e78d2efe and the clean-audit/documentation CI that follows; only then claim the aggregate audit milestone complete.",
-  "revision": 15,
-  "updated_at": "2026-09-21T14:34:42Z"
+  "next_action": "Verify CI for commits ca1b04fbe84bd41fb122d4d866a684ed95d83fb5 and 4a10ea0e92d1d55dc6d9323cd06d0104d1008ef1; if green, add an explicit audit schema version and aggregate first_break summary without changing legacy exit codes.",
+  "revision": 16,
+  "updated_at": "2026-09-21T15:37:00Z"
 }
