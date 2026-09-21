@@ -17,6 +17,13 @@ class IntegrityTests(unittest.TestCase):
             root=Path(d); self.setup(root)
             r=self.execute(root); self.assertEqual(r.returncode, 0, r.stdout+r.stderr)
 
+    def test_pre_checksum_transaction_remains_readable(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            tx={"txid":"legacy","state":{"revision":1},"event":{"type":"note","message":"ok"}}
+            (root/"continuity/transaction.json").write_text(json.dumps(tx), encoding="utf-8")
+            r=self.execute(root); self.assertEqual(r.returncode, 0, r.stdout+r.stderr)
+
     def test_transaction_checksum_tampering_is_rejected(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d); self.setup(root)
