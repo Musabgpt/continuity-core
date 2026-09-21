@@ -30,6 +30,8 @@ def append_event(kind, message, why=None):
 def init(args):
     if STATE.exists() and not args.force:
         raise SystemExit("State already exists; use --force to replace it.")
+    if args.force and EVENTS.exists():
+        EVENTS.unlink()
     s={"schema_version":1,"project":args.project,"goal":args.goal,"status":"active",
        "constraints":[],"decisions":[],"next_action":None}
     save_state(s); append_event("success","Continuity state initialized.")
