@@ -45,3 +45,6 @@
 {"ts":"2026-09-21T14:34:42Z","type":"failure","message":"Verified CI run 35606853331 failed because test_audit_reports_first_broken_line_without_mutation created a tampered row in memory but did not write it to events.jsonl, so the audit correctly returned valid=true for the legacy fixture."}
 {"ts":"2026-09-21T14:34:42Z","type":"success","message":"Fixed the regression fixture in commit 9f6254be83d117ecc5556292578b7fbc0ca16cfa so the intended corrupted event bytes are written before --audit is invoked."}
 {"ts":"2026-09-21T14:34:42Z","type":"note","message":"Corrective CI for commit 9f6254be83d117ecc5556292578b7fbc0ca16cfa remains pending; success is intentionally unclaimed until GitHub reports it."}
+{"ts":"2026-09-21T14:35:30Z","type":"success","message":"Added a clean aggregate-audit regression asserting stable valid JSON, exit code 0, and byte-for-byte non-mutation for a valid project."}
+{"ts":"2026-09-21T14:35:30Z","type":"success","message":"Documented --audit, --audit-transaction, and --audit-all output and exit-code semantics in README.md."}
+{"ts":"2026-09-21T14:35:30Z","type":"note","message":"CI for commits 04757217c1f062c55c3511a156353b6a36ec2448 and 768e7c5438572b7817137c437825302c35e83814 remains unverified; success is intentionally unclaimed until GitHub reports it."}
