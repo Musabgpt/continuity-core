@@ -24,6 +24,19 @@ class IntegrityTests(unittest.TestCase):
             (root/"continuity/transaction.json").write_text(json.dumps(tx), encoding="utf-8")
             r=self.execute(root); self.assertEqual(r.returncode, 0, r.stdout+r.stderr)
 
+    def test_clean_aggregate_audit_is_valid_and_non_mutating(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup(root)
+            events=root/"continuity/events.jsonl"; before_events=events.read_text(encoding="utf-8")
+            r=self.execute(root, "--audit-all")
+            self.assertEqual(r.returncode, 0, r.stdout+r.stderr)
+            self.assertEqual(json.loads(r.stdout), {
+                "valid": True,
+                "events": {"valid": True, "checked": 1, "first_break": None},
+                "transaction": {"valid": True, "checked": 0, "first_break": None},
+            })
+            self.assertEqual(before_events, events.read_text(encoding="utf-8"))
+
     def test_transaction_checksum_tampering_is_rejected(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d); self.setup(root)
