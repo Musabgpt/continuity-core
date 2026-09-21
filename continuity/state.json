@@ -22,9 +22,10 @@
     "A standalone integrity verifier audits transaction checksums and optional event hash chains without mutating project state.",
     "CI failures are recorded as evidence and fixed before claiming the feature verified.",
     "Pre-checksum transaction journals remain readable; new checksum enforcement can be introduced without breaking existing state.",
-    "The integrity verifier must distinguish legacy-readable data from tampered protected data."
+    "The integrity verifier must distinguish legacy-readable data from tampered protected data.",
+    "New transaction journals are checksummed at creation and recovery fails closed on checksum mismatch."
   ],
-  "next_action": "Verify the newest CI run after the legacy-journal compatibility fix; if green, add checksum creation and optional hash-chain emission to the mutating writer with migration-safe tests.",
-  "revision": 6,
-  "updated_at": "2026-09-21T09:31:31Z"
+  "next_action": "Verify the CI run for checksum creation and recovery-tamper coverage; if green, add optional hash-chain emission to the event writer with migration-safe tests.",
+  "revision": 7,
+  "updated_at": "2026-09-21T10:36:05Z"
 }
