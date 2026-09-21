@@ -19,9 +19,10 @@
     "Mutating commands accept --expect-revision and reject stale writers before any state or event side effect.",
     "Mutations use a durable transaction journal with idempotent recovery so interrupted state/event writes converge to one logical commit.",
     "All recovery and mutation critical sections are serialized by a standard-library cross-platform interprocess advisory lock.",
-    "A standalone integrity verifier audits transaction checksums and optional event hash chains without mutating project state."
+    "A standalone integrity verifier audits transaction checksums and optional event hash chains without mutating project state.",
+    "CI failures are recorded as evidence and fixed before claiming the feature verified."
   ],
-  "next_action": "Verify the new integrity verifier in CI; if green, integrate checksum creation and hash-chain emission into the mutating writer while preserving legacy-read compatibility.",
-  "revision": 4,
+  "next_action": "Verify CI run 35573845754 after the test-runner fix; if green, integrate checksum creation and hash-chain emission into the mutating writer while preserving legacy-read compatibility.",
+  "revision": 5,
   "updated_at": "2026-09-21T08:35:48Z"
 }
