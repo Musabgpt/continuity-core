@@ -1,0 +1,13 @@
+{
+  "change": "Move transaction shape validation ahead of legacy checksum compatibility in the standalone integrity auditor.",
+  "observed_gap": "audit_transaction returned valid=true for a checksum-less journal before validating required txid/state/event fields, while recovery already rejected that malformed shape.",
+  "implementation_commit": "4f4f5095e30374b816d641333f3bb8e14b73cac6",
+  "regression_commit": "c8c50473d8f6d03d79d57828b0c7869e39263090",
+  "state_commit": "18c63a86b37aebd6806cdd6a4ebe843abbe434f4",
+  "verification": {
+    "local": "not executed in this automation turn",
+    "ci": "not yet verified; workflow lookup for the implementation commits is pending"
+  },
+  "expected_contract": "checksum-less journals remain readable only when txid is a string, state is an object, and event is an object; malformed shape returns schema_version=1 with a stable first_break reason and exit code 1.",
+  "next_action": "Check GitHub Actions for both implementation and regression commits, then decide whether continuity.py validate should call the same non-mutating integrity verifier or remain a separate state/event semantic validator."
+}
