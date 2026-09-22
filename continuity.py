@@ -3,22 +3,16 @@ import argparse, hashlib, json, os, uuid
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-
 from continuity_integrity import audit_all
-
 ROOT=Path(__file__).resolve().parent
 DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
 LATEST_SCHEMA=2; SUPPORTED_SCHEMAS={1,2}
-
 def configure_root(root):
     global ROOT, DIR, STATE, EVENTS, TXN, LOCK
-    ROOT=Path(root).resolve()
-    DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
-
+    ROOT=Path(root).resolve(); DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
 def now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
 def canonical(value): return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(",",":"))
 def digest(value): return hashlib.sha256(canonical(value).encode("utf-8")).hexdigest()
-
 def _stable_read_error(exc):
     if isinstance(exc, UnicodeDecodeError): return "continuity file encoding invalid"
     if isinstance(exc, json.JSONDecodeError): return "invalid JSON"
@@ -26,18 +20,13 @@ def _stable_read_error(exc):
     if isinstance(exc, PermissionError): return "continuity file permission denied"
     if isinstance(exc, OSError): return "continuity filesystem read failed"
     return "continuity read failed"
-
 def _stable_recovery_error(exc):
-    if isinstance(exc, (UnicodeDecodeError, json.JSONDecodeError, OSError)):
-        return _stable_read_error(exc)
-    if isinstance(exc, SystemExit):
+    if isinstance(exc,(UnicodeDecodeError,json.JSONDecodeError,OSError)): return _stable_read_error(exc)
+    if isinstance(exc,SystemExit):
         text=str(exc)
-        if text.startswith("Transaction journal"):
-            return text
-    if isinstance(exc, (TypeError, KeyError, AttributeError)):
-        return "transaction journal shape invalid"
+        if text.startswith("Transaction journal"): return text
+    if isinstance(exc,(TypeError,KeyError,AttributeError)): return "transaction journal shape invalid"
     return "transaction recovery failed"
-
 @contextmanager
 def project_lock():
     DIR.mkdir(parents=True,exist_ok=True); f=LOCK.open("a+b")
@@ -59,65 +48,56 @@ def project_lock():
                 import fcntl
                 fcntl.flock(f.fileno(),fcntl.LOCK_UN)
         finally: f.close()
-
 def atomic_text(path,text):
     path.parent.mkdir(parents=True,exist_ok=True); tmp=path.with_name(path.name+".tmp")
     with tmp.open("w",encoding="utf-8") as f: f.write(text); f.flush(); os.fsync(f.fileno())
     os.replace(tmp,path)
-
 def raw_state():
     if not STATE.exists(): raise SystemExit("State not initialized. Run: python continuity.py init --project NAME --goal GOAL")
-    return json.loads(STATE.read_text(encoding="utf-8"))
-
+    value=json.loads(STATE.read_text(encoding="utf-8"))
+    if not isinstance(value,dict): raise SystemExit("state payload must be an object")
+    return value
 def event_ids():
     if not EVENTS.exists(): return set()
     ids=set()
     for line in EVENTS.read_text(encoding="utf-8").splitlines():
         if line.strip():
             row=json.loads(line)
-            if row.get("txid"): ids.add(row["txid"])
+            if isinstance(row,dict) and row.get("txid"): ids.add(row["txid"])
     return ids
-
 def last_chain_hash():
     if not EVENTS.exists(): return "GENESIS"
     previous="GENESIS"
     for line in EVENTS.read_text(encoding="utf-8").splitlines():
         if line.strip():
             row=json.loads(line)
-            if row.get("chain_hash"): previous=row["chain_hash"]
+            if isinstance(row,dict) and row.get("chain_hash"): previous=row["chain_hash"]
     return previous
-
 def append_row(row):
     DIR.mkdir(parents=True,exist_ok=True)
     if "chain_hash" not in row:
         row=dict(row); row["prev_hash"]=last_chain_hash(); row["chain_hash"]=digest(row)
     with EVENTS.open("a",encoding="utf-8") as f:
         f.write(json.dumps(row,ensure_ascii=False,separators=(",",":"))+"\n"); f.flush(); os.fsync(f.fileno())
-
 def verify_tx_shape(tx):
+    if not isinstance(tx,dict): raise SystemExit("Transaction journal shape invalid: transaction must be object.")
     required={"txid":str,"state":dict,"event":dict}
-    for key, expected in required.items():
-        if key not in tx or not isinstance(tx[key], expected):
-            raise SystemExit(f"Transaction journal shape invalid: {key} must be {expected.__name__}.")
-
+    for key,expected in required.items():
+        if key not in tx or not isinstance(tx[key],expected): raise SystemExit(f"Transaction journal shape invalid: {key} must be {expected.__name__}.")
 def verify_tx_checksum(tx):
     checksum=tx.get("checksum")
     if checksum is None: return
-    if not isinstance(checksum, str): raise SystemExit("Transaction journal checksum invalid: checksum must be a string.")
-    if len(checksum) != 64 or any(char not in "0123456789abcdef" for char in checksum): raise SystemExit("Transaction journal checksum invalid: checksum must be 64 lowercase hex characters.")
+    if not isinstance(checksum,str): raise SystemExit("Transaction journal checksum invalid: checksum must be a string.")
+    if len(checksum)!=64 or any(char not in "0123456789abcdef" for char in checksum): raise SystemExit("Transaction journal checksum invalid: checksum must be 64 lowercase hex characters.")
     material={"txid":tx.get("txid"),"state":tx.get("state"),"event":tx.get("event")}
     if checksum!=digest(material): raise SystemExit("Transaction journal checksum mismatch; refusing recovery.")
-
 def recover_unlocked():
     if not TXN.exists(): return False
     try:
-        tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx)
-        txid=tx["txid"]
+        tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx); txid=tx["txid"]
         if txid not in event_ids(): append_row(tx["event"])
         atomic_text(STATE,json.dumps(tx["state"],indent=2,ensure_ascii=False)+"\n"); TXN.unlink(); return True
-    except (SystemExit, json.JSONDecodeError, UnicodeDecodeError, OSError, TypeError, KeyError, AttributeError) as exc:
-        raise SystemExit(_stable_recovery_error(exc))
-
+    except (SystemExit,json.JSONDecodeError,UnicodeDecodeError,OSError,TypeError,KeyError,AttributeError) as exc: raise SystemExit(_stable_recovery_error(exc))
 def load_state_unlocked(): recover_unlocked(); return raw_state()
 def load_state():
     with project_lock(): return load_state_unlocked()
@@ -132,7 +112,11 @@ def transact_unlocked(s,kind,message,why=None):
     txid=str(uuid.uuid4()); s["updated_at"]=now(); row=make_event(kind,message,why,txid); material={"txid":txid,"state":s,"event":row}; tx={**material,"checksum":digest(material)}; atomic_text(TXN,json.dumps(tx,ensure_ascii=False,separators=(",",":"))+"\n"); recover_unlocked()
 def read_events_unlocked():
     if not EVENTS.exists(): return []
-    return [json.loads(x) for x in EVENTS.read_text(encoding="utf-8").splitlines() if x.strip()]
+    try:
+        raw=EVENTS.read_text(encoding="utf-8")
+        return [json.loads(x) for x in raw.splitlines() if x.strip()]
+    except (UnicodeDecodeError,json.JSONDecodeError,PermissionError,OSError) as exc:
+        raise SystemExit(_stable_read_error(exc))
 def init(args):
     with project_lock():
         if STATE.exists() and not args.force: raise SystemExit("State already exists; use --force to replace it.")
@@ -160,8 +144,8 @@ def validate(_):
             if TXN.exists():
                 tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx); errors.append("pending transaction journal; recovery required")
             s=raw_state()
-        except (SystemExit,json.JSONDecodeError,KeyError,OSError,UnicodeDecodeError) as exc:
-            print("INVALID: "+(_stable_read_error(exc) if isinstance(exc, (UnicodeDecodeError, json.JSONDecodeError, OSError)) else _stable_recovery_error(exc))); return 1
+        except (SystemExit,json.JSONDecodeError,KeyError,OSError,UnicodeDecodeError,TypeError,AttributeError) as exc:
+            print("INVALID: "+(_stable_read_error(exc) if isinstance(exc,(UnicodeDecodeError,json.JSONDecodeError,OSError)) else _stable_recovery_error(exc))); return 1
         integrity=audit_all(ROOT)
         if not integrity["valid"]:
             first=integrity["first_break"]; errors.append("integrity audit failed: "+first["scope"]+" line "+str(first["line"])+": "+first["reason"])
@@ -177,10 +161,12 @@ def validate(_):
         if isinstance(s.get("decisions"),list) and not all(isinstance(x,str) and x.strip() for x in s["decisions"]): errors.append("decisions must be non-empty strings")
         if EVENTS.exists():
             try: event_lines=EVENTS.read_text(encoding="utf-8").splitlines()
-            except UnicodeDecodeError: errors.append("continuity file encoding invalid"); event_lines=[]
+            except (UnicodeDecodeError,PermissionError,OSError) as exc:
+                print("INVALID: "+_stable_read_error(exc)); return 1
             for n,line in enumerate(event_lines,1):
                 try: row=json.loads(line)
                 except json.JSONDecodeError: errors.append(f"invalid event JSON at line {n}"); continue
+                if not isinstance(row,dict): errors.append(f"invalid event record at line {n}"); continue
                 if row.get("type") not in {"decision","success","failure","note"}: errors.append(f"invalid event type at line {n}")
                 if not isinstance(row.get("message"),str) or not row["message"].strip(): errors.append(f"invalid event message at line {n}")
         else: errors.append("events file is missing")
@@ -197,14 +183,14 @@ def handoff_payload():
     with project_lock():
         if TXN.exists():
             try: tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx)
-            except (SystemExit, json.JSONDecodeError, UnicodeDecodeError, OSError, TypeError, KeyError, AttributeError) as exc: raise SystemExit(_stable_recovery_error(exc))
+            except (SystemExit,json.JSONDecodeError,UnicodeDecodeError,OSError,TypeError,KeyError,AttributeError) as exc: raise SystemExit(_stable_recovery_error(exc))
             raise SystemExit("Pending transaction journal; run a mutating command or recovery before requesting handoff.")
-        s=raw_state(); events=read_events_unlocked(); failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]; p={"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],"constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,"next_action":s.get("next_action")};
+        s=raw_state(); events=read_events_unlocked(); failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if isinstance(e,dict) and e.get("type")=="failure"][-5:]; p={"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],"constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,"next_action":s.get("next_action")}
         if s["schema_version"]>=2: p["revision"]=s["revision"]
         return p
 def handoff(args):
     try: p=handoff_payload()
-    except (UnicodeDecodeError, json.JSONDecodeError, OSError) as exc: raise SystemExit(_stable_read_error(exc))
+    except (UnicodeDecodeError,json.JSONDecodeError,OSError,TypeError,KeyError,AttributeError) as exc: raise SystemExit(_stable_read_error(exc) if isinstance(exc,(UnicodeDecodeError,json.JSONDecodeError,OSError)) else _stable_recovery_error(exc))
     if args.format=="json": print(json.dumps(p,ensure_ascii=False,sort_keys=True,separators=(",", ":"))); return 0
     print(f"# {p['project']} — handoff\nGoal: {p['goal']}\nStatus: {p['status']}")
     if "revision" in p: print(f"Revision: {p['revision']}")
