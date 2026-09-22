@@ -9,35 +9,43 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ValidateJsonEntrypointTests(unittest.TestCase):
-    def make_project(self, tmp, state):
+    def make_project(self, tmp, state, events='{"type":"success","message":"ok"}\n'):
         project = Path(tmp)
         (project / "continuity").mkdir()
         (project / "continuity" / "state.json").write_text(
             json.dumps(state) + "\n", encoding="utf-8"
         )
         (project / "continuity" / "events.jsonl").write_text(
-            '{"type":"success","message":"ok"}\n', encoding="utf-8"
+            events, encoding="utf-8"
         )
         return project
 
+    def run_validator(self, project):
+        script = ROOT / "continuity_validate_json.py"
+        return subprocess.run(
+            [sys.executable, str(script), "--root", str(project)],
+            cwd=ROOT, text=True, capture_output=True
+        )
+
+    def valid_state(self, **overrides):
+        state = {
+            "schema_version": 2,
+            "project": "demo",
+            "goal": "test",
+            "status": "active",
+            "constraints": [],
+            "decisions": [],
+            "next_action": None,
+            "updated_at": "2026-01-01T00:00:00Z",
+            "revision": 0,
+        }
+        state.update(overrides)
+        return state
+
     def test_valid_project_emits_stable_json_and_zero_exit(self):
         with tempfile.TemporaryDirectory() as tmp:
-            project = self.make_project(tmp, {
-                "schema_version": 2,
-                "project": "demo",
-                "goal": "test",
-                "status": "active",
-                "constraints": [],
-                "decisions": [],
-                "next_action": None,
-                "updated_at": "2026-01-01T00:00:00Z",
-                "revision": 0,
-            })
-            script = ROOT / "continuity_validate_json.py"
-            result = subprocess.run(
-                [sys.executable, str(script), "--root", str(project)],
-                cwd=ROOT, text=True, capture_output=True
-            )
+            project = self.make_project(tmp, self.valid_state())
+            result = self.run_validator(project)
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
             self.assertEqual(
@@ -48,27 +56,25 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
 
     def test_explicit_root_isolated_from_repository_state(self):
         with tempfile.TemporaryDirectory() as tmp:
-            project = self.make_project(tmp, {
-                "schema_version": 2,
-                "project": "",
-                "goal": "test",
-                "status": "active",
-                "constraints": [],
-                "decisions": [],
-                "next_action": None,
-                "updated_at": "2026-01-01T00:00:00Z",
-                "revision": 0,
-            })
-            script = ROOT / "continuity_validate_json.py"
-            result = subprocess.run(
-                [sys.executable, str(script), "--root", str(project)],
-                cwd=ROOT, text=True, capture_output=True
-            )
+            project = self.make_project(tmp, self.valid_state(project=""))
+            result = self.run_validator(project)
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
             self.assertFalse(payload["valid"])
-            self.assertIn("errors", payload)
             self.assertIn("wrong type for state field: project", payload["errors"])
+
+    def test_explicit_root_reads_events_from_target_project(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = self.make_project(
+                tmp,
+                self.valid_state(),
+                events='{"type":"unknown","message":"bad"}\n',
+            )
+            result = self.run_validator(project)
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload["valid"])
+            self.assertIn("invalid event type at line 1", payload["errors"])
 
 
 if __name__ == "__main__":
