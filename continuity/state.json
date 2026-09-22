@@ -64,9 +64,10 @@
     "Read-only snapshots must contain malformed non-object state/event payload failures behind a stable validation diagnostic instead of leaking type-dependent exceptions.",
     "Structured validation must reject non-object state payloads with a deterministic diagnostic before field access, preventing uncaught AttributeError and preserving non-mutating behavior.",
     "Structured validation must contain invalid UTF-8 in canonical continuity files with a stable diagnostic instead of leaking UnicodeDecodeError text.",
-    "Human-readable validate and handoff paths must contain invalid UTF-8 with the same stable diagnostic used by structured readers."
+    "Human-readable validate and handoff paths must contain invalid UTF-8 with the same stable diagnostic used by structured readers.",
+    "Mutating recovery must contain malformed transaction UTF-8 and related read failures behind deterministic diagnostics before any canonical file mutation."
   ],
-  "next_action": "Inspect the structured validator and recovery entrypoints for the same invalid-UTF-8 containment contract, then re-check CI when workflow/status data exists.",
-  "revision": 50,
-  "updated_at": "2026-09-22T21:37:00Z"
+  "next_action": "Re-check CI for the new recovery regression, then audit mutating entrypoints for the same stable diagnostic contract.",
+  "revision": 51,
+  "updated_at": "2026-09-22T22:34:00Z"
 }
