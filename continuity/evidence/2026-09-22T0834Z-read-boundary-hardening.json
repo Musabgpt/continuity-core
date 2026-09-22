@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "decision": "Remove implicit recovery from read-only event reads.",
+  "scope": [
+    "continuity.py read_events_unlocked",
+    "tests/test_read_boundary.py"
+  ],
+  "implementation_commit": "6f4df2a54bbdc9db73dd1ab779332299437ebde2",
+  "test_commit": "5523210877bed1c1ee027a6e08f8f9f6cea288b8",
+  "state_commit": "a773191f18b071b9ef3a9bd00fa1acf6c20718dd",
+  "verification": {
+    "local_test_run": "not executed in this automation turn",
+    "github_actions": "not yet observed for the new commits",
+    "claim": "Implementation and regression test were committed; CI verification remains pending."
+  },
+  "next_action": "Check workflow runs and combined status for the implementation and test commits; if green, inspect the remaining read-only entrypoints for implicit mutation and document the command boundary."
+}
