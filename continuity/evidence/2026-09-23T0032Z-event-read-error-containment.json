@@ -1,0 +1,19 @@
+{
+  "kind": "engineering_evidence",
+  "timestamp": "2026-09-23T00:32:00Z",
+  "scope": "human event-journal readers",
+  "change": "Contain PermissionError/OSError/JSON/UTF-8 failures from events.jsonl reads behind deterministic diagnostics in handoff and validate.",
+  "implementation_commit": "91fdf63c4594ed2efb1f682b31e399f1d5cc4507",
+  "test_commit": "9d776b6cedf84637f828a9cfd6d6a9c0f0df9cbb",
+  "verification": {
+    "local_tests": "not_run_in_automation",
+    "github_actions": "not_observed_in_this_run",
+    "status": "pending/unverified"
+  },
+  "safety": {
+    "repository_scope": "Musabgpt/continuity-core only",
+    "h33_accessed": false,
+    "external_changes": false
+  },
+  "next_action": "Re-check CI for commits 91fdf63c4594ed2efb1f682b31e399f1d5cc4507 and 9d776b6cedf84637f828a9cfd6d6a9c0f0df9cbb, then audit remaining mutating entrypoints for uncaught event journal read failures."
+}
