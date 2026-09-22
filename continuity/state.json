@@ -65,9 +65,10 @@
     "Structured validation must reject non-object state payloads with a deterministic diagnostic before field access, preventing uncaught AttributeError and preserving non-mutating behavior.",
     "Structured validation must contain invalid UTF-8 in canonical continuity files with a stable diagnostic instead of leaking UnicodeDecodeError text.",
     "Human-readable validate and handoff paths must contain invalid UTF-8 with the same stable diagnostic used by structured readers.",
-    "Mutating recovery must contain malformed transaction UTF-8 and related read failures behind deterministic diagnostics before any canonical file mutation."
+    "Mutating recovery must contain malformed transaction UTF-8 and related read failures behind deterministic diagnostics before any canonical file mutation.",
+    "Human-readable handoff and validate paths must contain event-journal permission, OS, JSON, UTF-8, and non-object failures behind deterministic diagnostics before exposing results."
   ],
-  "next_action": "Re-check CI for the new recovery regression, then audit mutating entrypoints for the same stable diagnostic contract.",
-  "revision": 51,
-  "updated_at": "2026-09-22T22:34:00Z"
+  "next_action": "Re-check CI for commits 91fdf63c4594ed2efb1f682b31e399f1d5cc4507 and 9d776b6cedf84637f828a9cfd6d6a9c0f0df9cbb, then audit remaining mutating entrypoints for uncaught event journal read failures.",
+  "revision": 52,
+  "updated_at": "2026-09-23T00:32:00Z"
 }
