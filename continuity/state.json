@@ -44,9 +44,10 @@
     "Standalone integrity auditing must reject non-object event records and non-object transaction journals with deterministic diagnostics instead of uncaught type errors.",
     "Legacy transaction journals without checksums must still pass through the same required-shape validation before being accepted as readable.",
     "continuity.py validate now invokes the non-mutating aggregate integrity audit and fails closed with a stable scope/line/reason diagnostic before reporting VALID.",
-    "Structured validation belongs in a separate non-mutating JSON entrypoint so machine consumers get stable diagnostics without changing the human-readable validate contract."
+    "Structured validation belongs in a separate non-mutating JSON entrypoint so machine consumers get stable diagnostics without changing the human-readable validate contract.",
+    "Structured validation must accept an explicit project root and rebind continuity paths before recovery or audit so tests and callers cannot accidentally validate the checkout containing the script."
   ],
-  "next_action": "Verify CI for commits a96835e210cb98a806a2573d2b1383a0cac19218 and 87b52bfc3f77015610c07ffc6585657ca28bdb99; if green, fix the JSON entrypoint test to isolate an explicit root before adding further validation fields.",
-  "revision": 30,
-  "updated_at": "2026-09-22T03:31:16Z"
+  "next_action": "Verify GitHub Actions for commits 3d2cd1b5f5ff363ed4c87419c8f899d72e896ca7 and a67d60bc6f5f9c7ca481987b4beb7c7de186d26e; if green, add explicit-root documentation and then inspect remaining mutation entrypoints for hidden global-root coupling.",
+  "revision": 31,
+  "updated_at": "2026-09-22T03:35:00Z"
 }
