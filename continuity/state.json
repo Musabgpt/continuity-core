@@ -45,9 +45,10 @@
     "Legacy transaction journals without checksums must still pass through the same required-shape validation before being accepted as readable.",
     "continuity.py validate now invokes the non-mutating aggregate integrity audit and fails closed with a stable scope/line/reason diagnostic before reporting VALID.",
     "Structured validation belongs in a separate non-mutating JSON entrypoint so machine consumers get stable diagnostics without changing the human-readable validate contract.",
-    "Structured validation must accept an explicit project root and rebind continuity paths before recovery or audit so tests and callers cannot accidentally validate the checkout containing the script."
+    "Structured validation must accept an explicit project root and rebind continuity paths before recovery or audit so tests and callers cannot accidentally validate the checkout containing the script.",
+    "Structured validation must read event records through the configured root after rebinding; imported path constants must not bypass explicit-root isolation."
   ],
-  "next_action": "Verify GitHub Actions for commits 3d2cd1b5f5ff363ed4c87419c8f899d72e896ca7 and a67d60bc6f5f9c7ca481987b4beb7c7de186d26e; if green, add explicit-root documentation and then inspect remaining mutation entrypoints for hidden global-root coupling.",
-  "revision": 31,
-  "updated_at": "2026-09-22T03:35:00Z"
+  "next_action": "Verify GitHub Actions for commits cdeff2e70cdbc9db9bf13cda0ec4cd68e6a6d007 and bee12d711178118d2df6675fee7d3d08fdae35ff; if green, document the explicit-root contract and inspect remaining imported path constants for the same coupling.",
+  "revision": 32,
+  "updated_at": "2026-09-22T05:36:00Z"
 }
