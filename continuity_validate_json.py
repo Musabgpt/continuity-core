@@ -9,6 +9,23 @@ from continuity import ROOT, audit_all, raw_state, verify_tx_checksum, verify_tx
 from continuity_readonly_lock import readonly_project_lock
 
 
+def _stable_error(exc):
+    """Return deterministic diagnostics without Python-version-specific text."""
+    if isinstance(exc, json.JSONDecodeError):
+        return "invalid JSON"
+    if isinstance(exc, FileNotFoundError):
+        return "required continuity file missing"
+    if isinstance(exc, PermissionError):
+        return "continuity file permission denied"
+    if isinstance(exc, OSError):
+        return "continuity filesystem read failed"
+    if isinstance(exc, SystemExit):
+        return str(exc)
+    if isinstance(exc, (TypeError, KeyError)):
+        return "transaction journal shape invalid"
+    return "continuity validation failed"
+
+
 def _transaction_status():
     if not continuity.TXN.exists():
         return {"present": False, "txid": None, "valid": True}
@@ -18,7 +35,7 @@ def _transaction_status():
         verify_tx_checksum(tx)
         return {"present": True, "txid": tx["txid"], "valid": True}
     except (SystemExit, json.JSONDecodeError, OSError, TypeError, KeyError) as exc:
-        return {"present": True, "txid": None, "valid": False, "error": str(exc)}
+        return {"present": True, "txid": None, "valid": False, "error": _stable_error(exc)}
 
 
 def validate_payload(root=ROOT):
@@ -38,7 +55,7 @@ def validate_payload(root=ROOT):
             return {
                 "schema_version": 1,
                 "valid": False,
-                "errors": [str(exc), *errors],
+                "errors": [_stable_error(exc), *errors],
                 "integrity": integrity,
                 "pending_transaction": pending_transaction,
             }
