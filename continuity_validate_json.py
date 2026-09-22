@@ -8,29 +8,38 @@ import continuity
 from continuity import ROOT, audit_all, project_lock, raw_state, verify_tx_checksum, verify_tx_shape
 
 
+def _transaction_status():
+    if not continuity.TXN.exists():
+        return {"present": False, "txid": None, "valid": True}
+    try:
+        tx = json.loads(continuity.TXN.read_text(encoding="utf-8"))
+        verify_tx_shape(tx)
+        verify_tx_checksum(tx)
+        return {"present": True, "txid": tx["txid"], "valid": True}
+    except (SystemExit, json.JSONDecodeError, OSError, TypeError, KeyError) as exc:
+        return {"present": True, "txid": None, "valid": False, "error": str(exc)}
+
+
 def validate_payload(root=ROOT):
     continuity.configure_root(root)
     errors = []
     pending_transaction = None
     integrity = {"valid": True, "checked": {"events": 0, "transaction": 0}, "first_break": None, "schema_version": 1}
     with project_lock():
+        pending_transaction = _transaction_status()
+        if pending_transaction["present"] and pending_transaction["valid"]:
+            errors.append("transaction journal pending; recovery required")
+        elif pending_transaction["present"] and not pending_transaction["valid"]:
+            errors.append("transaction journal malformed: " + pending_transaction["error"])
         try:
-            if continuity.TXN.exists():
-                tx = json.loads(continuity.TXN.read_text(encoding="utf-8"))
-                verify_tx_shape(tx)
-                verify_tx_checksum(tx)
-                pending_transaction = {"present": True, "txid": tx["txid"]}
-                errors.append("transaction journal pending; recovery required")
-            else:
-                pending_transaction = {"present": False, "txid": None}
             state = raw_state()
-        except (SystemExit, json.JSONDecodeError) as exc:
+        except (SystemExit, json.JSONDecodeError, OSError) as exc:
             return {
                 "schema_version": 1,
                 "valid": False,
-                "errors": [str(exc)],
+                "errors": [str(exc), *errors],
                 "integrity": integrity,
-                "pending_transaction": pending_transaction or {"present": True, "txid": None},
+                "pending_transaction": pending_transaction,
             }
         integrity = audit_all(continuity.ROOT)
         if not integrity["valid"]:
