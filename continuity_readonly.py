@@ -21,7 +21,7 @@ def _stable_error(exc):
         return "continuity file permission denied"
     if isinstance(exc, OSError):
         return "continuity filesystem read failed"
-    if isinstance(exc, SystemExit):
+    if isinstance(exc, (SystemExit, ValueError, TypeError)):
         return "continuity validation failed"
     return "continuity read failed"
 
@@ -34,13 +34,13 @@ def snapshot(root):
             try:
                 state = continuity.raw_state()
                 events = continuity.read_events_unlocked()
-            except (SystemExit, json.JSONDecodeError, OSError) as exc:
+            except (SystemExit, ValueError, TypeError, json.JSONDecodeError, OSError) as exc:
                 return {
                     "schema_version": 1,
                     "valid": False,
                     "error": _stable_error(exc),
                 }
-    except (OSError, RuntimeError) as exc:
+    except (OSError, RuntimeError, ValueError, TypeError) as exc:
         return {
             "schema_version": 1,
             "valid": False,
