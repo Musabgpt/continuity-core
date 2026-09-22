@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "change": "Contain invalid UTF-8 in human validate and handoff read paths",
+  "implementation_commit": "4e91900680db121cbcef359e3e0b8fee81a1bdcc",
+  "test_commit": "0beaa8a8191d8304ce377972ea3b669222dc6f31",
+  "verification": {
+    "local_tests_run": false,
+    "ci_workflow_runs": [],
+    "ci_status": "pending/unverified",
+    "reason": "GitHub Actions returned no workflow runs for the previous state commit; the new commits were not independently executed in this run."
+  },
+  "scope": [
+    "continuity.py validate now reports a stable encoding diagnostic for invalid UTF-8 in canonical continuity files.",
+    "continuity.py handoff now exits with the same stable diagnostic instead of leaking UnicodeDecodeError text.",
+    "No recovery, deletion, or unrelated repository changes were introduced."
+  ],
+  "next_action": "Inspect the structured validator and recovery entrypoints for the same invalid-UTF-8 containment contract, then re-check CI when workflow/status data exists."
+}
