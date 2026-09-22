@@ -53,7 +53,7 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
             )
             self.assertTrue(payload["valid"])
             self.assertEqual(payload["schema_version"], 1)
-            self.assertEqual(payload["pending_transaction"], {"present": False, "txid": None})
+            self.assertEqual(payload["pending_transaction"], {"present": False, "txid": None, "valid": True})
 
     def test_explicit_root_isolated_from_repository_state(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -92,11 +92,35 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
             result = self.run_validator(project)
             self.assertEqual(result.returncode, 1)
             payload = json.loads(result.stdout)
-            self.assertEqual(payload["pending_transaction"], {"present": True, "txid": "tx-1"})
+            self.assertEqual(payload["pending_transaction"], {"present": True, "txid": "tx-1", "valid": True})
             self.assertIn("transaction journal pending; recovery required", payload["errors"])
             self.assertEqual(state_before, (project / "continuity" / "state.json").read_bytes())
             self.assertEqual(events_before, (project / "continuity" / "events.jsonl").read_bytes())
             self.assertTrue(txn_path.exists())
+
+    def test_malformed_transaction_is_reported_structurally_without_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = self.make_project(tmp, self.valid_state())
+            txn_path = project / "continuity" / "transaction.json"
+            txn_path.write_text('{"txid": "broken"}\n', encoding="utf-8")
+            state_before = (project / "continuity" / "state.json").read_bytes()
+            events_before = (project / "continuity" / "events.jsonl").read_bytes()
+            txn_before = txn_path.read_bytes()
+            result = self.run_validator(project)
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["pending_transaction"], {
+                "present": True,
+                "txid": None,
+                "valid": False,
+                "error": "Transaction journal shape invalid: state must be dict.",
+            })
+            self.assertEqual(payload["errors"], [
+                "transaction journal malformed: Transaction journal shape invalid: state must be dict."
+            ])
+            self.assertEqual(state_before, (project / "continuity" / "state.json").read_bytes())
+            self.assertEqual(events_before, (project / "continuity" / "events.jsonl").read_bytes())
+            self.assertEqual(txn_before, txn_path.read_bytes())
 
 
 if __name__ == "__main__":
