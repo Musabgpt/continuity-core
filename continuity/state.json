@@ -56,9 +56,10 @@
     "Structured JSON validation reports pending transaction presence and txid explicitly while preserving the legacy human-readable validator contract.",
     "Structured validation must distinguish valid pending journals from malformed pending journals with deterministic field-specific diagnostics and must not mutate canonical files.",
     "Read-only validation and snapshot paths must never create the advisory lock file; they may lock only an existing lock without mutating the project.",
-    "Existing-lock-only read paths must tolerate lock replacement races without creating filesystem entries, and their advisory snapshot limitation must be explicit."
+    "Existing-lock-only read paths must tolerate lock replacement races without creating filesystem entries, and their advisory snapshot limitation must be explicit.",
+    "The disappearing-lock race is covered by a focused regression test that proves the read-only helper does not recreate the lock file."
   ],
-  "next_action": "Add a focused regression test for the disappearing-lock race, then inspect remaining read-only entrypoints for project_lock() creation side effects and verify CI for commits c3837cd0ce7d444f695975ac1210cbb516ca230b and fab33c2a777179e88e903a4981f89952eef8e808.",
-  "revision": 42,
-  "updated_at": "2026-09-22T14:32:00Z"
+  "next_action": "Inspect remaining read-only entrypoints for project_lock() creation side effects and query CI for commits c3837cd0ce7d444f695975ac1210cbb516ca230b, a1133cecf724f03e98d47f0e5c8f6d9af3c0a7a4, and d7e6984498c5d8b19834cdfe9727bba6ecc59dcd.",
+  "revision": 43,
+  "updated_at": "2026-09-22T14:33:00Z"
 }
