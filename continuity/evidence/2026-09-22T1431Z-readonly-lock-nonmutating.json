@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-22T14:31:12Z",
+  "change": "Read-only validation and snapshot paths now use an existing-lock-only context manager and do not create continuity/.lock when it is absent.",
+  "implementation_commits": [
+    "546db99602c47992da4c6e6993692ef90f76306a",
+    "0aee1103718c088dda3393364c1c3141f18566d6",
+    "8336d6b89920420aadd715984185aee94b09a914"
+  ],
+  "test_commit": "dca7ce918181864e59c00e9bdb06d457ea3bd74e",
+  "state_commit": "8b6868a747cd3c369252353ef2403484d00e3669",
+  "verification": {
+    "test_added": "tests/test_readonly_lock_nonmutating.py",
+    "assertions": [
+      "structured validation remains valid on a minimal seeded project",
+      "readonly snapshot remains valid on the same project",
+      "continuity/.lock is absent before and after both calls"
+    ],
+    "github_actions": {
+      "commit": "dca7ce918181864e59c00e9bdb06d457ea3bd74e",
+      "workflow_runs": [],
+      "status": "pending_unverified"
+    },
+    "local_test_run": "not_run_in_this_cycle"
+  },
+  "next_action": "After CI appears, inspect remaining read-only entrypoints and document the existing-lock-only race semantics explicitly."
+}
