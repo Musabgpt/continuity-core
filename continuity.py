@@ -146,8 +146,13 @@ def set_next(args):
 def validate(_):
     errors=[]
     with project_lock():
-        try: recover_unlocked(); s=raw_state()
-        except (SystemExit,json.JSONDecodeError,KeyError) as exc: print("INVALID: "+str(exc)); return 1
+        try:
+            if TXN.exists():
+                tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx)
+                errors.append("pending transaction journal; recovery required")
+            s=raw_state()
+        except (SystemExit,json.JSONDecodeError,KeyError,OSError) as exc:
+            print("INVALID: "+str(exc)); return 1
         integrity = audit_all(ROOT)
         if not integrity["valid"]:
             first = integrity["first_break"]
