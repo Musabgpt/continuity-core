@@ -98,7 +98,7 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
             self.assertEqual(events_before, (project / "continuity" / "events.jsonl").read_bytes())
             self.assertTrue(txn_path.exists())
 
-    def test_malformed_transaction_is_reported_structurally_without_mutation(self):
+    def test_malformed_transaction_has_stable_diagnostic_without_mutation(self):
         with tempfile.TemporaryDirectory() as tmp:
             project = self.make_project(tmp, self.valid_state())
             txn_path = project / "continuity" / "transaction.json"
@@ -121,6 +121,19 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
             self.assertEqual(state_before, (project / "continuity" / "state.json").read_bytes())
             self.assertEqual(events_before, (project / "continuity" / "events.jsonl").read_bytes())
             self.assertEqual(txn_before, txn_path.read_bytes())
+
+    def test_malformed_state_reports_category_not_parser_text(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / "continuity").mkdir()
+            (project / "continuity" / "state.json").write_text('{broken\n', encoding="utf-8")
+            (project / "continuity" / "events.jsonl").write_text(
+                '{"type":"success","message":"ok"}\n', encoding="utf-8"
+            )
+            result = self.run_validator(project)
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["errors"], ["invalid JSON"])
 
 
 if __name__ == "__main__":
