@@ -10,6 +10,11 @@ ROOT=Path(__file__).resolve().parent
 DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
 LATEST_SCHEMA=2; SUPPORTED_SCHEMAS={1,2}
 
+def configure_root(root):
+    global ROOT, DIR, STATE, EVENTS, TXN, LOCK
+    ROOT=Path(root).resolve()
+    DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
+
 def now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
 def canonical(value): return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(",",":"))
 def digest(value): return hashlib.sha256(canonical(value).encode("utf-8")).hexdigest()
