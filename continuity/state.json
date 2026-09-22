@@ -59,9 +59,10 @@
     "Existing-lock-only read paths must tolerate lock replacement races without creating filesystem entries, and their advisory snapshot limitation must be explicit.",
     "The disappearing-lock race is covered by a focused regression test that proves the read-only helper does not recreate the lock file.",
     "Read-only snapshot failures use deterministic category messages rather than exception-specific text, keeping machine consumers stable across Python versions.",
-    "Structured validation errors must use stable category diagnostics rather than raw parser, OS, or exception text; malformed transaction shape messages remain field-specific."
+    "Structured validation errors must use stable category diagnostics rather than raw parser, OS, or exception text; malformed transaction shape messages remain field-specific.",
+    "Read-only snapshot and structured validation must contain lock-acquisition OSError/RuntimeError failures behind stable diagnostics instead of leaking host-specific exception text."
   ],
-  "next_action": "Query CI for commits 5be60ab48bad63b3d9757f62882bcc11e5c906c2 and 39d17aa0a078751fbaed26c5fe3706a7d666f37a, then inspect remaining read-only entrypoints for raw exception text or filesystem side effects.",
-  "revision": 45,
-  "updated_at": "2026-09-22T16:34:00Z"
+  "next_action": "Query CI for commits d63b73a751d3dbbbdbd5b05b87495675c70829c3, 78db0820cbae1bbed4d88b78a2d44b06b0862a15, and 6d46faa56a10124b9b908cf90e2ca36bc9226279; then inspect any remaining read-only entrypoints for uncaught lock/filesystem exceptions.",
+  "revision": 46,
+  "updated_at": "2026-09-22T17:34:00Z"
 }
