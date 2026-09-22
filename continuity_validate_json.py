@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 import continuity
-from continuity import ROOT, audit_all, project_lock, raw_state, verify_tx_checksum, verify_tx_shape
+from continuity import ROOT, audit_all, raw_state, verify_tx_checksum, verify_tx_shape
+from continuity_readonly_lock import readonly_project_lock
 
 
 def _transaction_status():
@@ -25,7 +26,7 @@ def validate_payload(root=ROOT):
     errors = []
     pending_transaction = None
     integrity = {"valid": True, "checked": {"events": 0, "transaction": 0}, "first_break": None, "schema_version": 1}
-    with project_lock():
+    with readonly_project_lock():
         pending_transaction = _transaction_status()
         if pending_transaction["present"] and pending_transaction["valid"]:
             errors.append("transaction journal pending; recovery required")
