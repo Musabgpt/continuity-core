@@ -100,8 +100,7 @@ def recover_unlocked():
 def load_state_unlocked(): recover_unlocked(); return raw_state()
 def load_state():
     with project_lock(): return load_state_unlocked()
-def save_state_unlocked(s):
-    s["updated_at"]=now(); atomic_text(STATE,json.dumps(s,indent=2,ensure_ascii=False)+"\n")
+def save_state_unlocked(s): s["updated_at"]=now(); atomic_text(STATE,json.dumps(s,indent=2,ensure_ascii=False)+"\n")
 def make_event(kind,message,why=None,txid=None):
     row={"ts":now(),"type":kind,"message":message}
     if why: row["why"]=why
@@ -115,7 +114,6 @@ def transact_unlocked(s,kind,message,why=None):
     atomic_text(TXN,json.dumps(tx,ensure_ascii=False,separators=(",",":"))+"\n"); recover_unlocked()
 
 def read_events_unlocked():
-    recover_unlocked()
     if not EVENTS.exists(): return []
     return [json.loads(x) for x in EVENTS.read_text(encoding="utf-8").splitlines() if x.strip()]
 
