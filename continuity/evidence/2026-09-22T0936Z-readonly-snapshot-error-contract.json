@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "change": "read-only snapshot error contract",
+  "implementation_commit": "86c92113f3336fb392965abb66ef91c93a9d6e15",
+  "test_commit": "bfb162ce76aa834e3e28a8a21d50a32091d425a8",
+  "state_commit": "d54050e74e51bb1c70bff71226c45a3ed2ef3915",
+  "claim": "continuity_readonly.snapshot returns a deterministic schema-versioned error object for malformed state instead of propagating traceback-dependent exceptions.",
+  "verification": {
+    "local_test_run": false,
+    "ci_status": "pending",
+    "ci_workflow_runs_observed": 0,
+    "ci_checks_observed": 0
+  },
+  "next_action": "Verify CI for the implementation and regression commits; then harden or explicitly document the remaining implicit recovery boundary in continuity.py validate."
+}
