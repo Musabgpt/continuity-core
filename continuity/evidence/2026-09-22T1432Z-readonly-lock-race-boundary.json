@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "claim": "Read-only lock acquisition remains non-mutating when the lock disappears between existence check and open.",
+  "implementation_commit": "c3837cd0ce7d444f695975ac1210cbb516ca230b",
+  "changed_path": "continuity_readonly_lock.py",
+  "behavior": {
+    "missing_lock": "proceed without creating a lock file",
+    "lock_replaced_before_open": "proceed without creating a lock file",
+    "existing_lock": "acquire advisory lock and release it deterministically"
+  },
+  "verification": {
+    "local_tests": "not_run_in_automation_turn",
+    "github_actions": "pending_or_unavailable",
+    "workflow_runs_for_previous_regression": []
+  },
+  "risk_boundary": "This helper is advisory only; callers needing a stable multi-file snapshot must retry or use an explicit writer-coordinated protocol.",
+  "next_action": "Add a focused regression test for the disappearing-lock race and inspect all remaining read-only entrypoints for project_lock() creation side effects."
+}
