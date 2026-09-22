@@ -47,9 +47,10 @@
     "Structured validation belongs in a separate non-mutating JSON entrypoint so machine consumers get stable diagnostics without changing the human-readable validate contract.",
     "Structured validation must accept an explicit project root and rebind continuity paths before recovery or audit so tests and callers cannot accidentally validate the checkout containing the script.",
     "Structured validation must read event records through the configured root after rebinding; imported path constants must not bypass explicit-root isolation.",
-    "Structured JSON validation must remain non-mutating: pending transaction journals are validated and reported, never recovered or deleted by the validator."
+    "Structured JSON validation must remain non-mutating: pending transaction journals are validated and reported, never recovered or deleted by the validator.",
+    "Read-only handoff must not recover or delete a pending transaction journal; it fails closed with a stable message until a mutating path completes recovery."
   ],
-  "next_action": "Check CI for commits 6a497009809487c45b43a962a472bfc450704afb and 6f19c81e5a80fd6dfb9984b36361691a972ee769; if green, inspect whether handoff/read-only commands have the same recovery side effect and add a focused read-only contract test.",
-  "revision": 33,
-  "updated_at": "2026-09-22T05:34:00Z"
+  "next_action": "Verify CI for commits 74003479a7668945a13aa1215dcb5554b1ae3da7 and 7e5d7500e92963051381e2002c1da7d3582007a; if green, inspect any remaining read-only commands for implicit recovery and document the read-vs-recover command boundary.",
+  "revision": 34,
+  "updated_at": "2026-09-22T06:37:00Z"
 }
