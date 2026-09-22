@@ -76,6 +76,26 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
             self.assertFalse(payload["valid"])
             self.assertIn("invalid event type at line 1", payload["errors"])
 
+    def test_pending_transaction_is_reported_without_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = self.make_project(tmp, self.valid_state())
+            txn = {
+                "txid": "tx-1",
+                "state": self.valid_state(revision=1),
+                "event": {"type": "note", "message": "pending"},
+            }
+            txn_path = project / "continuity" / "transaction.json"
+            txn_path.write_text(json.dumps(txn) + "\n", encoding="utf-8")
+            state_before = (project / "continuity" / "state.json").read_bytes()
+            events_before = (project / "continuity" / "events.jsonl").read_bytes()
+            result = self.run_validator(project)
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertIn("transaction journal pending; recovery required", payload["errors"])
+            self.assertEqual(state_before, (project / "continuity" / "state.json").read_bytes())
+            self.assertEqual(events_before, (project / "continuity" / "events.jsonl").read_bytes())
+            self.assertTrue(txn_path.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
