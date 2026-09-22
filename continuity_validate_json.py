@@ -13,6 +13,8 @@ def _stable_error(exc):
     """Return deterministic diagnostics without Python-version-specific text."""
     if isinstance(exc, json.JSONDecodeError):
         return "invalid JSON"
+    if isinstance(exc, UnicodeDecodeError):
+        return "continuity file encoding invalid"
     if isinstance(exc, FileNotFoundError):
         return "required continuity file missing"
     if isinstance(exc, PermissionError):
@@ -34,7 +36,7 @@ def _transaction_status():
         verify_tx_shape(tx)
         verify_tx_checksum(tx)
         return {"present": True, "txid": tx["txid"], "valid": True}
-    except (SystemExit, json.JSONDecodeError, OSError, TypeError, KeyError, AttributeError) as exc:
+    except (SystemExit, json.JSONDecodeError, UnicodeDecodeError, OSError, TypeError, KeyError, AttributeError) as exc:
         return {"present": True, "txid": None, "valid": False, "error": _stable_error(exc)}
 
 
@@ -52,7 +54,7 @@ def validate_payload(root=ROOT):
                 errors.append("transaction journal malformed: " + pending_transaction["error"])
             try:
                 state = raw_state()
-            except (SystemExit, json.JSONDecodeError, OSError) as exc:
+            except (SystemExit, json.JSONDecodeError, UnicodeDecodeError, OSError) as exc:
                 return {
                     "schema_version": 1,
                     "valid": False,
@@ -97,7 +99,12 @@ def validate_payload(root=ROOT):
                 errors.append("schema v2 requires non-negative integer revision")
             events_path = continuity.EVENTS
             if events_path.exists():
-                for number, line in enumerate(events_path.read_text(encoding="utf-8").splitlines(), 1):
+                try:
+                    event_lines = events_path.read_text(encoding="utf-8").splitlines()
+                except (UnicodeDecodeError, OSError) as exc:
+                    errors.append(_stable_error(exc))
+                    event_lines = []
+                for number, line in enumerate(event_lines, 1):
                     try:
                         row = json.loads(line)
                     except json.JSONDecodeError:
