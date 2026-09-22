@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 import continuity
-from continuity import ROOT, audit_all, project_lock, raw_state, recover_unlocked
+from continuity import ROOT, audit_all, project_lock, raw_state, verify_tx_checksum, verify_tx_shape
 
 
 def validate_payload(root=ROOT):
@@ -14,9 +14,13 @@ def validate_payload(root=ROOT):
     integrity = {"valid": True, "checked": {"events": 0, "transaction": 0}, "first_break": None, "schema_version": 1}
     with project_lock():
         try:
-            recover_unlocked()
+            if continuity.TXN.exists():
+                tx = json.loads(continuity.TXN.read_text(encoding="utf-8"))
+                verify_tx_shape(tx)
+                verify_tx_checksum(tx)
+                errors.append("transaction journal pending; recovery required")
             state = raw_state()
-        except Exception as exc:
+        except (SystemExit, json.JSONDecodeError) as exc:
             return {
                 "schema_version": 1,
                 "valid": False,
@@ -57,6 +61,9 @@ def validate_payload(root=ROOT):
                     row = json.loads(line)
                 except json.JSONDecodeError:
                     errors.append(f"invalid event JSON at line {number}")
+                    continue
+                if not isinstance(row, dict):
+                    errors.append(f"event record must be an object at line {number}")
                     continue
                 if row.get("type") not in {"decision", "success", "failure", "note"}:
                     errors.append(f"invalid event type at line {number}")
