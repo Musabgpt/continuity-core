@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "decision": "Added an explicit-root read-only snapshot API that never invokes recovery and reports pending transaction presence deterministically.",
+  "implementation_commit": "e4eac69096d7d5156c9dc1120b009ee55c1750c8",
+  "test_commit": "59ed3eaef2ee140aa948a33e60b19912eefbb1f1",
+  "state_commit": "f9630a8e98ad9c7694d354948ed84b4def2cbe69",
+  "verification": {
+    "local_tests": "not run in this automation turn",
+    "ci": "pending; check workflow runs and commit status for the implementation/test commits"
+  },
+  "scope": [
+    "continuity_readonly.py",
+    "tests/test_readonly_snapshot.py",
+    "continuity/state.json"
+  ],
+  "next_action": "Verify CI, then inspect continuity.py validate/load_state for remaining implicit recovery and harden only if the command-boundary contract requires it."
+}
