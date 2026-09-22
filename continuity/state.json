@@ -49,9 +49,10 @@
     "Structured validation must read event records through the configured root after rebinding; imported path constants must not bypass explicit-root isolation.",
     "Structured JSON validation must remain non-mutating: pending transaction journals are validated and reported, never recovered or deleted by the validator.",
     "Read-only handoff must not recover or delete a pending transaction journal; it fails closed with a stable message until a mutating path completes recovery.",
-    "Read-only event readers must not call recovery implicitly; recovery is reserved for explicit mutating or recovery paths."
+    "Read-only event readers must not call recovery implicitly; recovery is reserved for explicit mutating or recovery paths.",
+    "Explicit-root read-only snapshots must expose state and event metadata without recovery, deletion, or other file mutation, while reporting pending transactions deterministically."
   ],
-  "next_action": "Verify CI for commits 6f4df2a54bbdc9db73dd1ab779332299437ebde2 and 5523210877bed1c1ee027a6e08f8f9f6cea288b8; if green, inspect the remaining read-only entrypoints for implicit mutation and document the command boundary.",
-  "revision": 35,
-  "updated_at": "2026-09-22T08:34:26Z"
+  "next_action": "Verify CI for commits e4eac69096d7d5156c9dc1120b009ee55c1750c8 and 59ed3eaef2ee140aa948a33e60b19912eefbb1f1; if green, inspect continuity.py validate/load_state for implicit recovery and either harden or record an explicit command-boundary decision.",
+  "revision": 36,
+  "updated_at": "2026-09-22T08:35:37Z"
 }
