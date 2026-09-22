@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "change": "make continuity.py validate read-only for pending transaction journals",
+  "implementation_commit": "2b9326e5c3fbc2688bf92eb914482e748187b172",
+  "test_commit": "4ba01b4da2a0e51b0dda6eed655df20680fbad16",
+  "state_commit": "5ef91f8c7b479a9bf5e97a5bc7fc0ad80617ef13",
+  "claim": "validate no longer calls recovery implicitly; it validates a pending journal, emits a stable diagnostic, and preserves state.json, events.jsonl, and transaction.json byte-for-byte.",
+  "verification": {
+    "local_test_run": false,
+    "ci_status": "pending",
+    "ci_workflow_runs_observed": 0,
+    "ci_checks_observed": 0
+  },
+  "next_action": "Verify CI for the implementation and regression commits; then inspect the validator explicit-root command-line surface and add structured pending-journal output without changing legacy human output."
+}
