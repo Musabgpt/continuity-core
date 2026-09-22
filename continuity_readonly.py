@@ -8,12 +8,13 @@ import json
 from pathlib import Path
 
 import continuity
+from continuity_readonly_lock import readonly_project_lock
 
 
 def snapshot(root):
     """Return a deterministic read-only snapshot or a structured failure."""
     continuity.configure_root(Path(root))
-    with continuity.project_lock():
+    with readonly_project_lock():
         try:
             state = continuity.raw_state()
             events = continuity.read_events_unlocked()
