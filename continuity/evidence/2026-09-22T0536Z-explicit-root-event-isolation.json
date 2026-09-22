@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "change": "structured validation now reads events through continuity.EVENTS after explicit root rebinding",
+  "commits": [
+    "cdeff2e70cdbc9db9bf13cda0ec4cd68e6a6d007",
+    "bee12d711178118d2df6675fee7d3d08fdae35ff",
+    "5f81a0dce7169e7e313e56c0d1e135c2c3007f75"
+  ],
+  "verification": {
+    "local": "not run in this automation turn",
+    "github_actions": "pending verification",
+    "claim_boundary": "implementation and regression test are committed; CI success is not claimed until GitHub reports it"
+  },
+  "next_action": "Check GitHub Actions for the implementation and regression commits; if green, document the explicit-root contract and inspect remaining imported path constants for hidden coupling."
+}
