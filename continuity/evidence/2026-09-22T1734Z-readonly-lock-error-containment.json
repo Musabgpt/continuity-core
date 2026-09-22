@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "subject": "read-only lock failure containment",
+  "implemented": [
+    "continuity_readonly.snapshot catches lock acquisition OSError/RuntimeError and returns stable diagnostics",
+    "continuity_validate_json.validate_payload catches lock acquisition OSError/RuntimeError and returns stable structured diagnostics",
+    "raw exception text is not exposed to machine consumers"
+  ],
+  "tests": [
+    "tests/test_readonly_lock_error_contract.py::test_snapshot_contains_lock_failure_deterministically",
+    "tests/test_readonly_lock_error_contract.py::test_structured_validation_contains_lock_failure_deterministically"
+  ],
+  "verification": {
+    "local_tests": "not_run_by_automation",
+    "github_actions": "pending_unverified",
+    "workflow_runs": [],
+    "statuses": []
+  },
+  "safety": {
+    "repository_scope": "Musabgpt/continuity-core only",
+    "H33_accessed": false,
+    "external_changes": false
+  },
+  "next_action": "Query CI for the new commits, then inspect any remaining read-only entrypoints for uncaught lock or filesystem exceptions and add only focused regression coverage."
+}
