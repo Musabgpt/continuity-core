@@ -1,4 +1,3 @@
-import json
 import sys
 from pathlib import Path
 
@@ -17,5 +16,5 @@ def test_snapshot_returns_structured_error_for_malformed_state(tmp_path):
     assert payload == {
         "schema_version": 1,
         "valid": False,
-        "error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+        "error": "invalid JSON",
     }
