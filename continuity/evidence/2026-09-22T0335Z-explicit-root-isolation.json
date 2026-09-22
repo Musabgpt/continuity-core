@@ -10,11 +10,12 @@
     "3d2cd1b5f5ff363ed4c87419c8f899d72e896ca7",
     "919156787cd6036a7aa2de723406608cf78ad175",
     "a67d60bc6f5f9c7ca481987b4beb7c7de186d26e",
-    "181c7b4c9f697fc8f78a2ec438fef4916a75e925"
+    "181c7b4c9f697fc8f78a2ec438fef4916a75e925",
+    "a1c7460734875c8fe19928562da91e7788b8be8e"
   ],
   "verification": {
     "local": "Not executed in this automation turn; implementation and test files were committed through GitHub.",
-    "ci": "Not yet verified; check GitHub Actions for the implementation and test commits before claiming success."
+    "ci": "GitHub reports no workflow runs or status checks for the test commit yet; success is intentionally unclaimed."
   },
-  "next_action": "Verify CI, then document --root behavior and audit remaining global-root coupling in mutation entrypoints."
+  "next_action": "When CI appears, verify it; then document --root behavior and audit remaining global-root coupling in mutation entrypoints."
 }
