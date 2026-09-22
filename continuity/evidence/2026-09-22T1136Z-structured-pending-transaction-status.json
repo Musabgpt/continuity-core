@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "change": "expose deterministic pending transaction presence and txid in structured validation output",
+  "implementation_commit": "6f631624c2f35d686d420bf7527f45cca1b3272c",
+  "test_commit": "6d1c4c103b2fb23a80d5a9433bb083210e420f80",
+  "state_commit": "b01fb8b9de3f239f2da353d66eef6c4648364a3c",
+  "claim": "continuity_validate_json.py now includes pending_transaction={present,txid} in both valid and pending-journal results, without recovering, deleting, or mutating canonical files.",
+  "verification": {
+    "local_test_run": false,
+    "ci_status": "pending",
+    "ci_workflow_runs_observed": 0,
+    "ci_checks_observed": 0,
+    "legacy_human_output_changed": false
+  },
+  "next_action": "Verify CI for the implementation and regression commits; then add deterministic structured diagnostics for malformed pending journals without mutating canonical files."
+}
