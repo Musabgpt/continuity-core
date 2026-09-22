@@ -54,9 +54,10 @@
     "Read-only snapshot failures must return a stable schema-versioned error object instead of exposing traceback-dependent exceptions.",
     "continuity.py validate must not recover pending transaction journals implicitly; validation is read-only and reports a stable pending-journal diagnostic while preserving all canonical files.",
     "Structured JSON validation reports pending transaction presence and txid explicitly while preserving the legacy human-readable validator contract.",
-    "Structured validation must distinguish valid pending journals from malformed pending journals with deterministic field-specific diagnostics and must not mutate canonical files."
+    "Structured validation must distinguish valid pending journals from malformed pending journals with deterministic field-specific diagnostics and must not mutate canonical files.",
+    "Read-only validation and snapshot paths must never create the advisory lock file; they may lock only an existing lock without mutating the project."
   ],
-  "next_action": "Check CI for commits a002191d27a42b6e351cae82caa31a3d242e5348 and f97aa46843eca778b9d6dbb2dfde845cd48746a1; if green, harden read-only locking so validation and snapshots do not create a lock file when none exists.",
-  "revision": 40,
-  "updated_at": "2026-09-22T12:34:00Z"
+  "next_action": "Check CI for commits 0aee1103718c088dda3393364c1c3141f18566d6, 8336d6b89920420aadd715984185aee94b09a914, and dca7ce918181864e59c00e9bdb06d457ea3bd74e; if green, audit remaining read-only entrypoints for lock-file creation and document the lock race semantics.",
+  "revision": 41,
+  "updated_at": "2026-09-22T14:31:12Z"
 }
