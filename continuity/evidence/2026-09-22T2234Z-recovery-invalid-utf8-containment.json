@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "change": "Transaction recovery now contains malformed UTF-8 and other recovery-read failures behind stable diagnostics.",
+  "implementation_commit": "e2e7bd1883c9a5085b2d9bdd82d9374b83187885",
+  "test_commit": "497639c5589a0c6a932ff73d35348318eb2f9180",
+  "claim": "recover_unlocked() fails closed with 'continuity file encoding invalid' for invalid UTF-8 and leaves transaction.json byte-for-byte unchanged.",
+  "verification": {
+    "local_tests": "not_run_in_automation",
+    "ci": "pending"
+  },
+  "next_action": "Re-check CI for the new recovery regression, then audit mutating entrypoints for the same stable diagnostic contract."
+}
