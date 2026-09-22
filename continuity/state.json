@@ -61,9 +61,10 @@
     "Read-only snapshot failures use deterministic category messages rather than exception-specific text, keeping machine consumers stable across Python versions.",
     "Structured validation errors must use stable category diagnostics rather than raw parser, OS, or exception text; malformed transaction shape messages remain field-specific.",
     "Read-only snapshot and structured validation must contain lock-acquisition OSError/RuntimeError failures behind stable diagnostics instead of leaking host-specific exception text.",
-    "Read-only snapshots must contain malformed non-object state/event payload failures behind a stable validation diagnostic instead of leaking type-dependent exceptions."
+    "Read-only snapshots must contain malformed non-object state/event payload failures behind a stable validation diagnostic instead of leaking type-dependent exceptions.",
+    "Structured validation must reject non-object state payloads with a deterministic diagnostic before field access, preventing uncaught AttributeError and preserving non-mutating behavior."
   ],
-  "next_action": "Inspect continuity_validate_json.py and remaining read-only entrypoints for uncaught non-object payload failures; query CI for commits ff11a56147e6c5bb24fcfe2f7ac311ca4be8e4c6, 70dc6a4f5154a6c300608f7e9a3955ba9d747bab, and bb901982581b02eb5d95e9c2a4ba7a620b0faf6b when workflow or status data is available.",
-  "revision": 47,
-  "updated_at": "2026-09-22T18:38:00Z"
+  "next_action": "Query CI for commits cfe00714259e4be72a1ad3d2ac11f96022386ff0, 76450c8b95b6d973956df15efba104dbb99b7372, and 3d8f3e8349f21c67cd2c4405bf76bc337c2ef99c; if workflow/status data is still absent, inspect structured validation for uncaught non-object event or transaction payloads.",
+  "revision": 48,
+  "updated_at": "2026-09-22T19:38:00Z"
 }
