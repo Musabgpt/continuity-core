@@ -43,66 +43,75 @@ def validate_payload(root=ROOT):
     errors = []
     pending_transaction = None
     integrity = {"valid": True, "checked": {"events": 0, "transaction": 0}, "first_break": None, "schema_version": 1}
-    with readonly_project_lock():
-        pending_transaction = _transaction_status()
-        if pending_transaction["present"] and pending_transaction["valid"]:
-            errors.append("transaction journal pending; recovery required")
-        elif pending_transaction["present"] and not pending_transaction["valid"]:
-            errors.append("transaction journal malformed: " + pending_transaction["error"])
-        try:
-            state = raw_state()
-        except (SystemExit, json.JSONDecodeError, OSError) as exc:
-            return {
-                "schema_version": 1,
-                "valid": False,
-                "errors": [_stable_error(exc), *errors],
-                "integrity": integrity,
-                "pending_transaction": pending_transaction,
+    try:
+        with readonly_project_lock():
+            pending_transaction = _transaction_status()
+            if pending_transaction["present"] and pending_transaction["valid"]:
+                errors.append("transaction journal pending; recovery required")
+            elif pending_transaction["present"] and not pending_transaction["valid"]:
+                errors.append("transaction journal malformed: " + pending_transaction["error"])
+            try:
+                state = raw_state()
+            except (SystemExit, json.JSONDecodeError, OSError) as exc:
+                return {
+                    "schema_version": 1,
+                    "valid": False,
+                    "errors": [_stable_error(exc), *errors],
+                    "integrity": integrity,
+                    "pending_transaction": pending_transaction,
+                }
+            integrity = audit_all(continuity.ROOT)
+            if not integrity["valid"]:
+                first = integrity["first_break"]
+                errors.append(f"integrity audit failed: {first['scope']} line {first['line']}: {first['reason']}")
+            required = {
+                "schema_version": int,
+                "project": str,
+                "goal": str,
+                "status": str,
+                "constraints": list,
+                "decisions": list,
+                "next_action": (str, type(None)),
+                "updated_at": str,
             }
-        integrity = audit_all(continuity.ROOT)
-        if not integrity["valid"]:
-            first = integrity["first_break"]
-            errors.append(f"integrity audit failed: {first['scope']} line {first['line']}: {first['reason']}")
-        required = {
-            "schema_version": int,
-            "project": str,
-            "goal": str,
-            "status": str,
-            "constraints": list,
-            "decisions": list,
-            "next_action": (str, type(None)),
-            "updated_at": str,
+            for key, expected in required.items():
+                if key not in state:
+                    errors.append(f"missing state field: {key}")
+                elif not isinstance(state[key], expected):
+                    errors.append(f"wrong type for state field: {key}")
+            if state.get("schema_version") not in {1, 2}:
+                errors.append("unsupported schema_version")
+            if state.get("schema_version") == 2 and (
+                not isinstance(state.get("revision"), int)
+                or isinstance(state.get("revision"), bool)
+                or state.get("revision", -1) < 0
+            ):
+                errors.append("schema v2 requires non-negative integer revision")
+            events_path = continuity.EVENTS
+            if events_path.exists():
+                for number, line in enumerate(events_path.read_text(encoding="utf-8").splitlines(), 1):
+                    try:
+                        row = json.loads(line)
+                    except json.JSONDecodeError:
+                        errors.append(f"invalid event JSON at line {number}")
+                        continue
+                    if not isinstance(row, dict):
+                        errors.append(f"event record must be an object at line {number}")
+                        continue
+                    if row.get("type") not in {"decision", "success", "failure", "note"}:
+                        errors.append(f"invalid event type at line {number}")
+                    if not isinstance(row.get("message"), str) or not row["message"].strip():
+                        errors.append(f"invalid event message at line {number}")
+            else:
+                errors.append("events file is missing")
+    except (OSError, RuntimeError) as exc:
+        return {
+            "schema_version": 1,
+            "valid": False,
+            "errors": [_stable_error(exc), *errors],
+            "integrity": integrity,
+            "pending_transaction": pending_transaction,
         }
-        for key, expected in required.items():
-            if key not in state:
-                errors.append(f"missing state field: {key}")
-            elif not isinstance(state[key], expected):
-                errors.append(f"wrong type for state field: {key}")
-        if state.get("schema_version") not in {1, 2}:
-            errors.append("unsupported schema_version")
-        if state.get("schema_version") == 2 and (
-            not isinstance(state.get("revision"), int)
-            or isinstance(state.get("revision"), bool)
-            or state.get("revision", -1) < 0
-        ):
-            errors.append("schema v2 requires non-negative integer revision")
-        events_path = continuity.EVENTS
-        if events_path.exists():
-            for number, line in enumerate(events_path.read_text(encoding="utf-8").splitlines(), 1):
-                try:
-                    row = json.loads(line)
-                except json.JSONDecodeError:
-                    errors.append(f"invalid event JSON at line {number}")
-                    continue
-                if not isinstance(row, dict):
-                    errors.append(f"event record must be an object at line {number}")
-                    continue
-                if row.get("type") not in {"decision", "success", "failure", "note"}:
-                    errors.append(f"invalid event type at line {number}")
-                if not isinstance(row.get("message"), str) or not row["message"].strip():
-                    errors.append(f"invalid event message at line {number}")
-        else:
-            errors.append("events file is missing")
     return {
         "schema_version": 1,
         "valid": not errors,
