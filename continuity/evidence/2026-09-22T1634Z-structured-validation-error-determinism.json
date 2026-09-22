@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "change": "Stabilize structured validation diagnostics across exception text",
+  "implementation_commit": "5be60ab48bad63b3d9757f62882bcc11e5c906c2",
+  "test_commit": "39d17aa0a078751fbaed26c5fe3706a7d666f37a",
+  "claims": [
+    "Malformed state JSON reports the stable error category 'invalid JSON' instead of parser-specific text.",
+    "Malformed transaction journals retain field-specific shape diagnostics already promised by the contract.",
+    "Structured validation remains non-mutating for state, events, and transaction journal files.",
+    "Explicit project-root isolation remains intact."
+  ],
+  "verification": {
+    "local_tests": "not_run_in_automation_turn",
+    "github_actions": "pending_lookup",
+    "status_checks": "pending_lookup"
+  },
+  "next_action": "Query CI for the implementation and test commits, then inspect remaining read-only entrypoints for raw exception text or filesystem side effects."
+}
