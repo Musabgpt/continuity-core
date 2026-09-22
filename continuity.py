@@ -19,6 +19,14 @@ def now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().
 def canonical(value): return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(",",":"))
 def digest(value): return hashlib.sha256(canonical(value).encode("utf-8")).hexdigest()
 
+def _stable_read_error(exc):
+    if isinstance(exc, UnicodeDecodeError): return "continuity file encoding invalid"
+    if isinstance(exc, json.JSONDecodeError): return "invalid JSON"
+    if isinstance(exc, FileNotFoundError): return "required continuity file missing"
+    if isinstance(exc, PermissionError): return "continuity file permission denied"
+    if isinstance(exc, OSError): return "continuity filesystem read failed"
+    return "continuity read failed"
+
 @contextmanager
 def project_lock():
     DIR.mkdir(parents=True,exist_ok=True); f=LOCK.open("a+b")
@@ -151,8 +159,8 @@ def validate(_):
                 tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx)
                 errors.append("pending transaction journal; recovery required")
             s=raw_state()
-        except (SystemExit,json.JSONDecodeError,KeyError,OSError) as exc:
-            print("INVALID: "+str(exc)); return 1
+        except (SystemExit,json.JSONDecodeError,KeyError,OSError,UnicodeDecodeError) as exc:
+            print("INVALID: "+(_stable_read_error(exc) if isinstance(exc, (UnicodeDecodeError, json.JSONDecodeError, OSError)) else str(exc))); return 1
         integrity = audit_all(ROOT)
         if not integrity["valid"]:
             first = integrity["first_break"]
@@ -168,7 +176,12 @@ def validate(_):
         if isinstance(s.get("constraints"),list) and not all(isinstance(x,str) and x.strip() for x in s["constraints"]): errors.append("constraints must be non-empty strings")
         if isinstance(s.get("decisions"),list) and not all(isinstance(x,str) and x.strip() for x in s["decisions"]): errors.append("decisions must be non-empty strings")
         if EVENTS.exists():
-            for n,line in enumerate(EVENTS.read_text(encoding="utf-8").splitlines(),1):
+            try:
+                event_lines=EVENTS.read_text(encoding="utf-8").splitlines()
+            except UnicodeDecodeError:
+                errors.append("continuity file encoding invalid")
+                event_lines=[]
+            for n,line in enumerate(event_lines,1):
                 try: row=json.loads(line)
                 except json.JSONDecodeError: errors.append(f"invalid event JSON at line {n}"); continue
                 if row.get("type") not in {"decision","success","failure","note"}: errors.append(f"invalid event type at line {n}")
@@ -198,7 +211,10 @@ def handoff_payload():
         return p
 
 def handoff(args):
-    p=handoff_payload()
+    try:
+        p=handoff_payload()
+    except (UnicodeDecodeError, json.JSONDecodeError, OSError) as exc:
+        raise SystemExit(_stable_read_error(exc))
     if args.format=="json": print(json.dumps(p,ensure_ascii=False,sort_keys=True,separators=(",", ":"))); return 0
     print(f"# {p['project']} — handoff\nGoal: {p['goal']}\nStatus: {p['status']}")
     if "revision" in p: print(f"Revision: {p['revision']}")
