@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "title": "Read-only handoff rejects pending transaction without mutation",
+  "decision": "handoff_payload must not call recovery implicitly because handoff is a read boundary",
+  "implementation_commit": "74003479a7668945a13aa1215dcb5554b1ae3da7",
+  "test_commit": "7e5d7500e92963051381e2002c1da7d3582007a",
+  "state_commit": "dea66661d135abce610a2dcbef43aa070df9429e",
+  "verification": {
+    "local_test": "not run in this automation turn",
+    "ci": "not yet observed; must be checked before claiming verified",
+    "expected_contract": [
+      "pending transaction is rejected with a stable message",
+      "state.json, events.jsonl, and transaction.json remain byte-for-byte unchanged"
+    ]
+  },
+  "next_action": "Check CI for the implementation and regression commits, then inspect remaining read-only commands for implicit recovery."
+}
