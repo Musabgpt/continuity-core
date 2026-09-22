@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 import continuity
-from continuity import EVENTS, ROOT, audit_all, project_lock, raw_state, recover_unlocked
+from continuity import ROOT, audit_all, project_lock, raw_state, recover_unlocked
 
 
 def validate_payload(root=ROOT):
@@ -50,8 +50,9 @@ def validate_payload(root=ROOT):
             or state.get("revision", -1) < 0
         ):
             errors.append("schema v2 requires non-negative integer revision")
-        if EVENTS.exists():
-            for number, line in enumerate(EVENTS.read_text(encoding="utf-8").splitlines(), 1):
+        events_path = continuity.EVENTS
+        if events_path.exists():
+            for number, line in enumerate(events_path.read_text(encoding="utf-8").splitlines(), 1):
                 try:
                     row = json.loads(line)
                 except json.JSONDecodeError:
@@ -61,6 +62,8 @@ def validate_payload(root=ROOT):
                     errors.append(f"invalid event type at line {number}")
                 if not isinstance(row.get("message"), str) or not row["message"].strip():
                     errors.append(f"invalid event message at line {number}")
+        else:
+            errors.append("events file is missing")
     return {
         "schema_version": 1,
         "valid": not errors,
