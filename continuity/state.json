@@ -62,9 +62,10 @@
     "Structured validation errors must use stable category diagnostics rather than raw parser, OS, or exception text; malformed transaction shape messages remain field-specific.",
     "Read-only snapshot and structured validation must contain lock-acquisition OSError/RuntimeError failures behind stable diagnostics instead of leaking host-specific exception text.",
     "Read-only snapshots must contain malformed non-object state/event payload failures behind a stable validation diagnostic instead of leaking type-dependent exceptions.",
-    "Structured validation must reject non-object state payloads with a deterministic diagnostic before field access, preventing uncaught AttributeError and preserving non-mutating behavior."
+    "Structured validation must reject non-object state payloads with a deterministic diagnostic before field access, preventing uncaught AttributeError and preserving non-mutating behavior.",
+    "Structured validation must contain invalid UTF-8 in canonical continuity files with a stable diagnostic instead of leaking UnicodeDecodeError text."
   ],
-  "next_action": "Query CI for commits cfe00714259e4be72a1ad3d2ac11f96022386ff0, 76450c8b95b6d973956df15efba104dbb99b7372, and 3d8f3e8349f21c67cd2c4405bf76bc337c2ef99c; if workflow/status data is still absent, inspect structured validation for uncaught non-object event or transaction payloads.",
-  "revision": 48,
-  "updated_at": "2026-09-22T19:38:00Z"
+  "next_action": "Inspect CI for c858d1585e451e7ef4be0b5e2095351ca3826e99 and cbbf4e83fc9c453ce0bc94fc304d04a0679d3bca; then audit recovery and snapshot readers for uncaught UnicodeDecodeError paths.",
+  "revision": 49,
+  "updated_at": "2026-09-22T20:32:00Z"
 }
