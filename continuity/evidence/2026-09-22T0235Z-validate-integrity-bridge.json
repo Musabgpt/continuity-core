@@ -1,0 +1,15 @@
+{
+  "kind": "engineering_evidence",
+  "title": "Validate invokes non-mutating aggregate integrity audit",
+  "recorded_at": "2026-09-22T02:35:00Z",
+  "implementation_commit": "9b71c566fdcf4bb40abd01777656770b936c88c4",
+  "regression_commit": "fac20f1d18b343eb4c8540bd68c67cd1db202fb2",
+  "state_commit": "44b88c8a1e576a9580de7e59ef4d07e04d6fd83f",
+  "claim": "continuity.py validate now calls audit_all(ROOT) under the existing project lock and reports the first integrity failure as a deterministic human-readable validation error before normal state/event checks.",
+  "regression": "A temporary copied project with a protected event whose chain_hash is incorrect must make validate exit 1 and emit: integrity audit failed: events line 1: event hash mismatch.",
+  "verification": {
+    "local": "not executed in this automation turn",
+    "ci": "pending; verify GitHub Actions for the implementation and regression commits before claiming success"
+  },
+  "next_action": "Verify CI; if green, consider a separate structured validation output mode rather than changing the existing human-readable validate contract."
+}
