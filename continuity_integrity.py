@@ -58,12 +58,12 @@ def audit_transaction(path):
         return diagnostic(False, 1, {"line": 1, "reason": "invalid transaction JSON"})
     if not isinstance(tx, dict):
         return diagnostic(False, 1, {"line": 1, "reason": "transaction journal must be an object"})
-    if "checksum" not in tx:
-        return diagnostic(True, 1, None)
     required = {"txid": str, "state": dict, "event": dict}
     for key, expected in required.items():
         if key not in tx or not isinstance(tx[key], expected):
             return diagnostic(False, 1, {"line": 1, "reason": f"transaction journal shape invalid: {key} must be {expected.__name__}"})
+    if "checksum" not in tx:
+        return diagnostic(True, 1, None)
     checksum = tx.get("checksum")
     if not isinstance(checksum, str):
         return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be a string"})
