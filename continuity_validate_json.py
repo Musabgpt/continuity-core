@@ -21,7 +21,7 @@ def _stable_error(exc):
         return "continuity filesystem read failed"
     if isinstance(exc, SystemExit):
         return str(exc)
-    if isinstance(exc, (TypeError, KeyError)):
+    if isinstance(exc, (TypeError, KeyError, AttributeError)):
         return "transaction journal shape invalid"
     return "continuity validation failed"
 
@@ -34,7 +34,7 @@ def _transaction_status():
         verify_tx_shape(tx)
         verify_tx_checksum(tx)
         return {"present": True, "txid": tx["txid"], "valid": True}
-    except (SystemExit, json.JSONDecodeError, OSError, TypeError, KeyError) as exc:
+    except (SystemExit, json.JSONDecodeError, OSError, TypeError, KeyError, AttributeError) as exc:
         return {"present": True, "txid": None, "valid": False, "error": _stable_error(exc)}
 
 
@@ -57,6 +57,14 @@ def validate_payload(root=ROOT):
                     "schema_version": 1,
                     "valid": False,
                     "errors": [_stable_error(exc), *errors],
+                    "integrity": integrity,
+                    "pending_transaction": pending_transaction,
+                }
+            if not isinstance(state, dict):
+                return {
+                    "schema_version": 1,
+                    "valid": False,
+                    "errors": ["state payload must be an object", *errors],
                     "integrity": integrity,
                     "pending_transaction": pending_transaction,
                 }
