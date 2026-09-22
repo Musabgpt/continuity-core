@@ -11,8 +11,9 @@
   ],
   "verification": {
     "local_tests": "not_run_in_automation_turn",
-    "github_actions": "pending_lookup",
-    "status_checks": "pending_lookup"
+    "implementation_workflow_runs": [],
+    "test_commit_statuses": [],
+    "ci_interpretation": "No GitHub Actions workflow run or commit status was reported; verification remains pending/unverified."
   },
-  "next_action": "Query CI for the implementation and test commits, then inspect remaining read-only entrypoints for raw exception text or filesystem side effects."
+  "next_action": "Inspect remaining read-only entrypoints for raw exception text or filesystem side effects, then re-check CI if a workflow appears."
 }
