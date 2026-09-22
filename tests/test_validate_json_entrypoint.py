@@ -49,10 +49,11 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
             self.assertEqual(
-                list(payload), ["errors", "integrity", "schema_version", "valid"]
+                list(payload), ["errors", "integrity", "pending_transaction", "schema_version", "valid"]
             )
             self.assertTrue(payload["valid"])
             self.assertEqual(payload["schema_version"], 1)
+            self.assertEqual(payload["pending_transaction"], {"present": False, "txid": None})
 
     def test_explicit_root_isolated_from_repository_state(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -91,6 +92,7 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
             result = self.run_validator(project)
             self.assertEqual(result.returncode, 1)
             payload = json.loads(result.stdout)
+            self.assertEqual(payload["pending_transaction"], {"present": True, "txid": "tx-1"})
             self.assertIn("transaction journal pending; recovery required", payload["errors"])
             self.assertEqual(state_before, (project / "continuity" / "state.json").read_bytes())
             self.assertEqual(events_before, (project / "continuity" / "events.jsonl").read_bytes())
