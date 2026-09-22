@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "change": "Added continuity_validate_json.py as a non-mutating machine-readable validation entrypoint and a regression test for stable JSON key order and exit status.",
+  "commits": [
+    "a96835e210cb98a806a2573d2b1383a0cac19218",
+    "87b52bfc3f77015610c07ffc6585657ca28bdb99",
+    "78b65c6b31a886e3e479fc4fcfb81473ed267807"
+  ],
+  "verification": {
+    "local": "not_run in this automation turn",
+    "ci": "not_verified; GitHub workflow status was not available for the new commits"
+  },
+  "risk_boundary": "The new test invokes the entrypoint from a temporary working directory but the current implementation imports the repository-root constants; if CI exposes this isolation gap, correct it before claiming the entrypoint is fully verified.",
+  "next_action": "Check CI for the implementation and regression commits, then make the entrypoint accept an explicit root so tests exercise an isolated project rather than the repository checkout."
+}
