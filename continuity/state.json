@@ -46,9 +46,10 @@
     "continuity.py validate now invokes the non-mutating aggregate integrity audit and fails closed with a stable scope/line/reason diagnostic before reporting VALID.",
     "Structured validation belongs in a separate non-mutating JSON entrypoint so machine consumers get stable diagnostics without changing the human-readable validate contract.",
     "Structured validation must accept an explicit project root and rebind continuity paths before recovery or audit so tests and callers cannot accidentally validate the checkout containing the script.",
-    "Structured validation must read event records through the configured root after rebinding; imported path constants must not bypass explicit-root isolation."
+    "Structured validation must read event records through the configured root after rebinding; imported path constants must not bypass explicit-root isolation.",
+    "Structured JSON validation must remain non-mutating: pending transaction journals are validated and reported, never recovered or deleted by the validator."
   ],
-  "next_action": "Verify GitHub Actions for commits cdeff2e70cdbc9db9bf13cda0ec4cd68e6a6d007 and bee12d711178118d2df6675fee7d3d08fdae35ff; if green, document the explicit-root contract and inspect remaining imported path constants for the same coupling.",
-  "revision": 32,
-  "updated_at": "2026-09-22T05:36:00Z"
+  "next_action": "Check CI for commits 6a497009809487c45b43a962a472bfc450704afb and 6f19c81e5a80fd6dfb9984b36361691a972ee769; if green, inspect whether handoff/read-only commands have the same recovery side effect and add a focused read-only contract test.",
+  "revision": 33,
+  "updated_at": "2026-09-22T05:34:00Z"
 }
