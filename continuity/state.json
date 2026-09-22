@@ -41,9 +41,10 @@
     "Recovery-boundary regressions must prove malformed transaction journals fail closed without mutating canonical state or append-only history.",
     "Transaction recovery and standalone auditing now validate txid, state, and event shapes before checksum or mutation, with stable field-specific diagnostics.",
     "Protected transaction checksums must be strings and exactly 64 lowercase hexadecimal characters before comparison; legacy journals without checksums remain readable.",
-    "Standalone integrity auditing must reject non-object event records and non-object transaction journals with deterministic diagnostics instead of uncaught type errors."
+    "Standalone integrity auditing must reject non-object event records and non-object transaction journals with deterministic diagnostics instead of uncaught type errors.",
+    "Legacy transaction journals without checksums must still pass through the same required-shape validation before being accepted as readable."
   ],
-  "next_action": "Verify the new non-object audit hardening through GitHub Actions; if green, inspect validate/recovery integration for any remaining path that can bypass standalone integrity diagnostics.",
-  "revision": 27,
-  "updated_at": "2026-09-22T00:37:06Z"
+  "next_action": "Verify commits 4f4f5095e30374b816d641333f3bb8e14b73cac6 and c8c50473d8f6d03d79d57828b0c7869e39263090 through GitHub Actions; if green, inspect whether continuity.py validate should invoke the same non-mutating integrity diagnostics or remain intentionally separate.",
+  "revision": 28,
+  "updated_at": "2026-09-22T01:34:00Z"
 }
