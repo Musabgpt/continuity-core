@@ -11,6 +11,7 @@ from continuity import ROOT, audit_all, project_lock, raw_state, verify_tx_check
 def validate_payload(root=ROOT):
     continuity.configure_root(root)
     errors = []
+    pending_transaction = None
     integrity = {"valid": True, "checked": {"events": 0, "transaction": 0}, "first_break": None, "schema_version": 1}
     with project_lock():
         try:
@@ -18,7 +19,10 @@ def validate_payload(root=ROOT):
                 tx = json.loads(continuity.TXN.read_text(encoding="utf-8"))
                 verify_tx_shape(tx)
                 verify_tx_checksum(tx)
+                pending_transaction = {"present": True, "txid": tx["txid"]}
                 errors.append("transaction journal pending; recovery required")
+            else:
+                pending_transaction = {"present": False, "txid": None}
             state = raw_state()
         except (SystemExit, json.JSONDecodeError) as exc:
             return {
@@ -26,6 +30,7 @@ def validate_payload(root=ROOT):
                 "valid": False,
                 "errors": [str(exc)],
                 "integrity": integrity,
+                "pending_transaction": pending_transaction or {"present": True, "txid": None},
             }
         integrity = audit_all(continuity.ROOT)
         if not integrity["valid"]:
@@ -76,6 +81,7 @@ def validate_payload(root=ROOT):
         "valid": not errors,
         "errors": errors,
         "integrity": integrity,
+        "pending_transaction": pending_transaction,
     }
 
 
