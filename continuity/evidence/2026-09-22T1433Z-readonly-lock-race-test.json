@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "claim": "The disappearing-lock race is covered by a focused regression test.",
+  "implementation_commit": "c3837cd0ce7d444f695975ac1210cbb516ca230b",
+  "test_commit": "a1133cecf724f03e98d47f0e5c8f6d9af3c0a7a4",
+  "test_path": "tests/test_readonly_lock_race.py",
+  "assertions": [
+    "A lock file exists before entry.",
+    "The file disappears between exists() and open().",
+    "The read-only context yields without recreating the file.",
+    "The final assertion confirms no lock file remains."
+  ],
+  "verification": {
+    "local_tests": "not_run_in_automation_turn",
+    "github_actions": "pending_or_unavailable"
+  },
+  "next_action": "Inspect remaining read-only entrypoints for project_lock() side effects and query CI for the implementation and regression-test commits."
+}
