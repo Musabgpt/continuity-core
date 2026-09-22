@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "implementation_evidence",
+  "decision": "Structured validation must contain invalid UTF-8 in canonical continuity files with a stable diagnostic instead of leaking UnicodeDecodeError text.",
+  "scope": "continuity_validate_json.py and tests/test_validate_json_invalid_utf8_contract.py",
+  "implementation_commit": "c858d1585e451e7ef4be0b5e2095351ca3826e99",
+  "test_commit": "cbbf4e83fc9c453ce0bc94fc304d04a0679d3bca",
+  "verification": {
+    "local_tests": "not run in this automation turn",
+    "ci_workflow_runs": "not yet observed",
+    "ci_status": "unverified"
+  },
+  "observed_contract": {
+    "diagnostic": "continuity file encoding invalid",
+    "canonical_files_mutated": false,
+    "transaction_created": false
+  },
+  "next_action": "Inspect CI for c858d1585e451e7ef4be0b5e2095351ca3826e99 and cbbf4e83fc9c453ce0bc94fc304d04a0679d3bca; then audit recovery and snapshot readers for uncaught UnicodeDecodeError paths."
+}
