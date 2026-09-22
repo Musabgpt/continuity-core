@@ -1,0 +1,17 @@
+{
+  "change": "Structured validation now contains non-object state payloads with a deterministic diagnostic.",
+  "implementation_commit": "cfe00714259e4be72a1ad3d2ac11f96022386ff0",
+  "test_commit": "76450c8b95b6d973956df15efba104dbb99b7372",
+  "verification": {
+    "local_tests": "not run in this automation turn",
+    "ci_workflow_runs": "pending lookup after commits",
+    "status_checks": "pending lookup after commits"
+  },
+  "invariants": [
+    "structured validation remains non-mutating",
+    "explicit root isolation is preserved",
+    "non-object state payloads do not leak AttributeError or parser-specific text",
+    "legacy human-readable validate behavior is unchanged"
+  ],
+  "next_action": "Query CI for the implementation, regression test, evidence, and state commits; if CI is still absent, inspect remaining structured-validation paths for uncaught non-object event/transaction payloads."
+}
