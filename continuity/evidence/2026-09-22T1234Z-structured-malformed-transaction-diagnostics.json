@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "decision": "Structured validation must distinguish valid pending journals from malformed pending journals with deterministic diagnostics and must not mutate canonical files.",
+  "implementation": {
+    "validator_commit": "a002191d27a42b6e351cae82caa31a3d242e5348",
+    "test_commit": "f97aa46843eca778b9d6dbb2dfde845cd48746a1"
+  },
+  "verified": [
+    "Malformed transaction journals produce a stable pending_transaction object with present=true, valid=false, txid=null, and a field-specific error.",
+    "The regression test asserts state.json, events.jsonl, and transaction.json remain byte-identical after validation."
+  ],
+  "unverified": [
+    "GitHub Actions status for these commits was not available during this run.",
+    "Local test execution was not available through the repository connector."
+  ],
+  "next_action": "Check CI for the validator and regression-test commits; if green, harden read-only locking so validation and snapshots do not create a lock file when none exists."
+}
