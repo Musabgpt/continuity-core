@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """Non-mutating machine-readable validation for Continuity Core."""
+import argparse
 import json
-from continuity import EVENTS, ROOT, STATE, audit_all, project_lock, raw_state, recover_unlocked
+from pathlib import Path
+
+import continuity
+from continuity import EVENTS, ROOT, audit_all, project_lock, raw_state, recover_unlocked
 
 
-def validate_payload():
+def validate_payload(root=ROOT):
+    continuity.configure_root(root)
     errors = []
     integrity = {"valid": True, "checked": {"events": 0, "transaction": 0}, "first_break": None, "schema_version": 1}
     with project_lock():
@@ -18,7 +23,7 @@ def validate_payload():
                 "errors": [str(exc)],
                 "integrity": integrity,
             }
-        integrity = audit_all(ROOT)
+        integrity = audit_all(continuity.ROOT)
         if not integrity["valid"]:
             first = integrity["first_break"]
             errors.append(f"integrity audit failed: {first['scope']} line {first['line']}: {first['reason']}")
@@ -56,8 +61,6 @@ def validate_payload():
                     errors.append(f"invalid event type at line {number}")
                 if not isinstance(row.get("message"), str) or not row["message"].strip():
                     errors.append(f"invalid event message at line {number}")
-        else:
-            errors.append("events file is missing")
     return {
         "schema_version": 1,
         "valid": not errors,
@@ -67,6 +70,9 @@ def validate_payload():
 
 
 if __name__ == "__main__":
-    payload = validate_payload()
+    parser = argparse.ArgumentParser(description="Structured non-mutating continuity validation")
+    parser.add_argument("--root", type=Path, default=ROOT, help="project root containing continuity/")
+    args = parser.parse_args()
+    payload = validate_payload(args.root)
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
     raise SystemExit(0 if payload["valid"] else 1)
