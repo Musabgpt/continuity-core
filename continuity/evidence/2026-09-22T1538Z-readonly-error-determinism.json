@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "change": "read-only snapshot errors now use deterministic category messages",
+  "implementation_commit": "4d04bab36003029b2efac16fcd8af9e5bf4a03df",
+  "test_commit": "0efbc17eac2204aa18879a8a3cc21edeba376e5e",
+  "verification": {
+    "local_tests": "not_run_in_automation",
+    "github_actions": "pending_or_unavailable",
+    "status_checks": "not_observed"
+  },
+  "evidence": [
+    "Malformed JSON no longer exposes traceback-dependent JSONDecodeError text.",
+    "Error categories are stable for malformed JSON, missing files, permission errors, filesystem errors, validation failures, and unknown read failures.",
+    "Existing read-only behavior and explicit-root isolation are preserved."
+  ],
+  "next_action": "Inspect all remaining read-only entrypoints for raw exception text or implicit filesystem mutation, then query CI for commits 4d04bab36003029b2efac16fcd8af9e5bf4a03df and 0efbc17eac2204aa18879a8a3cc21edeba376e5e."
+}
