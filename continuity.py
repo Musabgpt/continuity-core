@@ -4,6 +4,8 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
+from continuity_integrity import audit_all
+
 ROOT=Path(__file__).resolve().parent
 DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
 LATEST_SCHEMA=2; SUPPORTED_SCHEMAS={1,2}
@@ -143,6 +145,10 @@ def validate(_):
     with project_lock():
         try: recover_unlocked(); s=raw_state()
         except (SystemExit,json.JSONDecodeError,KeyError) as exc: print("INVALID: "+str(exc)); return 1
+        integrity = audit_all(ROOT)
+        if not integrity["valid"]:
+            first = integrity["first_break"]
+            errors.append("integrity audit failed: "+first["scope"]+" line "+str(first["line"])+": "+first["reason"])
         req={"schema_version":int,"project":str,"goal":str,"status":str,"constraints":list,"decisions":list,"next_action":(str,type(None)),"updated_at":str}
         for k,t in req.items():
             if k not in s: errors.append("missing state field: "+k)
@@ -182,7 +188,7 @@ def handoff_payload():
 
 def handoff(args):
     p=handoff_payload()
-    if args.format=="json": print(json.dumps(p,ensure_ascii=False,sort_keys=True,separators=(",",":"))); return 0
+    if args.format=="json": print(json.dumps(p,ensure_ascii=False,sort_keys=True,separators=(",", ":"))); return 0
     print(f"# {p['project']} — handoff\nGoal: {p['goal']}\nStatus: {p['status']}")
     if "revision" in p: print(f"Revision: {p['revision']}")
     if p["constraints"]: print("Constraints: "+"; ".join(p["constraints"]))
