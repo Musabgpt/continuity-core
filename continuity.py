@@ -186,7 +186,10 @@ def migrate(_):
 
 def handoff_payload():
     with project_lock():
-        s=load_state_unlocked(); events=read_events_unlocked(); failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]
+        if TXN.exists():
+            tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx)
+            raise SystemExit("Pending transaction journal; run a mutating command or recovery before requesting handoff.")
+        s=raw_state(); events=read_events_unlocked(); failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if e.get("type")=="failure"][-5:]
         p={"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],"constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,"next_action":s.get("next_action")}
         if s["schema_version"]>=2: p["revision"]=s["revision"]
         return p
