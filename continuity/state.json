@@ -48,9 +48,10 @@
     "Structured validation must accept an explicit project root and rebind continuity paths before recovery or audit so tests and callers cannot accidentally validate the checkout containing the script.",
     "Structured validation must read event records through the configured root after rebinding; imported path constants must not bypass explicit-root isolation.",
     "Structured JSON validation must remain non-mutating: pending transaction journals are validated and reported, never recovered or deleted by the validator.",
-    "Read-only handoff must not recover or delete a pending transaction journal; it fails closed with a stable message until a mutating path completes recovery."
+    "Read-only handoff must not recover or delete a pending transaction journal; it fails closed with a stable message until a mutating path completes recovery.",
+    "Read-only event readers must not call recovery implicitly; recovery is reserved for explicit mutating or recovery paths."
   ],
-  "next_action": "Verify CI for commits 74003479a7668945a13aa1215dcb5554b1ae3da7 and 7e5d7500e92963051381e2002c1da7d3582007a; if green, inspect any remaining read-only commands for implicit recovery and document the read-vs-recover command boundary.",
-  "revision": 34,
-  "updated_at": "2026-09-22T06:37:00Z"
+  "next_action": "Verify CI for commits 6f4df2a54bbdc9db73dd1ab779332299437ebde2 and 5523210877bed1c1ee027a6e08f8f9f6cea288b8; if green, inspect the remaining read-only entrypoints for implicit mutation and document the command boundary.",
+  "revision": 35,
+  "updated_at": "2026-09-22T08:34:26Z"
 }
