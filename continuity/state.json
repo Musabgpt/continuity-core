@@ -51,9 +51,10 @@
     "Read-only handoff must not recover or delete a pending transaction journal; it fails closed with a stable message until a mutating path completes recovery.",
     "Read-only event readers must not call recovery implicitly; recovery is reserved for explicit mutating or recovery paths.",
     "Explicit-root read-only snapshots must expose state and event metadata without recovery, deletion, or other file mutation, while reporting pending transactions deterministically.",
-    "Read-only snapshot failures must return a stable schema-versioned error object instead of exposing traceback-dependent exceptions."
+    "Read-only snapshot failures must return a stable schema-versioned error object instead of exposing traceback-dependent exceptions.",
+    "continuity.py validate must not recover pending transaction journals implicitly; validation is read-only and reports a stable pending-journal diagnostic while preserving all canonical files."
   ],
-  "next_action": "Verify CI for commits 86c92113f3336fb392965abb66ef91c93a9d6e15 and bfb162ce76aa834e3e28a8a21d50a32091d425a8; if green, harden continuity.py validate so its read-only validation path does not recover pending journals implicitly, or document the remaining mutation boundary with a regression test.",
-  "revision": 37,
-  "updated_at": "2026-09-22T09:36:00Z"
+  "next_action": "Verify CI for commits 2b9326e5c3fbc2688bf92eb914482e748187b172 and 4ba01b4da2a0e51b0dda6eed655df20680fbad16; if green, inspect the validator's explicit-root command-line surface and add a structured pending-journal result without changing legacy human output.",
+  "revision": 38,
+  "updated_at": "2026-09-22T10:34:00Z"
 }
