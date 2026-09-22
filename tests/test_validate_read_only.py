@@ -28,9 +28,14 @@ def test_validate_does_not_recover_pending_transaction(tmp_path):
     before = {p: p.read_bytes() for p in (continuity_dir / "state.json", continuity_dir / "events.jsonl", txn)}
 
     repo_root = Path(__file__).resolve().parents[1]
+    code = (
+        "import continuity,sys; "
+        "continuity.configure_root(sys.argv[1]); "
+        "raise SystemExit(continuity.validate(None))"
+    )
     result = subprocess.run(
-        [sys.executable, "continuity.py", "validate"],
-        cwd=root,
+        [sys.executable, "-c", code, str(root)],
+        cwd=repo_root,
         text=True,
         capture_output=True,
     )
