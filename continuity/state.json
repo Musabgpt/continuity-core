@@ -43,9 +43,10 @@
     "Protected transaction checksums must be strings and exactly 64 lowercase hexadecimal characters before comparison; legacy journals without checksums remain readable.",
     "Standalone integrity auditing must reject non-object event records and non-object transaction journals with deterministic diagnostics instead of uncaught type errors.",
     "Legacy transaction journals without checksums must still pass through the same required-shape validation before being accepted as readable.",
-    "continuity.py validate now invokes the non-mutating aggregate integrity audit and fails closed with a stable scope/line/reason diagnostic before reporting VALID."
+    "continuity.py validate now invokes the non-mutating aggregate integrity audit and fails closed with a stable scope/line/reason diagnostic before reporting VALID.",
+    "Structured validation belongs in a separate non-mutating JSON entrypoint so machine consumers get stable diagnostics without changing the human-readable validate contract."
   ],
-  "next_action": "Verify CI for commits 9b71c566fdcf4bb40abd01777656770b936c88c4 and fac20f1d18b343eb4c8540bd68c67cd1db202fb2; if green, inspect whether validate should expose structured JSON diagnostics without changing its human-readable contract.",
-  "revision": 29,
-  "updated_at": "2026-09-22T02:35:00Z"
+  "next_action": "Verify CI for commits a96835e210cb98a806a2573d2b1383a0cac19218 and 87b52bfc3f77015610c07ffc6585657ca28bdb99; if green, fix the JSON entrypoint test to isolate an explicit root before adding further validation fields.",
+  "revision": 30,
+  "updated_at": "2026-09-22T03:31:16Z"
 }
