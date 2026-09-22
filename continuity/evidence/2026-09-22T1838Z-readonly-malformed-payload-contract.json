@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "change": "Contain malformed read-only payload failures deterministically",
+  "implementation_commit": "ff11a56147e6c5bb24fcfe2f7ac311ca4be8e4c6",
+  "test_commit": "70dc6a4f5154a6c300608f7e9a3955ba9d747bab",
+  "verification": {
+    "local_tests_run": false,
+    "ci_workflow_runs_for_prior_head": [],
+    "status_checks_for_prior_head": [],
+    "result": "unverified"
+  },
+  "invariants": [
+    "read-only snapshot does not invoke recovery",
+    "malformed non-object state is reported as a stable validation failure",
+    "no canonical files are mutated by the snapshot path"
+  ],
+  "next_action": "Inspect continuity_validate_json.py and remaining read-only entrypoints for uncaught non-object payload failures; query CI for the new commits when workflow or status data is available."
+}
