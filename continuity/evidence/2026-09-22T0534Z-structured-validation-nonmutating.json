@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "title": "Structured validation is non-mutating",
+  "decision": "Remove recovery side effects from continuity_validate_json.py; inspect pending transaction journals and report them without changing state, events, or journal files.",
+  "changed_files": [
+    "continuity_validate_json.py",
+    "tests/test_validate_json_entrypoint.py",
+    "continuity/state.json"
+  ],
+  "implementation_commits": [
+    "6a497009809487c45b43a962a472bfc450704afb",
+    "6f19c81e5a80fd6dfb9984b36361691a972ee769",
+    "def3cce9f01c67b0129e5edfc4a51162b1d67301"
+  ],
+  "checks": [
+    "The JSON validator no longer calls recover_unlocked().",
+    "A pending transaction is shape/checksum validated, then reported with a stable error.",
+    "Regression coverage asserts state.json, events.jsonl, and transaction.json bytes remain unchanged.",
+    "The explicit-root path remains the source of all inspected files."
+  ],
+  "verification": {
+    "local_execution": "not available through the repository connector in this run",
+    "github_actions": "not checked yet for the new commits",
+    "claim": "implementation and regression fixture are recorded; runtime success remains unverified until CI or an equivalent local run is observed"
+  },
+  "next_action": "Check CI for the implementation and test commits. If green, audit handoff/read-only commands for recovery side effects and add a focused contract test if needed.",
+  "forbidden_scope_respected": "H33 was not accessed, searched, inspected, modified, or otherwise used."
+}
