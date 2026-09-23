@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "status": "pending_verification",
+  "scope": "canonical-state-reconciliation",
+  "observations": [
+    "The repository contains a newer CI contract sequence through the exact Python 3.12.8 patch pin, but continuity/state.json still pointed to the earlier runner-image checkpoint.",
+    "GitHub Actions returned no workflow runs for commit bb7936004a6185b4ca31011ad6da457f8c23e0d0 at inspection time, so verification remains pending rather than being inferred.",
+    "The canonical state is being advanced to record the latest deterministic boundary and the exact next verification action."
+  ],
+  "implementation_commits": [
+    "8f0a242a5a5ad599a8e435b3802266b5dd0dbf1f",
+    "bb7936004a6185b4ca31011ad6da457f8c23e0d0",
+    "04b40b42c85bb43137f8482de70f2c374e61ccc3"
+  ],
+  "verification": {
+    "local_static": "pass",
+    "github_actions": "pending"
+  },
+  "next_action": "Re-check GitHub Actions for the Python patch contract commits; if a green run appears, update this evidence and canonical state to verified before selecting the next deterministic boundary gap."
+}
