@@ -7,6 +7,14 @@ from pathlib import Path
 import continuity
 
 
+OUTPUT_SCHEMA_VERSION = 1
+
+
+def emit(payload):
+    payload = {"schema_version": OUTPUT_SCHEMA_VERSION, "operation": "recover", **payload}
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Recover a pending Continuity Core transaction")
     parser.add_argument("--root", default=".", help="Project root containing the continuity/ directory")
@@ -17,9 +25,9 @@ def main(argv=None):
         with continuity.project_lock():
             recovered = continuity.recover_unlocked()
     except SystemExit as exc:
-        print(json.dumps({"recovered": False, "error": str(exc)}, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+        emit({"recovered": False, "error": str(exc)})
         return 1
-    print(json.dumps({"recovered": bool(recovered), "root": str(root)}, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+    emit({"recovered": bool(recovered), "root": str(root)})
     return 0
 
 
