@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "subject": "ci-execution-boundary-contract",
+  "status": "pending_verification",
+  "changed": [
+    ".github/workflows/ci.yml",
+    "tests/test_ci_execution_boundary_contract.py"
+  ],
+  "claims": [
+    "CI runs are serialized per ref without cancellation so evidence-producing runs are not silently discarded.",
+    "CI has an explicit ten-minute upper bound to prevent indefinite execution."
+  ],
+  "verification": {
+    "local_static_check": "workflow contains concurrency group, cancel-in-progress false, and timeout-minutes 10",
+    "github_actions": "pending"
+  },
+  "next_action": "Re-check the workflow run for commit 60f1f6f09f901e5f3ce763221e59782e43e3618d; if green, update continuity/state.json with verified evidence and select the next deterministic contract gap."
+}
