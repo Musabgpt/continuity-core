@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "goal": "Lock deterministic CI trigger and permission boundaries.",
+  "status": "pending_verification",
+  "observations": [
+    "The current workflow runs on push and pull_request.",
+    "The workflow declares contents: read permissions.",
+    "The new contract test rejects write-capable token configuration."
+  ],
+  "changes": [
+    "Added tests/test_ci_trigger_contract.py.",
+    "The test uses only Python standard-library unittest and reads the workflow as text."
+  ],
+  "verification": {
+    "local": "not-executed-in-remote-only-run",
+    "ci": "pending"
+  },
+  "next_action": "Re-check the workflow result for commit cb54d83dc4376cf0034fb792bee1782a870c7f1c; if green, mark this contract verified and select the next highest-signal deterministic gap."
+}
