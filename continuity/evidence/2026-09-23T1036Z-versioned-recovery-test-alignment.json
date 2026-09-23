@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "topic": "versioned explicit recovery output contract",
+  "status": "pending_verification",
+  "commit": "d21af7abfdf9839d67482f5ac23543cf36f6d169",
+  "observed_issue": "The implementation emits schema_version and operation fields, while the existing explicit recovery test still asserted the pre-versioned output shape.",
+  "change": "Updated tests/test_explicit_recovery_entrypoint.py to assert the deterministic versioned output for both recovery and no-op replay.",
+  "verification": {
+    "local": "not_available_through_connector",
+    "ci": "pending"
+  },
+  "next_action": "Re-check CI for the alignment commit; if green, record the versioned recovery output contract as verified and then add a focused error-path contract test for deterministic failure JSON."
+}
