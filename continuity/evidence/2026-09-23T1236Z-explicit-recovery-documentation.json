@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "title": "Document explicit recovery entrypoint and read-only boundary",
+  "status": "pending_verification",
+  "commit": "9ec2dc92fd56c7b3fa01e8d174c2c50dc231da3d",
+  "changes": [
+    "Documented continuity_recover.py in README.md.",
+    "Documented versioned success/no-op and error envelopes.",
+    "Documented idempotent recovery and byte-preserving failure behavior.",
+    "Documented that handoff and validation remain read-only and do not recover pending transactions implicitly."
+  ],
+  "verification": {
+    "local": "not run in this automation turn",
+    "ci": "pending"
+  },
+  "reasoning": "The repository already had an explicit recovery entrypoint and tests, but the operational contract was not documented for future AI sessions or operators. Documentation is a low-risk, high-leverage deterministic continuity improvement that does not change production semantics.",
+  "next_action": "Re-check CI for commit 9ec2dc92fd56c7b3fa01e8d174c2c50dc231da3d; if green, mark this evidence verified and select the next highest-signal deterministic contract gap."
+}
