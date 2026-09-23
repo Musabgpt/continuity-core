@@ -14,3 +14,5 @@ jobs:
           python-version: "3.12"
       - run: python -m unittest discover -s tests -v
       - run: python continuity.py validate
+      - run: python continuity_validate_json.py --root .
+      - run: python continuity_integrity.py --audit-all --root .
