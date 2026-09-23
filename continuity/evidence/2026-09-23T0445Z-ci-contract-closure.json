@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "topic": "ci-contract-mismatch-fixes",
+  "observed_failure": {
+    "workflow_run": 35819052904,
+    "head_sha": "362c9233983062afa3abfe3730de75a9d37cb219",
+    "conclusion": "failure",
+    "failed_tests": [
+      "test_pending_transaction_is_rejected_without_mutation",
+      "test_explicit_root_isolated_from_repository_state",
+      "test_malformed_transaction_has_stable_diagnostic_without_mutation"
+    ]
+  },
+  "changes": [
+    {
+      "path": "continuity_validate_json.py",
+      "change": "Suppress duplicate aggregate transaction diagnostic when the malformed transaction status already provides the canonical error."
+    },
+    {
+      "path": "tests/test_handoff_read_only.py",
+      "change": "Run handoff subprocess from an isolated project copy containing both continuity.py and continuity_integrity.py."
+    },
+    {
+      "path": "tests/test_validate_json_entrypoint.py",
+      "change": "Make explicit-root isolation test use an invalid project field type so it asserts the intended contract."
+    }
+  ],
+  "verification": {
+    "status": "pending",
+    "method": "GitHub Actions unittest suite on the resulting commits",
+    "note": "No green CI claim until the new workflow run completes successfully."
+  },
+  "next_action": "Re-check the workflow triggered by commits 62a5f45d8d19f645b5d4691aa08d8c33bcebe208, e59ac88989271ca2e96a550998980d95797cd57d, and 22a2342ccbe9d08d675c6c4e26e2ace49a6d9f18; fix the next highest-signal failure without changing production semantics."
+}
