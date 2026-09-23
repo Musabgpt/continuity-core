@@ -67,6 +67,22 @@ Recovery fails closed before changing `continuity/state.json` or `continuity/eve
 
 The standalone audit reports the same conditions as machine-readable `first_break.reason` values without mutating files.
 
+### Explicit recovery entrypoint
+When a mutating command leaves `continuity/transaction.json` pending, use the dedicated entrypoint instead of relying on a read-only command to recover it implicitly:
+
+```bash
+python continuity_recover.py --root .
+```
+
+The entrypoint is explicit and machine-readable:
+
+- Success/no-op: exit `0`; JSON includes `schema_version: 1`, `operation: "recover"`, and `recovered: true|false`.
+- Failure: exit `1`; JSON keeps the same versioned envelope and includes a stable `error` string.
+- Recovery is idempotent: rerunning after a successful recovery is a no-op and does not duplicate events.
+- On failure, `state.json`, `events.jsonl`, and `transaction.json` are preserved byte-for-byte.
+
+This command is the only supported read/write recovery path. `handoff` and validation commands remain read-only and fail closed when a pending transaction is present.
+
 ## Design rules
 1. State is small and inspectable.
 2. Events are append-only evidence.
