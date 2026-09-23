@@ -68,9 +68,10 @@
     "Mutating recovery must contain malformed transaction UTF-8 and related read failures behind deterministic diagnostics before any canonical file mutation.",
     "Human-readable handoff and validate paths must contain event-journal permission, OS, JSON, UTF-8, and non-object failures behind deterministic diagnostics.",
     "Mutating event commands must fail closed with stable diagnostics when the pre-existing append-only event journal is malformed, leaving canonical state and event bytes unchanged while retaining the durable transaction for explicit recovery.",
-    "Mutating set_next must preserve canonical state and malformed append-only event bytes while retaining its durable transaction when recovery cannot parse the pre-existing journal."
+    "Mutating set_next must preserve canonical state and malformed append-only event bytes while retaining its durable transaction when recovery cannot parse the pre-existing journal.",
+    "Recovery must contain unexpected RuntimeError failures behind a stable transaction recovery diagnostic before any canonical state or event mutation; a focused regression test now locks this boundary."
   ],
-  "next_action": "Re-check CI for regression commit 416097618b275c7385222557a79c5f64ad139723 and evidence commit 1e71aa96bfecf94145bf65c2c834ba4923fd896c, then inspect whether recovery diagnostics need an explicit RuntimeError containment contract across all mutating entrypoints.",
-  "revision": 54,
-  "updated_at": "2026-09-23T02:34:56Z"
+  "next_action": "Implement the RuntimeError recovery catch required by tests/test_recovery_runtimeerror_contract.py, then verify the regression through CI before moving to the next mutating-entrypoint boundary.",
+  "revision": 55,
+  "updated_at": "2026-09-23T03:01:00Z"
 }
