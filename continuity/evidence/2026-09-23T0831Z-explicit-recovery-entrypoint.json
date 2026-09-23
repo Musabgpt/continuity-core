@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "scope": "explicit recovery entrypoint",
+  "implemented_commits": [
+    "ddecd0479cc547408c4c73338f60c1aecd58d473",
+    "af40e666620f69139fb14565ac032103e3532d12"
+  ],
+  "change": "Added continuity_recover.py as an explicit mutating recovery entrypoint and a subprocess contract test proving one-shot recovery plus no-op replay.",
+  "verification": {
+    "implementation_run": {
+      "run_id": 35832198794,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "contract_test_run": {
+      "run_id": 35832209122,
+      "status": "in_progress",
+      "conclusion": null
+    }
+  },
+  "next_action": "Re-check run 35832209122; if green, update the canonical state revision and then target the next highest-value deterministic boundary without changing recovery semantics."
+}
