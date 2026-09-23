@@ -66,9 +66,10 @@
     "Structured validation must contain invalid UTF-8 in canonical continuity files with a stable diagnostic instead of leaking UnicodeDecodeError text.",
     "Human-readable validate and handoff paths must contain invalid UTF-8 with the same stable diagnostic used by structured readers.",
     "Mutating recovery must contain malformed transaction UTF-8 and related read failures behind deterministic diagnostics before any canonical file mutation.",
-    "Human-readable handoff and validate paths must contain event-journal permission, OS, JSON, UTF-8, and non-object failures behind deterministic diagnostics before exposing results."
+    "Human-readable handoff and validate paths must contain event-journal permission, OS, JSON, UTF-8, and non-object failures behind deterministic diagnostics.",
+    "Mutating event commands must fail closed with stable diagnostics when the pre-existing append-only event journal is malformed, leaving canonical state and event bytes unchanged while retaining the durable transaction for explicit recovery."
   ],
-  "next_action": "Re-check CI for commits 91fdf63c4594ed2efb1f682b31e399f1d5cc4507 and 9d776b6cedf84637f828a9cfd6d6a9c0f0df9cbb, then audit remaining mutating entrypoints for uncaught event journal read failures.",
-  "revision": 52,
-  "updated_at": "2026-09-23T00:32:00Z"
+  "next_action": "Re-check CI for corrected test commit fcb89b4407254cd6765a734fc2e760e63a583eba, then inspect other mutating entrypoints that call recover_unlocked() for equivalent malformed event-journal boundaries.",
+  "revision": 53,
+  "updated_at": "2026-09-23T00:39:00Z"
 }
