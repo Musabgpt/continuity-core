@@ -73,9 +73,11 @@
     "CI run 35809414958 failed because the new RuntimeError recovery regression was ahead of the corresponding implementation catch; the failure is recorded as a required fix rather than a verified feature.",
     "The minimal RuntimeError containment fix was applied in commit 063634cf75a9f576d4665ef5e9654b00e3f876dc; verification remained pending until CI.",
     "CLI isolation fixtures must copy continuity_integrity.py alongside continuity.py so subprocess tests exercise the same integrity implementation as the repository.",
-    "The unittest CI suite must not rely on undeclared pytest dependencies; the invalid-UTF8 recovery contract is expressed with standard-library unittest assertions."
+    "The unittest CI suite must not rely on undeclared pytest dependencies; the invalid-UTF8 recovery contract is expressed with standard-library unittest assertions.",
+    "Read-only pending-transaction tests must execute against isolated temporary projects and assert non-mutation rather than implicit recovery.",
+    "Recovery, locking, and transaction-shape subprocess fixtures now include continuity_integrity.py and use the isolated project as cwd to prevent repository-state leakage."
   ],
-  "next_action": "Re-check workflow run 35814841633; if green, record the fixture/dependency closure as verified and inspect the next highest-value deterministic boundary without changing unrelated behavior.",
-  "revision": 58,
-  "updated_at": "2026-09-23T03:35:00Z"
+  "next_action": "Re-check the CI run triggered by commits 6b938c5f8fa340a596604fd7c256100e91aa5063, df31c3030007f20724f40949e1f0fb3b7568375c, and 08489a6ece7204acd434146138c1d391fc36baa3; if failures remain, fix the highest-signal contract mismatch without changing production semantics.",
+  "revision": 59,
+  "updated_at": "2026-09-23T03:45:00Z"
 }
