@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "engineering-evidence",
+  "change": "recovery idempotence contract",
+  "commit": "85ed31d62bc9e590bc45daf91a3297f2b577e904",
+  "implemented": [
+    "Added a standard-library unittest proving a durable pending transaction is replayed once.",
+    "The second recovery attempt is a no-op and preserves the single event record.",
+    "The test uses an isolated temporary project and the repository's real continuity.py implementation."
+  ],
+  "verification": {
+    "ci": "pending",
+    "reason": "A new test commit was pushed; GitHub Actions result was not yet available during this run."
+  },
+  "next_action": "Re-check CI for commit 85ed31d62bc9e590bc45daf91a3297f2b577e904; if green, record the recovery idempotence contract as verified and continue to the next highest-value deterministic boundary."
+}
