@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "recorded_at": "2026-09-23T16:36:00Z",
+  "scope": "ci-runtime-contract",
+  "status": "pending_verification",
+  "change": {
+    "commit": "73f1c49558edfb75cde9beadcae1c1f63fa7dd9e",
+    "summary": "Added a standard-library unittest contract requiring an explicit Python 3.12 runtime and stable major-version GitHub Actions references, rejecting floating main references."
+  },
+  "local_verification": {
+    "performed": true,
+    "method": "Static inspection of .github/workflows/ci.yml and test source; CI execution is still required."
+  },
+  "next_action": "Re-check CI for the runtime-contract commit; if green, record verified status and select the next deterministic gap without changing production semantics."
+}
