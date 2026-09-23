@@ -28,12 +28,22 @@ def test_explicit_recovery_entrypoint_recovers_only_when_transaction_exists(tmp_
     script = Path(__file__).resolve().parents[1] / "continuity_recover.py"
     first = subprocess.run([sys.executable, str(script), "--root", str(root)], text=True, capture_output=True)
     assert first.returncode == 0, first.stderr
-    assert json.loads(first.stdout) == {"recovered": True, "root": str(root.resolve())}
+    assert json.loads(first.stdout) == {
+        "schema_version": 1,
+        "operation": "recover",
+        "recovered": True,
+        "root": str(root.resolve()),
+    }
     assert not (continuity_dir / "transaction.json").exists()
     assert json.loads((continuity_dir / "state.json").read_text(encoding="utf-8"))["next_action"] == "done"
     assert len((continuity_dir / "events.jsonl").read_text(encoding="utf-8").splitlines()) == 1
 
     second = subprocess.run([sys.executable, str(script), "--root", str(root)], text=True, capture_output=True)
     assert second.returncode == 0, second.stderr
-    assert json.loads(second.stdout) == {"recovered": False, "root": str(root.resolve())}
+    assert json.loads(second.stdout) == {
+        "schema_version": 1,
+        "operation": "recover",
+        "recovered": False,
+        "root": str(root.resolve()),
+    }
     assert len((continuity_dir / "events.jsonl").read_text(encoding="utf-8").splitlines()) == 1
