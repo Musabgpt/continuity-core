@@ -1,0 +1,22 @@
+{
+  "kind": "evidence",
+  "scope": "CI fixture and read-only pending-transaction contract",
+  "observations": [
+    "Workflow 35814841633 failed in 8 tests.",
+    "Several subprocess fixtures copied continuity.py without continuity_integrity.py, causing ModuleNotFoundError.",
+    "Read-only validate and handoff tests were incorrectly asserting recovery or reading the repository root instead of the temporary project.",
+    "Recovery locking, recovery boundary, and transaction shape fixtures were updated to copy continuity_integrity.py and run with cwd set to the isolated project.",
+    "The read-only pending transaction contract is now asserted as non-mutating and rejecting pending journals."
+  ],
+  "commits": [
+    "6b938c5f8fa340a596604fd7c256100e91aa5063",
+    "df31c3030007f20724f40949e1f0fb3b7568375c",
+    "08489a6ece7204acd434146138c1d391fc36baa3"
+  ],
+  "verification": {
+    "status": "pending",
+    "workflow_run": null,
+    "reason": "A new CI run is required after the fixture corrections."
+  },
+  "next_action": "Re-check the next CI run; if failures remain, fix the highest-signal contract mismatch without changing production semantics."
+}
