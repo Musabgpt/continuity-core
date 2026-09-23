@@ -77,9 +77,10 @@
     "The explicit recovery entrypoint is documented as the supported mutating recovery path, while handoff and validation remain read-only and fail closed on pending transactions.",
     "CI must execute both machine-readable structured validation and aggregate integrity auditing, not only the legacy human-readable validator.",
     "CI trigger and permission boundaries are contract-tested: push and pull_request triggers are required and workflow permissions remain read-only.",
-    "CI execution boundaries are explicit: runs are serialized per ref without cancellation, and each run has a ten-minute timeout to prevent indefinite or silently discarded verification."
+    "CI execution boundaries are explicit: runs are serialized per ref without cancellation, and each run has a ten-minute timeout to prevent indefinite or silently discarded verification.",
+    "The CI runner image is explicitly pinned to ubuntu-24.04 and contract-tested so verification does not silently change when ubuntu-latest moves."
   ],
-  "next_action": "Re-check CI for commit 60f1f6f09f901e5f3ce763221e59782e43e3618d and evidence follow-up be57c3be004d6e0a3bfb37606e5a4110234b7abd; if green, mark the CI execution-boundary contract verified and select the next highest-signal deterministic contract gap.",
-  "revision": 63,
-  "updated_at": "2026-09-23T16:39:30Z"
+  "next_action": "Re-check GitHub Actions for commits 25405580026f5fecf6f18e2a022d2dcba5909e53 and b29b2f09e25367e85381c6d0f2279eaadf2d641f; if green, mark the explicit runner-image contract verified and select the next highest-signal deterministic contract gap.",
+  "revision": 64,
+  "updated_at": "2026-09-23T17:37:00Z"
 }
