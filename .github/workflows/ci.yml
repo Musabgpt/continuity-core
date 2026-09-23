@@ -11,6 +11,9 @@ env:
   PYTHONHASHSEED: "0"
   TZ: UTC
   LC_ALL: C.UTF-8
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
 jobs:
   test:
     runs-on: ubuntu-24.04
