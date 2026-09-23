@@ -70,9 +70,10 @@
     "Mutating event commands must fail closed with stable diagnostics when the pre-existing append-only event journal is malformed, leaving canonical state and event bytes unchanged while retaining the durable transaction for explicit recovery.",
     "Mutating set_next must preserve canonical state and malformed append-only event bytes while retaining its durable transaction when recovery cannot parse the pre-existing journal.",
     "Recovery must contain unexpected RuntimeError failures behind a stable transaction recovery diagnostic before any canonical state or event mutation; a focused regression test now locks this boundary.",
-    "CI run 35809414958 failed because the new RuntimeError recovery regression is ahead of the corresponding implementation catch; the failure is recorded as a required fix rather than a verified feature."
+    "CI run 35809414958 failed because the new RuntimeError recovery regression is ahead of the corresponding implementation catch; the failure is recorded as a required fix rather than a verified feature.",
+    "The minimal RuntimeError containment fix was applied in commit 063634cf75a9f576d4665ef5e9654b00e3f876dc; verification remains pending until CI run 35810966174 completes."
   ],
-  "next_action": "Apply the minimal RuntimeError catch to recover_unlocked without rewriting unrelated behavior, then require a passing CI run before marking revision 56 verified.",
-  "revision": 56,
-  "updated_at": "2026-09-23T03:03:00Z"
+  "next_action": "Re-check CI run 35810966174; if green, record verified revision and inspect the next highest-value deterministic boundary without changing unrelated behavior.",
+  "revision": 57,
+  "updated_at": "2026-09-23T03:05:00Z"
 }
