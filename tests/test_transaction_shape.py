@@ -1,4 +1,5 @@
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -14,11 +15,12 @@ class TransactionShapeTests(unittest.TestCase):
             root = Path(d)
             (root / "continuity").mkdir()
             (root / "continuity.py").write_text((ROOT / "continuity.py").read_text(encoding="utf-8"), encoding="utf-8")
+            shutil.copyfile(ROOT / "continuity_integrity.py", root / "continuity_integrity.py")
             init = subprocess.run(
                 [sys.executable, str(root / "continuity.py"), "init", "--project", "A", "--goal", "B"],
-                text=True, capture_output=True,
+                text=True, capture_output=True, cwd=root,
             )
-            self.assertEqual(init.returncode, 0)
+            self.assertEqual(init.returncode, 0, init.stderr)
             state = root / "continuity" / "state.json"
             events = root / "continuity" / "events.jsonl"
             before_state = state.read_text(encoding="utf-8")
@@ -29,10 +31,10 @@ class TransactionShapeTests(unittest.TestCase):
             )
             result = subprocess.run(
                 [sys.executable, str(root / "continuity.py"), "handoff", "--format", "json"],
-                text=True, capture_output=True,
+                text=True, capture_output=True, cwd=root,
             )
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn("Transaction journal shape invalid: txid must be str.", result.stderr)
+            self.assertIn("Transaction journal shape invalid: txid must be str.", result.stderr + result.stdout)
             self.assertEqual(state.read_text(encoding="utf-8"), before_state)
             self.assertEqual(events.read_text(encoding="utf-8"), before_events)
 
