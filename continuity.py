@@ -97,7 +97,7 @@ def recover_unlocked():
         tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx); txid=tx["txid"]
         if txid not in event_ids(): append_row(tx["event"])
         atomic_text(STATE,json.dumps(tx["state"],indent=2,ensure_ascii=False)+"\n"); TXN.unlink(); return True
-    except (SystemExit,json.JSONDecodeError,UnicodeDecodeError,OSError,TypeError,KeyError,AttributeError) as exc: raise SystemExit(_stable_recovery_error(exc))
+    except (SystemExit,json.JSONDecodeError,UnicodeDecodeError,OSError,TypeError,KeyError,AttributeError,RuntimeError) as exc: raise SystemExit(_stable_recovery_error(exc))
 def load_state_unlocked(): recover_unlocked(); return raw_state()
 def load_state():
     with project_lock(): return load_state_unlocked()
