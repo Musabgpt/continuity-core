@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "type": "implementation_evidence",
+  "area": "recovery",
+  "claim": "An unexpected RuntimeError during transaction recovery must be converted to the stable transaction recovery diagnostic without mutating canonical state, append-only history, or the pending transaction journal.",
+  "test_commit": "30c869830a8af570996d46d5ca95c0c89a7bf70c",
+  "test_path": "tests/test_recovery_runtimeerror_contract.py",
+  "implementation_status": "pending",
+  "verification_status": "unverified",
+  "reason": "The regression test is committed, but continuity.py still requires the corresponding RuntimeError catch; local execution is unavailable in this cycle and GitHub Actions status is not yet available.",
+  "next_action": "Add RuntimeError to the recover_unlocked containment boundary, then verify the focused regression and full suite through CI.",
+  "scope": "Musabgpt/continuity-core only",
+  "forbidden_scope": "H33 repository"
+}
