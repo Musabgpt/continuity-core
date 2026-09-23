@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "operation": "recovery_output_contract",
+  "status": "implemented_pending_ci",
+  "commit": "8feabae67f38eaae0862d6e132c19b50dcea046f",
+  "changes": [
+    "Added schema_version=1 and operation=recover to explicit recovery JSON output.",
+    "Preserved existing recovered/root fields and deterministic sorted compact serialization.",
+    "Added unittest coverage for no-pending-transaction output from an isolated project root."
+  ],
+  "verification": {
+    "local": "not available in connector runtime",
+    "ci": "pending"
+  },
+  "next_action": "Re-check CI for the output-contract commits; if green, record verification and move to the next highest-value deterministic boundary.",
+  "created_at": "2026-09-23T09:33:42+01:00"
+}
