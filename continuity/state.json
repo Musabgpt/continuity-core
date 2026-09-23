@@ -74,9 +74,10 @@
     "The unittest CI suite must not rely on undeclared pytest dependencies; the invalid-UTF8 recovery contract is expressed with standard-library unittest assertions.",
     "Read-only pending-transaction tests must execute against isolated temporary projects and assert non-mutation rather than implicit recovery.",
     "Recovery, locking, and transaction-shape subprocess fixtures now include continuity_integrity.py and use the isolated project as cwd to prevent repository-state leakage.",
-    "The explicit recovery entrypoint is documented as the supported mutating recovery path, while handoff and validation remain read-only and fail closed on pending transactions."
+    "The explicit recovery entrypoint is documented as the supported mutating recovery path, while handoff and validation remain read-only and fail closed on pending transactions.",
+    "CI must execute both machine-readable structured validation and aggregate integrity auditing, not only the legacy human-readable validator."
   ],
-  "next_action": "Re-check CI for commits 9ec2dc92fd56c7b3fa01e8d174c2c50dc231da3d and 6f4557d3fe5439e3bdbfedb98a62880cc3577327; if green, mark the explicit recovery documentation evidence verified and select the next highest-signal deterministic contract gap.",
-  "revision": 60,
+  "next_action": "Re-check CI for commit 88fdcb9a1660adefc082df4a6750b97734d053ad and its evidence follow-up; if green, mark CI structured-validation coverage verified and select the next highest-signal deterministic contract gap.",
+  "revision": 61,
   "updated_at": "2026-09-23T12:36:38Z"
 }
