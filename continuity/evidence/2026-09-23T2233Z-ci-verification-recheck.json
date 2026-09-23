@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "kind": "ci_verification_recheck",
+  "scope": "main",
+  "checked_commits": [
+    "bb7936004a6185b4ca31011ad6da457f8c23e0d0",
+    "8f0a242a5a5ad599a8e435b3802266b5dd0dbf1f",
+    "1e21cbb2c7fff3f1f891fdc77dfcb91f324954fc"
+  ],
+  "checks": {
+    "workflow_file_present": true,
+    "runner_pinned": true,
+    "python_patch_pinned": true,
+    "immutable_action_pins": true,
+    "process_environment_pinned": true,
+    "combined_status_count": 0,
+    "workflow_run_evidence": "not_observed"
+  },
+  "status": "pending_verification",
+  "reason": "GitHub returned no commit status entries for the latest reconciliation commit, so CI success cannot be claimed.",
+  "next_action": "Re-check workflow runs and commit status for the newest main commit; only mark the CI contracts verified after an observed successful run or status check."
+}
