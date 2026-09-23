@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "status": "pending_verification",
+  "scope": "ci-process-environment-contract",
+  "observations": [
+    "CI now sets PYTHONHASHSEED=0, TZ=UTC, and LC_ALL=C.UTF-8 at workflow scope.",
+    "A standard-library unittest contract test asserts the required markers and rejects random hash seeding."
+  ],
+  "implementation_commits": [
+    "81a1de5d53feac9cf3724a2c31d629492a9f0fb4",
+    "35afdb413f13bf449192c9856831a52220c8a92d"
+  ],
+  "verification": {
+    "local_static": "pass",
+    "github_actions": "pending"
+  },
+  "next_action": "Re-check GitHub Actions for the implementation commits; if green, mark this contract verified and select the next deterministic boundary gap."
+}
