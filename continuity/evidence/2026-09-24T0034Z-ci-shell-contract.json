@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "ci_contract",
+  "contract": "explicit_fail_closed_shell",
+  "status": "pending_verification",
+  "implemented_commits": {
+    "test": "bad01d291c7c02eeb9be7921dd99b54afff5517d",
+    "workflow": "696b315869e68c759e5d8d17f3bca6e5f74e3ba0"
+  },
+  "observations": [
+    "CI now declares bash --noprofile --norc -euo pipefail {0} for all run steps.",
+    "The contract test rejects an unspecified bash shell form.",
+    "No workflow run or commit status has yet been observed for the latest main commit."
+  ],
+  "next_action": "Re-check workflow runs and combined commit status for the latest main commit; mark this contract verified only after an observed successful run or status check."
+}
