@@ -78,9 +78,12 @@
     "CI must execute both machine-readable structured validation and aggregate integrity auditing, not only the legacy human-readable validator.",
     "CI trigger and permission boundaries are contract-tested: push and pull_request triggers are required and workflow permissions remain read-only.",
     "CI execution boundaries are explicit: runs are serialized per ref without cancellation, and each run has a ten-minute timeout to prevent indefinite or silently discarded verification.",
-    "The CI runner image is explicitly pinned to ubuntu-24.04 and contract-tested so verification does not silently change when ubuntu-latest moves."
+    "The CI runner image is explicitly pinned to ubuntu-24.04 and contract-tested so verification does not silently change when ubuntu-latest moves.",
+    "The CI process environment is pinned with PYTHONHASHSEED=0, TZ=UTC, and LC_ALL=C.UTF-8 and is contract-tested.",
+    "The CI Python runtime is pinned to Python 3.12.8 and is contract-tested instead of relying on the floating 3.12 selector.",
+    "When CI status is absent, evidence must record pending verification rather than infer success from file presence or commit creation."
   ],
-  "next_action": "Re-check GitHub Actions for commits 25405580026f5fecf6f18e2a022d2dcba5909e53 and b29b2f09e25367e85381c6d0f2279eaadf2d641f; if green, mark the explicit runner-image contract verified and select the next highest-signal deterministic contract gap.",
-  "revision": 64,
-  "updated_at": "2026-09-23T17:37:00Z"
+  "next_action": "Re-check workflow runs and combined commit status for the newest main commit a0cc13eaca314126383835df9025b1cac2531e69; only mark the pinned CI contracts verified after an observed successful run or status check, then select the next highest-signal deterministic contract gap.",
+  "revision": 65,
+  "updated_at": "2026-09-23T22:33:00Z"
 }
