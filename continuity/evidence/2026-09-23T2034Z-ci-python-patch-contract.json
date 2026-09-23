@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "status": "pending_verification",
+  "scope": "ci-python-patch-contract",
+  "observations": [
+    "CI now pins setup-python to the exact Python 3.12.8 patch release instead of the floating 3.12 minor line.",
+    "A standard-library unittest contract test rejects the floating 3.12 selector and requires the exact patch marker."
+  ],
+  "implementation_commits": [
+    "8f0a242a5a5ad599a8e435b3802266b5dd0dbf1f",
+    "bb7936004a6185b4ca31011ad6da457f8c23e0d0"
+  ],
+  "verification": {
+    "local_static": "pass",
+    "github_actions": "pending"
+  },
+  "next_action": "Re-check GitHub Actions for the implementation commits; if green, mark this contract verified and select the next deterministic boundary gap."
+}
