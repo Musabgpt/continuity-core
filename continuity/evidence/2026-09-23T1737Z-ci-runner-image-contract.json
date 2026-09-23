@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "decision": "Pin the GitHub Actions runner image to ubuntu-24.04 so verification does not silently change when ubuntu-latest moves.",
+  "scope": [
+    ".github/workflows/ci.yml",
+    "tests/test_ci_runner_contract.py"
+  ],
+  "changes": [
+    "Changed runs-on from ubuntu-latest to ubuntu-24.04.",
+    "Added a standard-library unittest contract rejecting ubuntu-latest and requiring ubuntu-24.04."
+  ],
+  "verification": {
+    "status": "pending_verification",
+    "local_static_check": "The workflow text and contract test were written successfully.",
+    "ci_commits": [
+      "25405580026f5fecf6f18e2a022d2dcba5909e53",
+      "b29b2f09e25367e85381c6d0f2279eaadf2d641f"
+    ],
+    "reason": "GitHub Actions status has not yet been observed for the new commits."
+  },
+  "next_action": "Re-check GitHub Actions for the runner-image and contract-test commits; if green, mark this contract verified and select the next highest-signal deterministic gap.",
+  "created_at": "2026-09-23T17:37:00Z"
+}
