@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "title": "CI executes structured validation and aggregate integrity audit",
+  "status": "pending_verification",
+  "scope": "github-actions-ci",
+  "commit": "88fdcb9a1660adefc082df4a6750b97734d053ad",
+  "changes": [
+    "CI still runs the standard unittest suite and human-readable continuity.py validate.",
+    "CI now runs continuity_validate_json.py --root . for machine-readable non-mutating validation.",
+    "CI now runs continuity_integrity.py --audit-all --root . for aggregate event and transaction integrity coverage."
+  ],
+  "reason": "The repository already exposes structured validation and aggregate integrity auditing, but CI previously verified only the human-readable validator. Making both machine contracts mandatory reduces silent drift between runtime behavior and tested behavior.",
+  "verification": {
+    "local": "not available in this connector-only run",
+    "ci_run": "awaiting workflow result"
+  },
+  "next_action": "Re-check the workflow run for commit 88fdcb9a1660adefc082df4a6750b97734d053ad; if green, mark this evidence verified and select the next highest-signal deterministic contract gap.",
+  "h33_access": "none"
+}
