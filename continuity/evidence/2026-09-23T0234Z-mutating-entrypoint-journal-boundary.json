@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-23T02:34:56Z",
+  "scope": "mutating-entrypoint-journal-boundary",
+  "decision": "Add focused regression coverage proving set_next preserves canonical state and malformed append-only event bytes while retaining its durable transaction when recovery cannot parse the pre-existing journal.",
+  "implementation_commit": "416097618b275c7385222557a79c5f64ad139723",
+  "verification": {
+    "method": "static repository inspection plus regression test added",
+    "local_tests_run": false,
+    "ci_workflow_runs_for_previous_corrected_commit": [],
+    "ci_status": "pending/unverified"
+  },
+  "invariants": [
+    "state.json bytes remain unchanged",
+    "events.jsonl bytes remain unchanged",
+    "transaction.json remains present for explicit recovery",
+    "failure diagnostic remains exactly: invalid JSON"
+  ],
+  "next_action": "Re-check CI for the new regression commit, then inspect whether recovery diagnostics need an explicit RuntimeError containment contract across all mutating entrypoints."
+}
