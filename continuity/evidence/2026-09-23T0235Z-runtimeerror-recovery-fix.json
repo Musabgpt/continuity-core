@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "implementation",
+  "scope": "transaction recovery RuntimeError containment",
+  "commit": "063634cf75a9f576d4665ef5e9654b00e3f876dc",
+  "change": "Added RuntimeError to the recover_unlocked containment boundary so unexpected runtime failures become the stable diagnostic transaction recovery failed before canonical state/event mutation.",
+  "test": "tests/test_recovery_runtimeerror_contract.py",
+  "verification": {
+    "ci_run": "35810966174",
+    "status": "in_progress",
+    "conclusion": null,
+    "verified": false
+  },
+  "next_action": "Re-check CI run 35810966174; if green, record verified revision and inspect the next highest-value deterministic boundary without changing unrelated behavior."
+}
