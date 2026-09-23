@@ -57,9 +57,9 @@ class ValidateJsonEntrypointTests(unittest.TestCase):
 
     def test_explicit_root_isolated_from_repository_state(self):
         with tempfile.TemporaryDirectory() as tmp:
-            project = self.make_project(tmp, self.valid_state(project=""))
+            project = self.make_project(tmp, self.valid_state(project=0))
             result = self.run_validator(project)
-            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.returncode, 1, result.stderr)
             payload = json.loads(result.stdout)
             self.assertFalse(payload["valid"])
             self.assertIn("wrong type for state field: project", payload["errors"])
