@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "feature": "deterministic explicit recovery error output",
+  "status": "pending_verification",
+  "implemented_commit": "80dfda536e8284806ed0078aa09d9f37fe9dcb8c",
+  "changes": [
+    "Added an isolated subprocess regression for malformed transaction JSON.",
+    "Locked schema_version=1 and operation=recover on the error path.",
+    "Locked stable error=invalid JSON.",
+    "Proved the malformed journal, canonical state, and event history remain byte-for-byte unchanged in the regression fixture."
+  ],
+  "verification": {
+    "ci": "pending",
+    "reason": "A new test commit was pushed; GitHub Actions result must be observed before marking verified."
+  },
+  "next_action": "Re-check CI for commit 80dfda536e8284806ed0078aa09d9f37fe9dcb8c; if green, record the error-output contract as verified and select the next highest-value deterministic boundary."
+}
