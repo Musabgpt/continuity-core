@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "topic": "ci_contract_coverage",
+  "status": "pending_verification",
+  "commit": "e8a2d2134e319c85554f449c067de08521cfba19",
+  "changes": [
+    "Added a standard-library unittest that asserts CI runs unit tests, human-readable validation, structured JSON validation, and aggregate integrity auditing.",
+    "Added a dependency guard asserting the workflow does not rely on pytest or pip installation."
+  ],
+  "verification": {
+    "local_static_reasoning": "The test reads only .github/workflows/ci.yml and checks exact command presence and ordering.",
+    "ci": "pending"
+  },
+  "next_action": "Re-check CI for the test and evidence commits; if green, mark CI contract coverage verified and choose the next deterministic boundary gap."
+}
