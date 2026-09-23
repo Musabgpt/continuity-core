@@ -76,9 +76,10 @@
     "Recovery, locking, and transaction-shape subprocess fixtures now include continuity_integrity.py and use the isolated project as cwd to prevent repository-state leakage.",
     "The explicit recovery entrypoint is documented as the supported mutating recovery path, while handoff and validation remain read-only and fail closed on pending transactions.",
     "CI must execute both machine-readable structured validation and aggregate integrity auditing, not only the legacy human-readable validator.",
-    "CI trigger and permission boundaries are contract-tested: push and pull_request triggers are required and workflow permissions remain read-only."
+    "CI trigger and permission boundaries are contract-tested: push and pull_request triggers are required and workflow permissions remain read-only.",
+    "CI execution boundaries are explicit: runs are serialized per ref without cancellation, and each run has a ten-minute timeout to prevent indefinite or silently discarded verification."
   ],
-  "next_action": "Re-check CI for commit cb54d83dc4376cf0034fb792bee1782a870c7f1c and evidence follow-up ab5be10cc27b6d3dfdc97e52b83f8c2ec50f5222; if green, mark the CI trigger/permission contract verified and select the next highest-signal deterministic contract gap.",
-  "revision": 62,
-  "updated_at": "2026-09-23T14:38:45Z"
+  "next_action": "Re-check CI for commit 60f1f6f09f901e5f3ce763221e59782e43e3618d and evidence follow-up be57c3be004d6e0a3bfb37606e5a4110234b7abd; if green, mark the CI execution-boundary contract verified and select the next highest-signal deterministic contract gap.",
+  "revision": 63,
+  "updated_at": "2026-09-23T16:39:30Z"
 }
