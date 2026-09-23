@@ -1,4 +1,5 @@
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -10,8 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class HandoffReadOnlyTests(unittest.TestCase):
     def run_handoff(self, project):
+        shutil.copy2(ROOT / "continuity.py", project / "continuity.py")
+        shutil.copy2(ROOT / "continuity_integrity.py", project / "continuity_integrity.py")
         return subprocess.run(
-            [sys.executable, str(ROOT / "continuity.py"), "handoff", "--format", "json"],
+            [sys.executable, "continuity.py", "handoff", "--format", "json"],
             cwd=project,
             text=True,
             capture_output=True,
