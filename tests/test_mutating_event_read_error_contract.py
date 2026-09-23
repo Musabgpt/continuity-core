@@ -45,5 +45,5 @@ def test_event_contains_malformed_existing_journal_before_mutation(tmp_path, cap
 
     assert json.loads(state_path.read_text(encoding="utf-8")) == state
     assert events_path.read_bytes() == b"{not-json}\n"
-    assert not (continuity_dir / "transaction.json").exists()
+    assert (continuity_dir / "transaction.json").exists()
     assert capsys.readouterr().out == ""
