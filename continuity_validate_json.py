@@ -40,6 +40,12 @@ def _transaction_status():
         return {"present": True, "txid": None, "valid": False, "error": _stable_error(exc)}
 
 
+def _is_duplicate_transaction_diagnostic(message, pending_transaction):
+    if not pending_transaction or pending_transaction.get("valid") is not False:
+        return False
+    return message.startswith("integrity audit failed: transaction line ")
+
+
 def validate_payload(root=ROOT):
     continuity.configure_root(root)
     errors = []
@@ -73,7 +79,9 @@ def validate_payload(root=ROOT):
             integrity = audit_all(continuity.ROOT)
             if not integrity["valid"]:
                 first = integrity["first_break"]
-                errors.append(f"integrity audit failed: {first['scope']} line {first['line']}: {first['reason']}")
+                diagnostic = f"integrity audit failed: {first['scope']} line {first['line']}: {first['reason']}"
+                if not _is_duplicate_transaction_diagnostic(diagnostic, pending_transaction):
+                    errors.append(diagnostic)
             required = {
                 "schema_version": int,
                 "project": str,
