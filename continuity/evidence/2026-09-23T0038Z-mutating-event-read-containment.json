@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "change": "Add regression coverage for mutating event() when the existing append-only journal is malformed.",
+  "implementation_commit": "e275fb6dc4e1f65ecaee34860e3010e62e06150a",
+  "corrected_test_commit": "fcb89b4407254cd6765a734fc2e760e63a583eba",
+  "verified": false,
+  "verification": {
+    "local_tests": "not_run_in_automation",
+    "github_actions": "not_available_for_commit_at_observation_time",
+    "workflow_runs": [],
+    "combined_status": "not_checked_after_final_commit"
+  },
+  "expected_contract": {
+    "failure": "invalid JSON",
+    "canonical_state_unchanged": true,
+    "append_only_events_unchanged": true,
+    "pending_transaction_retained_for_explicit_recovery": true
+  },
+  "next_action": "Re-check CI for the corrected test commit, then inspect other mutating entrypoints that call recover_unlocked() for equivalent malformed event-journal boundaries."
+}
