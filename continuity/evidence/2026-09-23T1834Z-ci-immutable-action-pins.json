@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "evidence_type": "ci-immutable-action-pins",
+  "status": "pending_verification",
+  "decision": "Pin workflow dependencies to immutable commit identifiers so behavior cannot drift behind moving tags.",
+  "changes": [
+    {"path": ".github/workflows/ci.yml", "commit": "e01228d51f02714810cde3e4673ff12ddae0d50f"},
+    {"path": "tests/test_ci_action_pin_contract.py", "commit": "afdf492e24b5a8490c7df78dc9f69e2230423811"}
+  ],
+  "verification": {"static_contract": "created", "ci": "pending", "next_action": "Re-check Actions for afdf492e24b5a8490c7df78dc9f69e2230423811; if green, mark this contract verified and choose the next deterministic gap."}
+}
