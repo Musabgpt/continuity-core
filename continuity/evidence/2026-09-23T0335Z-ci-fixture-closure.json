@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "kind": "verification_evidence",
+  "scope": "CI fixture closure",
+  "status": "pending",
+  "changes": [
+    {
+      "commit": "7577493d23727e8d00ab938eb85ff0156764d61d",
+      "change": "CLI fixture tests now copy continuity_integrity.py into isolated temporary roots"
+    },
+    {
+      "commit": "8840f1f845fec83d917cf660249b8cd92ef2b15b",
+      "change": "Recovery invalid-UTF8 contract no longer depends on undeclared pytest"
+    }
+  ],
+  "verification": {
+    "workflow_run": 35814841633,
+    "status_at_recording": "in_progress",
+    "conclusion_at_recording": null,
+    "prior_failure_causes": [
+      "isolated CLI fixtures omitted continuity_integrity.py",
+      "unittest CI discovered a pytest-only contract test without pytest installed"
+    ]
+  },
+  "next_action": "Re-check workflow run 35814841633; if green, record the fixture closure as verified and inspect the next deterministic boundary."
+}
