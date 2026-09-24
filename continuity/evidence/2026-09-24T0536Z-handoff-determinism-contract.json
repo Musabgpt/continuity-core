@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-09-24T05:36:00Z",
+  "status": "pending_verification",
+  "scope": "machine-readable-handoff-determinism",
+  "implementation_commit": "59d45d3c3cfb66f9e7be3c72cd622c95fd6f268c",
+  "changes": [
+    "add regression proving handoff JSON is invariant to state/event timestamps",
+    "assert handoff excludes updated_at, event ts, and transaction txid",
+    "assert handoff uses the canonical compact sorted JSON representation"
+  ],
+  "verification_basis": "The contract is committed; CI must execute the full unit and validation sequence before this evidence is promoted to verified.",
+  "next_action": "Re-check the latest push workflow for this contract. Mark verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed."
+}
