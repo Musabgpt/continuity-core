@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "Explicit-root read-only helpers restore the prior process-global continuity root even when validation fails with malformed state JSON.",
+  "implementation_commit": "de76a411963a4257586750a9c6d763639c63dc0b",
+  "test": "tests/test_root_isolation_contract.py::test_readonly_helpers_restore_process_root_after_validation_failure",
+  "local_verification": "not available in the GitHub connector runtime; CI is authoritative",
+  "next_action": "Verify the full CI sequence for the implementation commit; only then mark this contract verified and update canonical state."
+}
