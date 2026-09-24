@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-09-25T00:31:09Z",
+  "change": "handoff-integrity-boundary",
+  "status": "pending_verification",
+  "verification": {
+    "ci_run": 36068453336,
+    "commit": "27c205d6be32c796fb41aa5aa6534de3f0bb7b18",
+    "result": "failed",
+    "tests": "79 passed, 1 failed",
+    "failure": "test_handoff_refuses_hash_chain_corruption expected the deterministic SystemExit diagnostic on stdout, but CLI errors are emitted on stderr"
+  },
+  "correction": {
+    "commit": "38ddf3c12b164b4e0235eb8c52132840d44243f2",
+    "action": "restore the full regression suite after an accidental narrow test-file write and assert deterministic handoff rejection on stderr without changing production behavior"
+  },
+  "next_action": "run CI for the corrected PR head; merge only after the complete validation sequence succeeds"
+}
