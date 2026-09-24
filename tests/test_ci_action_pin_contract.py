@@ -3,15 +3,15 @@ from pathlib import Path
 
 
 class CiActionPinContractTests(unittest.TestCase):
-    def test_workflow_pins_actions_to_immutable_commit_shas_with_version_comments(self):
+    def test_workflow_pins_actions_to_immutable_node24_commit_shas_with_version_comments(self):
         workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"
         text = workflow.read_text(encoding="utf-8")
         self.assertIn(
-            "uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2",
+            "uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6",
             text,
         )
         self.assertIn(
-            "uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0",
+            "uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6",
             text,
         )
         self.assertNotIn("uses: actions/checkout@v4", text)
