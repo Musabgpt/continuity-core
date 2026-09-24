@@ -82,9 +82,10 @@
     "The CI process environment is pinned with PYTHONHASHSEED=0, TZ=UTC, and LC_ALL=C.UTF-8 and is contract-tested.",
     "The CI Python runtime is pinned to Python 3.12.8 and is contract-tested instead of relying on the floating 3.12 selector.",
     "When CI status is absent, evidence must record pending verification rather than infer success from file presence or commit creation.",
-    "CI run steps use an explicit bash --noprofile --norc -euo pipefail shell and a contract test protects this fail-closed invocation boundary."
+    "CI run steps use an explicit bash --noprofile --norc -euo pipefail shell and a contract test protects this fail-closed invocation boundary.",
+    "CI checkout must disable persisted credentials so the verification workspace does not retain a write-capable token after checkout."
   ],
-  "next_action": "Re-check workflow runs and combined commit status for the newest main commit a029de612fbbe7d25a93996a2fe1e2af4a80dcff; only mark the pinned CI contracts verified after an observed successful run or status check, then select the next highest-signal deterministic contract gap.",
-  "revision": 66,
+  "next_action": "Re-check workflow runs and combined commit status for the newest main commit a7442aa82b485edb7e678bbb81b5b4f27a3df832; only mark the pinned CI contracts verified after an observed successful run or status check, then select the next highest-signal deterministic contract gap.",
+  "revision": 67,
   "updated_at": "2026-09-24T00:34:00Z"
 }
