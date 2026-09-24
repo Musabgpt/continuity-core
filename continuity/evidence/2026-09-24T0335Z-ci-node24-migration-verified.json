@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-09-24T03:35:12Z",
+  "status": "verified",
+  "scope": "ci-node24-migration",
+  "commit": "9a751ea574cc20cc413de53142a111407cf55832",
+  "workflow_run": 35943708441,
+  "conclusion": "success",
+  "checks": {
+    "checkout_action": "d23441a48e516b6c34aea4fa41551a30e30af803",
+    "setup_python_action": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+    "unit_tests": "success",
+    "human_validation": "success",
+    "structured_validation": "success",
+    "aggregate_integrity_audit": "success"
+  },
+  "verification_basis": "GitHub Actions run 35943708441 completed successfully; job test and all listed verification steps succeeded.",
+  "next_action": "Add a focused contract for Python UTF-8 mode in CI so text encoding behavior is explicit and deterministic across runner changes; verify the resulting workflow before moving to another gap."
+}
