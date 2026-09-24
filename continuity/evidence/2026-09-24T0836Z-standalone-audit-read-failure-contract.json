@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "contract": "Standalone event and transaction audits must contain invalid UTF-8 and OS read failures behind stable machine-readable diagnostics rather than leaking host-specific exceptions.",
+  "implementation_commit": "bd8ec5c7aabc2a22faf96ac9a02dcc6837efdbe0",
+  "test_commit": "e86ecf2f169d1a4364ee10c285dd1c7c6d3ca388",
+  "verification": {
+    "workflow_runs": [],
+    "combined_statuses": [],
+    "reason": "No GitHub Actions run or commit status is visible yet for the implementation commit; do not infer success from file presence."
+  },
+  "next_action": "Recheck CI for the implementation commit. Mark verified only after the full unit, validation, structured validation, and aggregate integrity sequence succeeds; otherwise record the first deterministic failure and fix it before claiming verification."
+}
