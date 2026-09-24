@@ -66,8 +66,10 @@ class HandoffDeterminismContractTests(unittest.TestCase):
 
                 self.assertEqual(first_json, second_json)
                 self.assertNotIn("updated_at", first)
-                self.assertNotIn("ts", first_json)
-                self.assertNotIn("txid", first_json)
+                handoff_keys = set(first)
+                self.assertNotIn("ts", handoff_keys)
+                self.assertNotIn("txid", handoff_keys)
+                self.assertNotIn("updated_at", handoff_keys)
                 self.assertEqual(
                     first_json,
                     '{"constraints":["standard library"],"decisions":["prefer evidence"],"goal":"deterministic continuity","next_action":"verify","project":"demo","recent_failures":[],"revision":7,"schema_version":2,"status":"active"}',
