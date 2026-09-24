@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "verification",
+  "status": "pending_verification",
+  "scope": "aggregate_integrity_audit",
+  "change": {
+    "commit": "f79680dc4bfb81e4e69b03b785867d62de6880fa",
+    "test": "tests/test_aggregate_audit_contract.py",
+    "claim": "audit_all has a stable top-level diagnostic schema, deterministic first_break selection, and preserves per-domain audit diagnostics."
+  },
+  "verification": {
+    "github_actions": "pending",
+    "note": "The focused contract was added successfully; no CI success is inferred until the full workflow completes."
+  },
+  "next_action": "Inspect the resulting CI run; if the full verification sequence succeeds, mark this contract verified and then inspect the next highest-signal deterministic audit boundary."
+}
