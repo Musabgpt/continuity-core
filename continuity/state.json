@@ -89,9 +89,11 @@
     "GitHub Actions checkout v6 and setup-python v6 are pinned to immutable commits that declare Node24 execution; this removes the observed Node20 deprecation warning path.",
     "Workflow run 35943708441 verified the Node24-native action migration: checkout, setup-python, unit tests, human validation, structured validation, and aggregate integrity audit all completed successfully.",
     "The CI process now explicitly pins Python UTF-8 behavior with PYTHONUTF8=1 and PYTHONIOENCODING=utf-8, protected by a standard-library contract test; workflow run 35947985529 completed successfully across the full verification sequence.",
-    "Canonical JSON serialization is already the single digest/handoff serialization primitive: sort_keys, compact separators, and UTF-8 are required. A regression contract now locks insertion-order invariance and exact compact UTF-8 output."
+    "Canonical JSON serialization is already the single digest/handoff serialization primitive: sort_keys, compact separators, and UTF-8 are required. A regression contract now locks insertion-order invariance and exact compact UTF-8 output.",
+    "Canonical JSON serialization contract was verified by successful workflow runs 35952283401 and 35952295771 across the full verification sequence.",
+    "Machine-readable handoff JSON must exclude volatile state/event timestamps and transaction-only identifiers while remaining canonical and byte-stable for equivalent continuity state."
   ],
-  "next_action": "Verify workflow run 35952277156 for commit 68df7b1fbcc74bfdeb3592172a739a13491acc59 and the subsequent evidence/state commits. Confirm the canonical serialization contract passes with unit tests, human validation, structured validation, and aggregate integrity audit. If verified, select the next highest-signal deterministic continuity gap.",
-  "revision": 72,
-  "updated_at": "2026-09-24T03:38:30Z"
+  "next_action": "Verify the workflow run triggered by the deterministic handoff contract. Mark the handoff contract verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed; then select the next highest-signal deterministic continuity gap.",
+  "revision": 73,
+  "updated_at": "2026-09-24T05:36:30Z"
 }
