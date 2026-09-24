@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "Production direct configure_root rebinding is confined to the shared isolated_root boundary, preventing future callers from bypassing scoped restoration/serialization.",
+  "test_commit": "bfdbc1522e9d9a176b4f206410a15bd655385b0d",
+  "tests": [
+    "tests/test_root_rebinding_boundary.py::RootRebindingBoundaryTests::test_production_configure_root_usage_is_confined_to_root_boundary",
+    "tests/test_root_rebinding_boundary.py::RootRebindingBoundaryTests::test_root_boundary_is_the_only_runtime_rebinding_adapter"
+  ],
+  "local_verification": "Not executed in this automation environment; GitHub CI is authoritative.",
+  "verification": "Pending the full GitHub CI sequence on the test commit.",
+  "next_action": "Verify bfdbc1522e9d9a176b4f206410a15bd655385b0d through CI; if successful, mark this contract verified. If it fails, inspect only the failure and apply the smallest deterministic correction.",
+  "repository_scope": "Musabgpt/continuity-core only"
+}
