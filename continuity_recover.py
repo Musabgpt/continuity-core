@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 import continuity
+from continuity_root import isolated_root
 
 
 OUTPUT_SCHEMA_VERSION = 1
@@ -20,10 +21,10 @@ def main(argv=None):
     parser.add_argument("--root", default=".", help="Project root containing the continuity/ directory")
     args = parser.parse_args(argv)
     root = Path(args.root).resolve()
-    continuity.configure_root(root)
     try:
-        with continuity.project_lock():
-            recovered = continuity.recover_unlocked()
+        with isolated_root(continuity, root):
+            with continuity.project_lock():
+                recovered = continuity.recover_unlocked()
     except SystemExit as exc:
         emit({"recovered": False, "error": str(exc)})
         return 1
