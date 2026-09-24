@@ -98,9 +98,10 @@
     "Workflow run 35956677954 verified the event-chain canonical hashing contract across unit tests, human validation, structured validation, and aggregate integrity audit.",
     "Canonical transaction checksums must be invariant to mapping insertion order and remain exactly 64 lowercase hexadecimal SHA-256 characters; workflow run 35956758947 verified this contract across the full CI verification sequence.",
     "Standalone event and transaction audits must contain invalid UTF-8 and OS read failures behind stable machine-readable diagnostics rather than leaking host-specific exceptions.",
-    "Workflow run 35970701094 exposed an assertion error in the standalone transaction invalid-UTF8 regression: the audit correctly returned checked=0 because decoding failed before parsing; the test incorrectly expected checked=1 and was corrected before verification."
+    "Workflow run 35970701094 exposed an assertion error in the standalone transaction invalid-UTF8 regression: the audit correctly returned checked=0 because decoding failed before parsing; the test incorrectly expected checked=1 and was corrected before verification.",
+    "Explicit-root read-only helpers must restore the prior process-global continuity root after each call so sequential validation targets cannot leak across calls in a long-lived Python process."
   ],
-  "next_action": "Recheck CI for commit 645b7813d550463d14159d0fd52494fc4d9e6f02 and mark the standalone audit read-failure contract verified only after the full unit, human validation, structured validation, and aggregate integrity sequence succeeds; then inspect the next highest-signal deterministic continuity gap.",
-  "revision": 78,
-  "updated_at": "2026-09-24T08:35:00Z"
+  "next_action": "Recheck CI for commit 6774dd47e0c6c98bc73a5ba4e01cb2862f1a50d6 and mark the explicit-root process restoration contract verified only after the full unit, human validation, structured validation, and aggregate integrity sequence succeeds; then inspect remaining process-global root coupling.",
+  "revision": 79,
+  "updated_at": "2026-09-24T09:32:45Z"
 }
