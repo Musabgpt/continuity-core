@@ -86,9 +86,10 @@
     "CI checkout must disable persisted credentials so the verification workspace does not retain a write-capable token after checkout.",
     "A real CI regression on run 35939001726 is evidence that contract tests must be updated atomically with intentional workflow pin changes; the failure was isolated to the stale runtime contract, while the other 57 tests passed.",
     "The stale CI runtime contract was corrected to assert Python 3.12.8 and the immutable checkout/setup-python SHAs; run 35943610967 completed successfully across the full unit and validation sequence.",
-    "GitHub Actions checkout v6 and setup-python v6 are pinned to immutable commits that declare Node24 execution; this removes the observed Node20 deprecation warning path, with run 35943678599 pending verification."
+    "GitHub Actions checkout v6 and setup-python v6 are pinned to immutable commits that declare Node24 execution; this removes the observed Node20 deprecation warning path.",
+    "Workflow run 35943708441 verified the Node24-native action migration: checkout, setup-python, unit tests, human validation, structured validation, and aggregate integrity audit all completed successfully."
   ],
-  "next_action": "Verify workflow run 35943678599 for commit 26ecedf4a5fe23a88533e7ee6cfe0d4278d3c6ee; confirm checkout/setup-python run successfully without the prior Node20 warning and that all unit, human validation, structured validation, and aggregate integrity checks succeed. If verified, select the next highest-signal deterministic contract gap.",
-  "revision": 69,
-  "updated_at": "2026-09-24T01:37:00Z"
+  "next_action": "Add a focused contract for Python UTF-8 mode in CI so text encoding behavior is explicit and deterministic across runner changes; verify the resulting workflow before moving to another gap.",
+  "revision": 70,
+  "updated_at": "2026-09-24T03:35:12Z"
 }
