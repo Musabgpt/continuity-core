@@ -96,9 +96,10 @@
     "Workflow run 35956570395 verified the corrected machine-readable handoff determinism contract across unit tests, human validation, structured validation, and aggregate integrity audit.",
     "Event-chain hashes must be computed from canonical protected event mappings, remain invariant to mapping insertion order, and anchor the first link at GENESIS.",
     "Workflow run 35956677954 verified the event-chain canonical hashing contract across unit tests, human validation, structured validation, and aggregate integrity audit.",
-    "Canonical transaction checksums must be invariant to mapping insertion order and remain exactly 64 lowercase hexadecimal SHA-256 characters; workflow run 35956758947 verified this contract across the full CI verification sequence."
+    "Canonical transaction checksums must be invariant to mapping insertion order and remain exactly 64 lowercase hexadecimal SHA-256 characters; workflow run 35956758947 verified this contract across the full CI verification sequence.",
+    "Standalone event and transaction audits must contain invalid UTF-8 and OS read failures behind stable machine-readable diagnostics rather than leaking host-specific exceptions."
   ],
-  "next_action": "Inspect the canonical transaction and event audit boundaries for the next highest-signal deterministic continuity gap; add a focused contract only where current behavior is not already protected, then verify it through the full CI sequence before recording it as verified.",
-  "revision": 76,
-  "updated_at": "2026-09-24T05:47:00Z"
+  "next_action": "Recheck CI for the standalone audit read-failure contract. Mark it verified only after the full unit, validation, structured validation, and aggregate integrity sequence succeeds; then inspect the next highest-signal deterministic continuity gap.",
+  "revision": 77,
+  "updated_at": "2026-09-24T08:36:00Z"
 }
