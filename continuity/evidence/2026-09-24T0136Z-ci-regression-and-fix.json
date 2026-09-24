@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "ci_verification",
+  "observed_commit": "a489fa96b3f7c16b0228536a3f5177d10d0c316b",
+  "observed_run": 35939001726,
+  "observed_conclusion": "failure",
+  "failure_scope": "tests/test_ci_runtime_contract.py",
+  "failure_reason": "contract still asserted the retired floating Python 3.12 selector and v4/v5 action references after the workflow was intentionally pinned",
+  "verification": {
+    "tests_before_fix": 58,
+    "failed_tests": 1,
+    "passed_tests": 57,
+    "fix_commit": "fa99e2ade05f6e4fe51efea174ef29e5c2523015",
+    "fix": "align runtime contract with Python 3.12.8 and immutable action SHAs",
+    "post_fix_run": 35943610967,
+    "post_fix_status": "queued"
+  },
+  "status": "pending_verification",
+  "next_action": "Inspect workflow run 35943610967 until completed; accept the CI contract only if the corrected suite and all validation steps succeed, otherwise record the next concrete failure and fix it."
+}
