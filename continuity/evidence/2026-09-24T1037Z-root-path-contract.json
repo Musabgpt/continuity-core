@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "engineering_evidence",
+  "topic": "explicit-root canonical path derivation",
+  "status": "pending_verification",
+  "implemented_commit": "37c3c91416cca4d4e2674ee44ffc5ea3ceab9870",
+  "change": "Added a standard-library unittest contract proving configure_root resolves the supplied root and deterministically derives continuity directory, state, events, transaction, and lock paths from that canonical root.",
+  "local_verification": {
+    "result": "passed",
+    "checks": [
+      "Python syntax compilation succeeded for the new contract test."
+    ]
+  },
+  "ci_verification": {
+    "result": "pending",
+    "reason": "No GitHub Actions workflow run is currently exposed for the new commit, so repository CI success cannot be inferred from commit creation."
+  },
+  "next_action": "Recheck CI for the new commit and mark this contract verified only after the full repository verification sequence succeeds; then continue auditing remaining process-global root coupling."
+}
