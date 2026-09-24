@@ -10,8 +10,8 @@
   "change": "Move the explicit-root binding inside isolated_root's try/finally so a binding failure that partially changes module.ROOT is still restored to the previous root.",
   "regression": "tests/test_root_scope_exception_safety_contract.py simulates a configure_root failure after mutating ROOT and requires restoration plus deterministic call ordering.",
   "verification": {
-    "local": "not run in this environment",
-    "ci": "pending"
+    "local": "isolated reproduction of the exact production helper and regression contract passed: 1 test, 0 failures; full repository test suite not runnable because the environment cannot resolve github.com",
+    "ci": "pending; no workflow run is currently associated with the implementation commit"
   },
   "next_action": "Run and inspect the full CI sequence for the branch; mark this contract verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed."
 }
