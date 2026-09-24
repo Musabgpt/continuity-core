@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-09-24T03:38:00Z",
+  "status": "pending_verification",
+  "scope": "canonical-json-serialization-contract",
+  "implementation_commit": "68df7b1fbcc74bfdeb3592172a739a13491acc59",
+  "changes": [
+    "add insertion-order invariance regression for canonical()",
+    "add UTF-8 compact sorted-key serialization regression"
+  ],
+  "verification_basis": "The regression contract is committed and CI run 35952277156 is queued; no success is inferred from commit creation.",
+  "next_action": "Re-check the CI run for commit 68df7b1fbcc74bfdeb3592172a739a13491acc59. Mark the canonical serialization contract verified only after the full test and validation sequence succeeds."
+}
