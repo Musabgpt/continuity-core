@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-09-24T05:45:00Z",
+  "status": "pending_verification",
+  "scope": "transaction-checksum-canonical-hashing",
+  "implementation_commit": "1449933346c0b939d103a2a81d50160b215c2de5",
+  "changes": [
+    "add regression proving equivalent transaction mappings produce identical checksums",
+    "assert canonical transaction checksum output remains a 64-character SHA-256 digest"
+  ],
+  "verification_basis": "The contract is committed; CI must execute the full unit and validation sequence before this evidence is promoted to verified.",
+  "next_action": "Re-check the latest push workflow for this contract. Mark verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed."
+}
