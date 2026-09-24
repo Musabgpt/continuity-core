@@ -13,8 +13,8 @@ def isolated_root(module, root):
     """Temporarily bind a continuity module to an explicit project root."""
     with _ROOT_SCOPE_LOCK:
         previous_root = module.ROOT
-        module.configure_root(Path(root))
         try:
+            module.configure_root(Path(root))
             yield
         finally:
             module.configure_root(previous_root)
