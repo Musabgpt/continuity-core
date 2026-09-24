@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "The root-rebinding boundary regression contract now scans the recursive production Python tree, preventing future nested production modules from bypassing isolated_root with direct configure_root calls.",
+  "baseline": "6b1e40aa42a1c7d91fe4a8747314b5965b514859",
+  "implementation_commit": "5ebd89c9ee6a8d210c029f76f489588047653330",
+  "tests": [
+    "tests/test_root_rebinding_boundary.py::RootRebindingBoundaryTests::test_production_configure_root_usage_is_confined_to_root_boundary",
+    "tests/test_root_rebinding_boundary.py::RootRebindingBoundaryTests::test_root_boundary_is_the_only_runtime_rebinding_adapter"
+  ],
+  "verification": "Pending the full GitHub CI sequence on the branch commit.",
+  "next_action": "Run the pull-request CI for 5ebd89c9ee6a8d210c029f76f489588047653330; if successful, merge only this scoped boundary-contract change and reconcile canonical state/evidence before inspecting the next deterministic continuity boundary.",
+  "repository_scope": "Musabgpt/continuity-core only"
+}
