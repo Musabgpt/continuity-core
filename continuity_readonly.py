@@ -28,34 +28,38 @@ def _stable_error(exc):
 
 def snapshot(root):
     """Return a deterministic read-only snapshot or a structured failure."""
+    previous_root = continuity.ROOT
     continuity.configure_root(Path(root))
     try:
-        with readonly_project_lock():
-            try:
-                state = continuity.raw_state()
-                events = continuity.read_events_unlocked()
-            except (SystemExit, ValueError, TypeError, json.JSONDecodeError, OSError) as exc:
-                return {
-                    "schema_version": 1,
-                    "valid": False,
-                    "error": _stable_error(exc),
-                }
-    except (OSError, RuntimeError, ValueError, TypeError) as exc:
+        try:
+            with readonly_project_lock():
+                try:
+                    state = continuity.raw_state()
+                    events = continuity.read_events_unlocked()
+                except (SystemExit, ValueError, TypeError, json.JSONDecodeError, OSError) as exc:
+                    return {
+                        "schema_version": 1,
+                        "valid": False,
+                        "error": _stable_error(exc),
+                    }
+        except (OSError, RuntimeError, ValueError, TypeError) as exc:
+            return {
+                "schema_version": 1,
+                "valid": False,
+                "error": _stable_error(exc),
+            }
         return {
             "schema_version": 1,
-            "valid": False,
-            "error": _stable_error(exc),
+            "valid": True,
+            "state": {
+                "schema_version": state.get("schema_version"),
+                "project": state.get("project"),
+                "goal": state.get("goal"),
+                "status": state.get("status"),
+                "revision": state.get("revision"),
+            },
+            "event_count": len(events),
+            "pending_transaction": continuity.TXN.exists(),
         }
-    return {
-        "schema_version": 1,
-        "valid": True,
-        "state": {
-            "schema_version": state.get("schema_version"),
-            "project": state.get("project"),
-            "goal": state.get("goal"),
-            "status": state.get("status"),
-            "revision": state.get("revision"),
-        },
-        "event_count": len(events),
-        "pending_transaction": continuity.TXN.exists(),
-    }
+    finally:
+        continuity.configure_root(previous_root)
