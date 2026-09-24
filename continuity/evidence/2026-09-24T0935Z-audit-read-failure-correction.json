@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "deterministic-continuity-evidence",
+  "scope": "standalone-integrity-audit-read-failure-contract",
+  "status": "pending_verification",
+  "observed_failure": {
+    "workflow_run": 35970701094,
+    "commit": "726bb4a71321b91b8b7b3763b86901dd39dbfbba",
+    "result": "failure",
+    "failed_test": "test_transaction_audit_contains_invalid_utf8_with_stable_diagnostic",
+    "cause": "The implementation correctly reports checked=0 when UTF-8 decoding fails before a transaction object is parsed, but the regression assertion incorrectly expected checked=1."
+  },
+  "correction": {
+    "commit": "645b7813d550463d14159d0fd52494fc4d9e6f02",
+    "change": "Align the invalid-UTF8 transaction audit contract with the actual non-mutating read boundary: checked remains zero because no transaction record was successfully parsed."
+  },
+  "verification_policy": "Do not mark verified until GitHub Actions completes the full unit, human validation, structured validation, and aggregate integrity audit sequence successfully.",
+  "next_action": "Recheck CI for the correction commit. If successful, mark the standalone audit read-failure contract verified and then inspect the next highest-signal deterministic continuity gap."
+}
