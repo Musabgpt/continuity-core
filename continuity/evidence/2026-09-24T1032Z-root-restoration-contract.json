@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "decision": "Explicit-root read-only helpers must restore the process-global continuity root after each call so one validation target cannot leak into later work in the same Python process.",
+  "implemented": [
+    "continuity_readonly.snapshot now restores the prior continuity root in a finally block.",
+    "continuity_validate_json.validate_payload now accepts a call-time default root and restores the prior continuity root in a finally block.",
+    "Added a focused regression test that validates two explicit roots sequentially and asserts the original process root is restored after every call."
+  ],
+  "commits": [
+    "cdbe8de33181b625c131f93bea62385d3b8c30dd",
+    "9256fed1ae1dc24098ed59204a15b7ed59cc4e72",
+    "6774dd47e0c6c98bc73a5ba4e01cb2862f1a50d6"
+  ],
+  "verification": {
+    "local": "Not executed in this automation turn; implementation and regression test were committed through GitHub.",
+    "ci": "GitHub reports no workflow runs or status checks for the test commit yet; success is intentionally unclaimed."
+  },
+  "status": "pending_verification",
+  "next_action": "Recheck CI for commit 6774dd47e0c6c98bc73a5ba4e01cb2862f1a50d6 and mark this contract verified only after the full unit, human validation, structured validation, and aggregate integrity sequence succeeds; then inspect remaining process-global root coupling."
+}
