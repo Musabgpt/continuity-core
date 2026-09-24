@@ -16,9 +16,15 @@ def audit_events(path):
     """Return structured, non-mutating diagnostics for the first broken hash link."""
     if not path.exists():
         return diagnostic(False, 0, {"line": None, "reason": "events file is missing"})
+    try:
+        content = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return diagnostic(False, 0, {"line": 1, "reason": "events file encoding is invalid"})
+    except OSError:
+        return diagnostic(False, 0, {"line": None, "reason": "events file could not be read"})
     previous = None
     checked = 0
-    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+    for number, line in enumerate(content.splitlines(), 1):
         if not line.strip():
             continue
         checked += 1
@@ -53,7 +59,13 @@ def audit_transaction(path):
     if not path.exists():
         return diagnostic(True, 0, None)
     try:
-        tx = json.loads(path.read_text(encoding="utf-8"))
+        content = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return diagnostic(False, 0, {"line": 1, "reason": "transaction file encoding is invalid"})
+    except OSError:
+        return diagnostic(False, 0, {"line": None, "reason": "transaction file could not be read"})
+    try:
+        tx = json.loads(content)
     except json.JSONDecodeError:
         return diagnostic(False, 1, {"line": 1, "reason": "invalid transaction JSON"})
     if not isinstance(tx, dict):
