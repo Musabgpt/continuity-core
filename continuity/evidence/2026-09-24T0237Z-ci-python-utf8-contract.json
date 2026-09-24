@@ -1,15 +1,16 @@
 {
   "schema_version": 1,
   "timestamp": "2026-09-24T02:37:00Z",
-  "status": "pending_verification",
+  "status": "verified",
   "scope": "ci-python-utf8-contract",
   "workflow_commit": "c0e2a6ec3c5d37cfb1a54cd99a183bbe07965ae1",
   "workflow_run": 35947985529,
+  "workflow_job": 107470141582,
   "changes": [
     "PYTHONUTF8=1",
     "PYTHONIOENCODING=utf-8",
     "contract test requires both markers"
   ],
-  "verification_basis": "GitHub Actions run 35947985529 is queued/pending at observation time; no success is inferred from commit creation.",
-  "next_action": "Re-check workflow run 35947985529 and its test job. Mark this contract verified only after the full unit, human validation, structured validation, and aggregate integrity audit sequence succeeds."
+  "verification_basis": "GitHub Actions run 35947985529 completed successfully; job 107470141582 reports success for unit tests, human validation, structured validation, aggregate integrity audit, and both post-action cleanup steps.",
+  "next_action": "Harden event journal byte determinism by serializing newly emitted event records through the existing canonical JSON serializer, add a regression contract, and verify the resulting CI run before selecting the next continuity gap."
 }
