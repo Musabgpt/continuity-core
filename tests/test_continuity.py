@@ -58,6 +58,20 @@ class ContinuityTests(unittest.TestCase):
             self.assertEqual(payload["recent_failures"],[{"message":"compile failed","why":"missing sdk"}])
             self.assertEqual(payload["next_action"],"install sdk"); self.assertEqual(payload["revision"],2)
 
+    def test_handoff_refuses_hash_chain_corruption(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup_cli(root)
+            self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
+            self.assertEqual(self.run_cli(root,"event","note","one").returncode,0)
+            path=root/"continuity/events.jsonl"
+            rows=[json.loads(x) for x in path.read_text(encoding="utf-8").splitlines()]
+            rows[-1]["chain_hash"]="0"*64
+            path.write_text("\n".join(json.dumps(row,separators=(",",":")) for row in rows)+"\n",encoding="utf-8")
+            first=self.run_cli(root,"handoff","--format","json")
+            second=self.run_cli(root,"handoff","--format","json")
+            self.assertNotEqual(first.returncode,0); self.assertEqual(first.stdout,second.stdout)
+            self.assertEqual(first.stdout,"Continuity integrity invalid: events line 2: event hash mismatch\n")
+
     def test_validate_rejects_unknown_schema(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d); self.setup_cli(root)
