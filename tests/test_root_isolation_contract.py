@@ -42,3 +42,29 @@ def test_readonly_helpers_restore_process_root_after_explicit_root(tmp_path):
 
     assert snapshot(second)["state"]["project"] == "second"
     assert continuity.ROOT == original
+
+
+def test_readonly_helpers_restore_process_root_after_validation_failure(tmp_path):
+    broken = tmp_path / "broken"
+    _make_project(broken, "broken")
+    (broken / "continuity" / "state.json").write_text("{not-json\n", encoding="utf-8")
+    original = continuity.ROOT
+
+    snapshot_result = snapshot(broken)
+    assert snapshot_result == {
+        "schema_version": 1,
+        "valid": False,
+        "error": "invalid JSON",
+    }
+    assert continuity.ROOT == original
+
+    payload = validate_payload(broken)
+    assert payload["valid"] is False
+    assert payload["errors"][0] == "invalid JSON"
+    assert continuity.ROOT == original
+
+
+if __name__ == "__main__":
+    import unittest
+
+    unittest.main()
