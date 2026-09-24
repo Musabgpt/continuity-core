@@ -13,8 +13,15 @@
     "fix_commit": "fa99e2ade05f6e4fe51efea174ef29e5c2523015",
     "fix": "align runtime contract with Python 3.12.8 and immutable action SHAs",
     "post_fix_run": 35943610967,
-    "post_fix_status": "queued"
+    "post_fix_status": "completed",
+    "post_fix_conclusion": "success",
+    "post_fix_steps": [
+      "unit tests",
+      "continuity.py validate",
+      "continuity_validate_json.py --root .",
+      "continuity_integrity.py --audit-all --root ."
+    ]
   },
-  "status": "pending_verification",
-  "next_action": "Inspect workflow run 35943610967 until completed; accept the CI contract only if the corrected suite and all validation steps succeed, otherwise record the next concrete failure and fix it."
+  "status": "verified",
+  "next_action": "Verify the Node24-native v6 action migration in workflow run 35943678599; confirm the warning is gone and all validation steps succeed before treating the CI runtime boundary as fully current."
 }
