@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "The shared scoped continuity-root context serializes concurrent callers so process-global root rebinding cannot cross-contaminate overlapping scopes.",
+  "implementation_commit": "4c3da373e4b4af799be7e0bde6664a585812c534",
+  "test_commit": "d4171d8d4653a7416c520aa15bb908251f4ad09f",
+  "test": "tests/test_root_context_thread_contract.py::RootContextThreadContractTests::test_isolated_root_serializes_concurrent_scopes",
+  "verification": "CI verification is authoritative. The repository workflow runs the full unit, validation, structured-validation, and aggregate-integrity sequence on push and pull_request.",
+  "next_action": "Verify commit d4171d8d4653a7416c520aa15bb908251f4ad09f through the full CI sequence; if successful, mark this concurrency contract verified and then inspect remaining direct configure_root usage.",
+  "repository_scope": "Musabgpt/continuity-core only"
+}
