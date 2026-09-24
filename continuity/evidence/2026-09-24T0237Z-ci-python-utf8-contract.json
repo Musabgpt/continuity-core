@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-09-24T02:37:00Z",
+  "status": "pending_verification",
+  "scope": "ci-python-utf8-contract",
+  "workflow_commit": "c0e2a6ec3c5d37cfb1a54cd99a183bbe07965ae1",
+  "workflow_run": 35947985529,
+  "changes": [
+    "PYTHONUTF8=1",
+    "PYTHONIOENCODING=utf-8",
+    "contract test requires both markers"
+  ],
+  "verification_basis": "GitHub Actions run 35947985529 is queued/pending at observation time; no success is inferred from commit creation.",
+  "next_action": "Re-check workflow run 35947985529 and its test job. Mark this contract verified only after the full unit, human validation, structured validation, and aggregate integrity audit sequence succeeds."
+}
