@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "Once a protected event hash chain begins, an unprotected nonblank event cannot be inserted without failing the deterministic integrity audit.",
+  "implementation_commit": "e563b7c2ae76ede56fe1819e3d2dd071e0d45030",
+  "test_commit": "ce643265c02a32bd9b91235dc4658372343c3112",
+  "tests": [
+    "tests/test_event_chain_protection_boundary.py::EventChainProtectionBoundaryTests::test_unprotected_record_after_chain_start_is_rejected",
+    "tests/test_event_chain_protection_boundary.py::EventChainProtectionBoundaryTests::test_legacy_unprotected_prefix_can_transition_to_protected_chain"
+  ],
+  "local_verification": "Not executed in this automation environment; GitHub CI is authoritative.",
+  "verification": "CI verification is authoritative. The repository workflow runs the full unit, validation, structured-validation, and aggregate-integrity sequence on push and pull_request.",
+  "next_action": "Verify commit ce643265c02a32bd9b91235dc4658372343c3112 through the full CI sequence; if successful, mark this contract verified and then inspect remaining direct configure_root usage.",
+  "repository_scope": "Musabgpt/continuity-core only"
+}
