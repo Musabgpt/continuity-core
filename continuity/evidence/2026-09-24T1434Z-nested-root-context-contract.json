@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "The shared scoped continuity-root context is safe for nested callers: an inner explicit root restores the outer root, and the outer scope restores the original process-global root.",
+  "implementation_commits": [
+    "6f4f5ed13a2e11feea653db2f877da8054257139",
+    "c4c2a83b0f8d7d046211b58811c81611439b2e12",
+    "fa742c82e45f1c640481d13c9a10fd4318a8c5f2"
+  ],
+  "test_commit": "414784553e7b3d52f5ba80a9b019383ba11a0fbd",
+  "test": "tests/test_root_context_contract.py::test_isolated_root_supports_nested_scopes",
+  "verification": "CI verification is authoritative; the GitHub connector runtime cannot execute the repository test suite locally.",
+  "next_action": "Recheck CI for commit 414784553e7b3d52f5ba80a9b019383ba11a0fbd; if the full unit, human validation, structured validation, and aggregate integrity sequence succeeds, mark this nested-root contract verified and then inspect the remaining direct configure_root boundary.",
+  "repository_scope": "Musabgpt/continuity-core only"
+}
