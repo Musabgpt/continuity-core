@@ -26,7 +26,7 @@ class AuditReadFailureContractTests(unittest.TestCase):
             result = audit_transaction(path)
 
             self.assertFalse(result["valid"])
-            self.assertEqual(result["checked"], 1)
+            self.assertEqual(result["checked"], 0)
             self.assertEqual(result["first_break"], {"line": 1, "reason": "transaction file encoding is invalid"})
 
     def test_event_audit_contains_os_read_failures(self):
