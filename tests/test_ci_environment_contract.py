@@ -10,12 +10,15 @@ class CiEnvironmentContractTests(unittest.TestCase):
         text = WORKFLOW.read_text(encoding="utf-8")
         required = [
             "PYTHONHASHSEED: \"0\"",
+            "PYTHONUTF8: \"1\"",
+            "PYTHONIOENCODING: utf-8",
             "TZ: UTC",
             "LC_ALL: C.UTF-8",
         ]
         for marker in required:
             self.assertIn(marker, text)
         self.assertNotIn("PYTHONHASHSEED: random", text)
+        self.assertNotIn("PYTHONUTF8: \"0\"", text)
 
 
 if __name__ == "__main__":
