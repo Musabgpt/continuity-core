@@ -23,6 +23,7 @@ def audit_events(path):
     except OSError:
         return diagnostic(False, 0, {"line": None, "reason": "events file could not be read"})
     previous = None
+    protected_chain_started = False
     checked = 0
     for number, line in enumerate(content.splitlines(), 1):
         if not line.strip():
@@ -36,7 +37,10 @@ def audit_events(path):
             return diagnostic(False, checked, {"line": number, "reason": "event record must be an object"})
         protected = "chain_hash" in row or "prev_hash" in row
         if not protected:
+            if protected_chain_started:
+                return diagnostic(False, checked, {"line": number, "reason": "event chain protection missing"})
             continue
+        protected_chain_started = True
         prev = row.get("prev_hash", "GENESIS")
         chain = row.get("chain_hash")
         if not isinstance(prev, str) or not isinstance(chain, str):
