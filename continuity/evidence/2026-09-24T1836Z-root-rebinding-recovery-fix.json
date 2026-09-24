@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "The explicit mutating recovery entrypoint no longer bypasses the shared isolated_root boundary; recovery now binds and restores the requested project root through the same deterministic boundary used by read-only paths.",
+  "triggering_run": "36028246051",
+  "triggering_failure": "RootRebindingBoundaryTests.test_production_configure_root_usage_is_confined_to_root_boundary found a direct configure_root call at continuity_recover.py:23.",
+  "fix_commit": "6b1e40aa42a1c7d91fe4a8747314b5965b514859",
+  "tests": [
+    "tests/test_root_rebinding_boundary.py::RootRebindingBoundaryTests::test_production_configure_root_usage_is_confined_to_root_boundary",
+    "tests/test_root_rebinding_boundary.py::RootRebindingBoundaryTests::test_root_boundary_is_the_only_runtime_rebinding_adapter",
+    "tests/test_explicit_recovery_output_contract.py::ExplicitRecoveryOutputContractTests::test_output_is_schema_versioned_and_deterministic"
+  ],
+  "verification": "Pending the full GitHub CI sequence on the fix commit.",
+  "next_action": "Verify 6b1e40aa42a1c7d91fe4a8747314b5965b514859 through CI; if successful, mark this recovery-boundary contract verified and then reconcile canonical state with the verified evidence before inspecting the next root-coupling boundary.",
+  "repository_scope": "Musabgpt/continuity-core only"
+}
