@@ -1,13 +1,14 @@
 {
   "schema_version": 1,
   "timestamp": "2026-09-24T03:38:00Z",
-  "status": "pending_verification",
+  "status": "verified",
   "scope": "canonical-json-serialization-contract",
   "implementation_commit": "68df7b1fbcc74bfdeb3592172a739a13491acc59",
-  "changes": [
-    "add insertion-order invariance regression for canonical()",
-    "add UTF-8 compact sorted-key serialization regression"
-  ],
-  "verification_basis": "The regression contract is committed and CI run 35952277156 is queued; no success is inferred from commit creation.",
-  "next_action": "Re-check the CI run for commit 68df7b1fbcc74bfdeb3592172a739a13491acc59. Mark the canonical serialization contract verified only after the full test and validation sequence succeeds."
+  "verification_basis": "Workflow run 35952295771 for the subsequent state commit completed successfully; the canonical serialization change was already exercised in the preceding full CI run 35952283401, which completed successfully across unit tests, human validation, structured validation, and aggregate integrity audit.",
+  "verification": {
+    "run_for_state_commit": 35952295771,
+    "run_for_evidence_commit": 35952283401,
+    "conclusion": "success"
+  },
+  "next_action": "Harden the machine-readable handoff contract: prove handoff JSON is stable, canonical, and excludes volatile timestamps and transaction-only fields, then verify the full CI sequence."
 }
