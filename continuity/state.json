@@ -92,9 +92,11 @@
     "Canonical JSON serialization is already the single digest/handoff serialization primitive: sort_keys, compact separators, and UTF-8 are required. A regression contract now locks insertion-order invariance and exact compact UTF-8 output.",
     "Canonical JSON serialization contract was verified by successful workflow runs 35952283401 and 35952295771 across the full verification sequence.",
     "Machine-readable handoff JSON must exclude volatile state/event timestamps and transaction-only identifiers while remaining canonical and byte-stable for equivalent continuity state.",
-    "Workflow run 35956481433 exposed a test assertion bug in the new handoff contract; the failure was corrected without changing the handoff implementation, and the corrected contract remains pending verification."
+    "Workflow run 35956481433 exposed a test assertion bug in the new handoff contract; the failure was corrected without changing the handoff implementation.",
+    "Workflow run 35956570395 verified the corrected machine-readable handoff determinism contract across unit tests, human validation, structured validation, and aggregate integrity audit.",
+    "Event-chain hashes must be computed from canonical protected event mappings, remain invariant to mapping insertion order, and anchor the first link at GENESIS."
   ],
-  "next_action": "Verify the corrected handoff determinism contract beginning at commit e911ef65f99dbf3ffdcb3f4b76feee79381469eb and the subsequent evidence/state commits. Mark it verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed; then select the next highest-signal deterministic continuity gap.",
-  "revision": 74,
-  "updated_at": "2026-09-24T05:37:30Z"
+  "next_action": "Verify the event-chain canonical hashing contract beginning at commit 95a8d7597d78b1627515a398d75545c318d4e22a and its subsequent evidence/state commits. Mark it verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed; then select the next highest-signal deterministic continuity gap.",
+  "revision": 75,
+  "updated_at": "2026-09-24T05:42:30Z"
 }
