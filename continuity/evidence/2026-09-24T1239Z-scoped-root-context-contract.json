@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "pending_verification",
+  "claim": "Explicit-root read-only helpers use one shared scoped root context that restores the prior process-global continuity root on both success and exception paths.",
+  "implementation_commits": [
+    "6f4f5ed13a2e11feea653db2f877da8054257139",
+    "c4c2a83b0f8d7d046211b58811c81611439b2e12",
+    "fa742c82e45f1c640481d13c9a10fd4318a8c5f2"
+  ],
+  "test_commit": "0c7936dd3ff0de08a378a21c470b36a50534b561",
+  "test": "tests/test_root_context_contract.py",
+  "verification": "CI verification is authoritative; local execution is not available in the GitHub connector runtime.",
+  "next_action": "Recheck CI for the latest implementation/test commit and mark this contract verified only after the full unit, human validation, structured validation, and aggregate integrity sequence succeeds; then inspect any remaining direct configure_root usage outside the shared context boundary."
+}
