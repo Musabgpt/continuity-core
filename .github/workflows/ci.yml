@@ -9,6 +9,8 @@ concurrency:
   cancel-in-progress: false
 env:
   PYTHONHASHSEED: "0"
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: utf-8
   TZ: UTC
   LC_ALL: C.UTF-8
 defaults:
