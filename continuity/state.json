@@ -85,9 +85,10 @@
     "CI run steps use an explicit bash --noprofile --norc -euo pipefail shell and a contract test protects this fail-closed invocation boundary.",
     "CI checkout must disable persisted credentials so the verification workspace does not retain a write-capable token after checkout.",
     "A real CI regression on run 35939001726 is evidence that contract tests must be updated atomically with intentional workflow pin changes; the failure was isolated to the stale runtime contract, while the other 57 tests passed.",
-    "The stale CI runtime contract was corrected to assert Python 3.12.8 and the immutable checkout/setup-python SHAs; the corrective run must complete successfully before verification is claimed."
+    "The stale CI runtime contract was corrected to assert Python 3.12.8 and the immutable checkout/setup-python SHAs; run 35943610967 completed successfully across the full unit and validation sequence.",
+    "GitHub Actions checkout v6 and setup-python v6 are pinned to immutable commits that declare Node24 execution; this removes the observed Node20 deprecation warning path, with run 35943678599 pending verification."
   ],
-  "next_action": "Inspect workflow run 35943610967 for commit fa99e2ade05f6e4fe51efea174ef29e5c2523015 until completion; accept the corrected CI contract only if the full suite and all validation commands succeed, otherwise record and fix the next concrete failure.",
-  "revision": 68,
-  "updated_at": "2026-09-24T01:36:00Z"
+  "next_action": "Verify workflow run 35943678599 for commit 26ecedf4a5fe23a88533e7ee6cfe0d4278d3c6ee; confirm checkout/setup-python run successfully without the prior Node20 warning and that all unit, human validation, structured validation, and aggregate integrity checks succeed. If verified, select the next highest-signal deterministic contract gap.",
+  "revision": 69,
+  "updated_at": "2026-09-24T01:37:00Z"
 }
