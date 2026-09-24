@@ -94,9 +94,11 @@
     "Machine-readable handoff JSON must exclude volatile state/event timestamps and transaction-only identifiers while remaining canonical and byte-stable for equivalent continuity state.",
     "Workflow run 35956481433 exposed a test assertion bug in the new handoff contract; the failure was corrected without changing the handoff implementation.",
     "Workflow run 35956570395 verified the corrected machine-readable handoff determinism contract across unit tests, human validation, structured validation, and aggregate integrity audit.",
-    "Event-chain hashes must be computed from canonical protected event mappings, remain invariant to mapping insertion order, and anchor the first link at GENESIS."
+    "Event-chain hashes must be computed from canonical protected event mappings, remain invariant to mapping insertion order, and anchor the first link at GENESIS.",
+    "Workflow run 35956677954 verified the event-chain canonical hashing contract across unit tests, human validation, structured validation, and aggregate integrity audit.",
+    "Canonical transaction checksums must be invariant to mapping insertion order and remain exactly 64 lowercase hexadecimal SHA-256 characters; workflow run 35956758947 verified this contract across the full CI verification sequence."
   ],
-  "next_action": "Verify the event-chain canonical hashing contract beginning at commit 95a8d7597d78b1627515a398d75545c318d4e22a and its subsequent evidence/state commits. Mark it verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed; then select the next highest-signal deterministic continuity gap.",
-  "revision": 75,
-  "updated_at": "2026-09-24T05:42:30Z"
+  "next_action": "Inspect the canonical transaction and event audit boundaries for the next highest-signal deterministic continuity gap; add a focused contract only where current behavior is not already protected, then verify it through the full CI sequence before recording it as verified.",
+  "revision": 76,
+  "updated_at": "2026-09-24T05:47:00Z"
 }
