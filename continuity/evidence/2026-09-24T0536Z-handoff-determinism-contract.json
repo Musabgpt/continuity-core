@@ -3,12 +3,14 @@
   "timestamp": "2026-09-24T05:36:00Z",
   "status": "pending_verification",
   "scope": "machine-readable-handoff-determinism",
-  "implementation_commit": "59d45d3c3cfb66f9e7be3c72cd622c95fd6f268c",
+  "implementation_commit": "e911ef65f99dbf3ffdcb3f4b76feee79381469eb",
   "changes": [
     "add regression proving handoff JSON is invariant to state/event timestamps",
-    "assert handoff excludes updated_at, event ts, and transaction txid",
-    "assert handoff uses the canonical compact sorted JSON representation"
+    "assert handoff excludes updated_at, event ts, and transaction txid by parsed field names",
+    "assert handoff uses the canonical compact sorted JSON representation",
+    "restore the original configured project root after the isolated fixture"
   ],
-  "verification_basis": "The contract is committed; CI must execute the full unit and validation sequence before this evidence is promoted to verified.",
-  "next_action": "Re-check the latest push workflow for this contract. Mark verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed."
+  "verification_basis": "Initial workflow run 35956481433 failed only in the new contract because a substring assertion matched the letters ts inside status; the implementation behavior itself produced the expected timestamp-free handoff. The assertion was corrected in e911ef65f99dbf3ffdcb3f4b76feee79381469eb.",
+  "failed_run": 35956481433,
+  "next_action": "Re-check the workflow for the corrected commit. Mark verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed."
 }
