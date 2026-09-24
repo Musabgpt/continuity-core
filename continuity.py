@@ -185,6 +185,10 @@ def handoff_payload():
             try: tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx)
             except (SystemExit,json.JSONDecodeError,UnicodeDecodeError,OSError,TypeError,KeyError,AttributeError) as exc: raise SystemExit(_stable_recovery_error(exc))
             raise SystemExit("Pending transaction journal; run a mutating command or recovery before requesting handoff.")
+        integrity=audit_all(ROOT)
+        if not integrity["valid"]:
+            first=integrity["first_break"]
+            raise SystemExit("Continuity integrity invalid: "+first["scope"]+" line "+str(first["line"])+": "+first["reason"])
         s=raw_state(); events=read_events_unlocked(); failures=[{"message":e["message"],**({"why":e["why"]} if e.get("why") else {})} for e in events if isinstance(e,dict) and e.get("type")=="failure"][-5:]; p={"schema_version":s["schema_version"],"project":s["project"],"goal":s["goal"],"status":s["status"],"constraints":s["constraints"],"decisions":s["decisions"][-8:],"recent_failures":failures,"next_action":s.get("next_action")}
         if s["schema_version"]>=2: p["revision"]=s["revision"]
         return p
