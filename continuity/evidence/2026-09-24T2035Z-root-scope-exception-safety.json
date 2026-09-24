@@ -1,17 +1,19 @@
 {
   "schema_version": 1,
   "feature": "root scope exception safety",
-  "status": "pending_verification",
+  "status": "verified",
   "branch": "continuity/root-scope-exception-safety",
   "commits": [
     "4c9a0ea9be50d987469a8a58cd048383a41374d0",
-    "2b853bf4274dc2003e3c490abf246fecd895f940"
+    "2b853bf4274dc2003e3c490abf246fecd895f940",
+    "c5305013fc3043702bf24a8a7edfef7440a53310",
+    "fcc504fa64bcdc9bfac8b6c99968e9f2cb4d8a9f"
   ],
   "change": "Move the explicit-root binding inside isolated_root's try/finally so a binding failure that partially changes module.ROOT is still restored to the previous root.",
   "regression": "tests/test_root_scope_exception_safety_contract.py simulates a configure_root failure after mutating ROOT and requires restoration plus deterministic call ordering.",
   "verification": {
-    "local": "isolated reproduction of the exact production helper and regression contract passed: 1 test, 0 failures; full repository test suite not runnable because the environment cannot resolve github.com",
-    "ci": "pending; no workflow run is currently associated with the implementation commit"
+    "local": "isolated reproduction of the exact production helper and regression contract passed: 1 test, 0 failures",
+    "ci": "GitHub Actions run 36056003371 succeeded; unit tests, continuity.py validate, structured JSON validation, and aggregate integrity audit all passed"
   },
-  "next_action": "Run and inspect the full CI sequence for the branch; mark this contract verified only after unit tests, human validation, structured validation, and aggregate integrity audit all succeed."
+  "next_action": "Audit remaining process-global state boundaries beyond ROOT (module-level mutable continuity state), identify the smallest deterministic isolation contract, add a focused regression, and require the full CI sequence before verification."
 }
