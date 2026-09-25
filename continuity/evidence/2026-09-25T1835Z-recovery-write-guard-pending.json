@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-25T18:35:12+01:00",
+  "scope": "Musabgpt/continuity-core",
+  "status": "pending_integration",
+  "boundary": "recover_unlocked must validate transaction state before append/write/delete",
+  "inspection": {
+    "main_head": "e38dde0a29da9dc94c8d6fbea04eeb186342f974",
+    "open_prs": 0,
+    "current_order": "shape -> checksum -> append event -> write state -> delete transaction",
+    "required_order": "shape -> checksum -> state schema -> append event -> write state -> delete transaction"
+  },
+  "action_attempted": "Prepare minimal import and validate_state_payload call plus deterministic regression.",
+  "result": "Production-file update was blocked by the available GitHub write safety layer before any commit; repository remains unchanged.",
+  "verification": "No CI run created because no code change was committed.",
+  "next_action": "Apply the same minimal patch through a safe partial-file patch path, then run full CI before opening or merging a PR.",
+  "exclusions": [
+    "H33 was not accessed, read, searched, inspected, modified, or otherwise used."
+  ]
+}
