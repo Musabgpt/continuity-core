@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from continuity_integrity import audit_all
+from continuity_state_guard import validate_state_payload
 ROOT=Path(__file__).resolve().parent
 DIR=ROOT/"continuity"; STATE=DIR/"state.json"; EVENTS=DIR/"events.jsonl"; TXN=DIR/"transaction.json"; LOCK=DIR/".lock"
 LATEST_SCHEMA=2; SUPPORTED_SCHEMAS={1,2}
@@ -94,7 +95,7 @@ def verify_tx_checksum(tx):
 def recover_unlocked():
     if not TXN.exists(): return False
     try:
-        tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx); txid=tx["txid"]
+        tx=json.loads(TXN.read_text(encoding="utf-8")); verify_tx_shape(tx); verify_tx_checksum(tx); validate_state_payload(tx["state"]); txid=tx["txid"]
         if txid not in event_ids(): append_row(tx["event"])
         atomic_text(STATE,json.dumps(tx["state"],indent=2,ensure_ascii=False)+"\n"); TXN.unlink(); return True
     except (SystemExit,json.JSONDecodeError,UnicodeDecodeError,OSError,TypeError,KeyError,AttributeError,RuntimeError) as exc: raise SystemExit(_stable_recovery_error(exc))

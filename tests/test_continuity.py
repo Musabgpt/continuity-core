@@ -129,4 +129,27 @@ class ContinuityTests(unittest.TestCase):
             r=subprocess.run([sys.executable,str(verifier),"--root",str(root)],text=True,capture_output=True)
             self.assertEqual(r.returncode,0,r.stderr)
 
+    def test_recovery_rejects_invalid_state_without_mutation(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup_cli(root)
+            self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
+            continuity=root/"continuity"
+            state_before=(continuity/"state.json").read_text(encoding="utf-8")
+            events_before=(continuity/"events.jsonl").read_text(encoding="utf-8")
+            tx={
+                "txid":"tx-invalid-state",
+                "state":{"schema_version":2,"project":"","goal":"B","status":"active","constraints":[],"decisions":[],"next_action":None,"updated_at":"2020-01-01T00:00:00Z","revision":0},
+                "event":{"ts":"2020-01-01T00:00:00Z","type":"note","message":"should not apply","txid":"tx-invalid-state"}
+            }
+            from hashlib import sha256
+            material=json.dumps({"txid":tx["txid"],"state":tx["state"],"event":tx["event"]},sort_keys=True,separators=(",",":"),ensure_ascii=False)
+            tx["checksum"]=sha256(material.encode("utf-8")).hexdigest()
+            (continuity/"transaction.json").write_text(json.dumps(tx,separators=(",",":"),ensure_ascii=False)+"\n",encoding="utf-8")
+            r=self.run_cli(root,"handoff","--format","json")
+            self.assertNotEqual(r.returncode,0)
+            self.assertEqual(r.stderr,"Transaction state invalid: project is empty.\n")
+            self.assertEqual((continuity/"state.json").read_text(encoding="utf-8"),state_before)
+            self.assertEqual((continuity/"events.jsonl").read_text(encoding="utf-8"),events_before)
+            self.assertTrue((continuity/"transaction.json").exists())
+
 if __name__=="__main__": unittest.main()
