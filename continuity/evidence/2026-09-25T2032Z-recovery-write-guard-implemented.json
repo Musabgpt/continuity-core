@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "boundary": "recovery_write_guard",
-  "status": "implemented_pending_ci",
+  "status": "implemented_pending_pr_and_ci",
   "implementation": {
     "branch": "continuity/recovery-write-guard-v5",
     "commit": "cf11de97e281f521772c89900ac5c8e08ac2a80a",
@@ -11,11 +11,12 @@
   },
   "verification": {
     "workflow_runs_for_commit": [],
-    "ci_result": "pending"
+    "ci_result": "pending",
+    "pr_creation": "blocked_by_connector_safety_gate"
   },
   "safety": {
     "h33_accessed": false,
     "unrelated_external_changes": false
   },
-  "next_action": "Open a pull request from continuity/recovery-write-guard-v5 when the write path permits it, then require full CI and merge only with expected_head_sha."
+  "next_action": "Retry opening a pull request from continuity/recovery-write-guard-v5 via an approved GitHub write path; once CI exists, inspect all jobs and merge only with expected_head_sha if green."
 }
