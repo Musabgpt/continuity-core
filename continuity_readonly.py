@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 import continuity
+from continuity_integrity import audit_all
 from continuity_readonly_lock import readonly_project_lock
 from continuity_root import isolated_root
 
@@ -33,6 +34,19 @@ def snapshot(root):
         try:
             try:
                 with readonly_project_lock():
+                    integrity = audit_all(continuity.ROOT)
+                    if not integrity["valid"]:
+                        first = integrity["first_break"]
+                        return {
+                            "schema_version": 1,
+                            "valid": False,
+                            "error": "continuity integrity invalid",
+                            "integrity": {
+                                "scope": first["scope"],
+                                "line": first["line"],
+                                "reason": first["reason"],
+                            },
+                        }
                     try:
                         state = continuity.raw_state()
                         events = continuity.read_events_unlocked()

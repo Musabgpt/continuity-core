@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "feature": "read-only integrity boundary",
+  "status": "pending_verification",
+  "branch": "continuity/readonly-integrity-boundary",
+  "commits": [
+    "caaed47ab882b842ff959a10dbc55ab6274e9823",
+    "ba9950f357798eced82095dacc7125e87415a2fb"
+  ],
+  "change": "Make readonly snapshot fail closed when persisted event or transaction integrity is invalid, preventing consumers from receiving a valid-looking continuity snapshot from corrupted state.",
+  "regression": "tests/test_readonly_integrity_contract.py::test_snapshot_refuses_hash_chain_corruption proves deterministic structured rejection; test_snapshot_preserves_valid_read_only_contract preserves the valid snapshot shape.",
+  "verification": {
+    "local": "not run in this environment",
+    "ci": "pending; require full repository CI before verification"
+  },
+  "next_action": "Run and inspect the full CI sequence for the branch; if all stages pass, merge the focused contract, mark this evidence verified, and record the next deterministic continuity boundary inside the repository."
+}
