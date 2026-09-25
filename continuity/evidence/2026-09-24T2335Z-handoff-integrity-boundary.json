@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "feature": "handoff integrity boundary",
+  "status": "pending_verification",
+  "branch": "continuity/handoff-integrity-boundary",
+  "commits": [
+    "efa83d5df4d83a2481216872317bdf7808a4fd05",
+    "5cf33744067a54d6130d046f3ae80e12b0e008bd"
+  ],
+  "change": "Make handoff fail closed when the persisted event or transaction integrity audit reports a break, so an AI session cannot receive a continuity payload from a tampered event chain.",
+  "regression": "tests/test_continuity.py::test_handoff_refuses_hash_chain_corruption corrupts an event hash and requires deterministic non-zero handoff output with the exact integrity diagnostic.",
+  "verification": {
+    "local": "not run in this environment",
+    "ci": "pending; require full repository CI before verification"
+  },
+  "next_action": "Run and inspect the full CI sequence for the branch; if all stages pass, merge the focused contract, mark this evidence verified, and record the next deterministic continuity boundary inside the repository."
+}
