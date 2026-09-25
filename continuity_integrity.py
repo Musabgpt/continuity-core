@@ -79,6 +79,23 @@ def audit_transaction(path):
     required = {"txid": str, "state": dict, "event": dict}
     for key, expected in required.items():
         if key not in tx or not isinstance(tx[key], expected): return diagnostic(False, 1, {"line": 1, "reason": f"transaction journal shape invalid: {key} must be {expected.__name__}"})
+    state = tx["state"]
+    state_required = {"schema_version": int, "project": str, "goal": str, "status": str, "constraints": list, "decisions": list, "next_action": (str, type(None)), "updated_at": str}
+    for key, expected in state_required.items():
+        if key not in state: return diagnostic(False, 1, {"line": 1, "reason": f"transaction state field missing: {key}"})
+        value = state[key]
+        valid_type = isinstance(value, expected) if isinstance(expected, tuple) else isinstance(value, expected) and not (expected is int and isinstance(value, bool))
+        if not valid_type:
+            expected_name = "string or null" if key == "next_action" else expected.__name__
+            return diagnostic(False, 1, {"line": 1, "reason": f"transaction state field invalid: {key} must be {expected_name}"})
+    if state["schema_version"] not in SUPPORTED_STATE_SCHEMAS: return diagnostic(False, 1, {"line": 1, "reason": "unsupported transaction state schema_version"})
+    if not state["project"].strip(): return diagnostic(False, 1, {"line": 1, "reason": "transaction state project is empty"})
+    if not state["goal"].strip(): return diagnostic(False, 1, {"line": 1, "reason": "transaction state goal is empty"})
+    if not all(isinstance(value, str) and value.strip() for value in state["constraints"]): return diagnostic(False, 1, {"line": 1, "reason": "transaction state constraints must be non-empty strings"})
+    if not all(isinstance(value, str) and value.strip() for value in state["decisions"]): return diagnostic(False, 1, {"line": 1, "reason": "transaction state decisions must be non-empty strings"})
+    if state["schema_version"] == 2:
+        revision = state.get("revision")
+        if not isinstance(revision, int) or isinstance(revision, bool) or revision < 0: return diagnostic(False, 1, {"line": 1, "reason": "transaction state schema v2 requires non-negative integer revision"})
     if "checksum" not in tx: return diagnostic(True, 1, None)
     checksum = tx.get("checksum")
     if not isinstance(checksum, str): return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be a string"})
