@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "boundary": "recovery_state_validation",
+  "status": "implemented_pending_ci",
+  "implementation": {
+    "branch": "continuity/recovery-write-guard-v3",
+    "commit": "a2adacc914b81feecbf0015731ecbbdb2ef72a66",
+    "ordering": "transaction shape -> checksum -> state schema -> append event -> write state -> delete transaction",
+    "guard": "continuity_state_guard.validate_state_payload(tx.state)"
+  },
+  "regression": {
+    "name": "test_recovery_rejects_invalid_state_without_mutation",
+    "asserts": [
+      "invalid state produces stable error",
+      "state.json unchanged",
+      "events.jsonl unchanged",
+      "transaction.json retained"
+    ]
+  },
+  "verification": {
+    "local": "not run in this environment",
+    "ci": "pending",
+    "ci_trigger": "push workflow configured"
+  },
+  "safety": {
+    "h33_accessed": false,
+    "unrelated_external_changes": false
+  },
+  "next_action": "Read CI for commit a2adacc914b81feecbf0015731ecbbdb2ef72a66; if all checks pass, open and merge a PR only with expected head SHA. If CI fails, diagnose the exact job log before changing production code."
+}
