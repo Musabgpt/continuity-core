@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "feature": "persisted state integrity boundary",
+  "status": "pending_verification",
+  "branch": "continuity/state-integrity-boundary",
+  "parent_ci_run": 36095091407,
+  "implementation_commits": [
+    "2a704500dfd0c6eac039062d9a855dcd06748abe",
+    "ec49fb4a98feb3f1b36a1ff927925288c179aea6"
+  ],
+  "diagnosis": {
+    "observed": "GitHub Actions run 36095091407 failed in the unittest step and skipped later validation stages.",
+    "root_cause": "The state-integrity implementation changed the default integrity CLI path to require state.json, while existing legacy audit tests intentionally exercised event/transaction-only validation with no state fixture. The aggregate audit contract also retained the pre-state five-key shape in test_integrity.py.",
+    "evidence_basis": "Direct inspection of the failing-head implementation and the pre-existing test_integrity.py contract established the mismatch without relying on unavailable CI log payload text."
+  },
+  "correction": {
+    "production": "Restore legacy standalone CLI behavior: the default command continues to verify events and transaction journals; persisted state integrity is enforced by the explicit --audit-state mode and aggregate audit used by continuity.py validation and read-only consumers.",
+    "tests": "Add a valid v2 state fixture to integrity tests and update aggregate expected diagnostics/key order to include the new state domain."
+  },
+  "verification": {
+    "local": "blocked: execution environment cannot resolve github.com, so a full repository checkout/test run is unavailable here",
+    "ci": "pending for corrected head"
+  },
+  "decision": "Do not merge or mark verified until the corrected head completes the full CI sequence.",
+  "next_action": "Inspect the next workflow run for the corrected head; if unit tests, human validation, structured validation, and aggregate integrity audit all succeed, merge with expected_head_sha, mark this evidence verified, and record the next deterministic continuity boundary inside Continuity Core."
+}
