@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "feature": "transaction journal persisted-state integrity boundary",
+  "status": "blocked_pending_failure_detail",
+  "branch": "continuity/transaction-state-integrity",
+  "head_commit": "e6b7a87a62719c7ae18ab5a525768e2ea8bfb0c4",
+  "ci": {
+    "workflow": "continuity-ci",
+    "run_id": 36108597886,
+    "run_number": 427,
+    "conclusion": "failure",
+    "failed_stage": "python -m unittest discover -s tests -v",
+    "checkout": "passed",
+    "python_setup": "passed",
+    "post_steps": "skipped",
+    "failure_output": "not exposed by the available GitHub connector surface"
+  },
+  "decision": "Do not merge and do not guess at a code fix without the failing test/assertion output.",
+  "next_action": "Obtain the concrete unittest failure output from GitHub Actions; then make the smallest evidence-backed correction, rerun full CI, and merge only with expected_head_sha after all required stages pass."
+}
