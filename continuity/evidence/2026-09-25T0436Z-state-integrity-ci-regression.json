@@ -1,28 +1,27 @@
 {
   "schema_version": 1,
   "feature": "persisted state integrity boundary",
-  "status": "pending_verification",
+  "status": "verified",
   "branch": "continuity/state-integrity-boundary",
-  "parent_commit": "1ae97d2bcbe6319be1f7e64b4d63f68f0dbd04d5",
+  "parent_commit": "da22a7be79c3219102d867e5466ab679a0a452be",
   "verification": {
     "ci_runs": [
       {
-        "run": 36087042598,
-        "job": 107921170925,
-        "conclusion": "failure",
-        "completed_at": "2026-09-25T02:38:13Z"
-      },
-      {
-        "run": 36091126917,
-        "job": 107933602375,
-        "conclusion": "failure",
-        "completed_at": "2026-09-25T03:38:08Z"
+        "run": 36099568218,
+        "run_number": 420,
+        "conclusion": "success",
+        "completed_at": "2026-09-25T06:32:00Z"
       }
     ],
-    "latest_observed": "checkout and Python setup succeeded; unittest discovery failed; all later validation steps were skipped",
-    "failure_detail": "Available GitHub evidence exposes step-level failure but not the UTF-8 unittest log payload, so the exact failing assertion cannot be established without guessing",
+    "merge": {
+      "pr": 5,
+      "merge_commit": "5b43a197385a8d27bf11be74b2921f26cb53f36e",
+      "merged": true,
+      "method": "merge",
+      "expected_head_sha": "da22a7be79c3219102d867e5466ab679a0a452be"
+    },
     "local": "blocked: execution environment cannot reach github.com to materialize the repository checkout"
   },
-  "decision": "Do not merge or mark verified. Do not guess the failing test from the step-level failure alone.",
-  "next_action": "Obtain exact unittest failure from available CI log evidence; then make the smallest targeted correction, rerun the full verification sequence, and only merge with expected_head_sha after every required stage succeeds."
+  "decision": "Mark the persisted state integrity boundary verified after full CI success and protected-head merge.",
+  "next_action": "Inspect the remaining mutable persisted surfaces and identify the smallest deterministic boundary that can fail closed without duplicating audit logic; implement only after establishing a focused regression contract and record pending evidence before verification."
 }
