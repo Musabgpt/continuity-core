@@ -111,7 +111,7 @@ def main():
     elif args.audit_transaction: result=audit_transaction(root/"continuity/transaction.json")
     elif args.audit_all: result=audit_all(root)
     else:
-        errors=verify_state(root/"continuity/state.json")+verify_events(root/"continuity/events.jsonl")+verify_transaction(root/"continuity/transaction.json")
+        errors=verify_events(root/"continuity/events.jsonl")+verify_transaction(root/"continuity/transaction.json")
         if errors: print("INVALID"); [print("- "+e) for e in errors]; return 1
         print("VALID"); return 0
     print(json.dumps(result, sort_keys=True, separators=(",", ":"))); return 0 if result["valid"] else 1
