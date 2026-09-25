@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "boundary": "recovery_state_validation",
+  "status": "pending_verification",
+  "implemented": {
+    "path": "continuity_state_guard.py",
+    "contract": "pure non-mutating validation of persisted state payloads",
+    "checks": [
+      "required fields and types",
+      "supported schema_version",
+      "non-empty project and goal",
+      "non-empty string constraints and decisions",
+      "schema v2 non-negative integer revision",
+      "boolean revision rejection"
+    ]
+  },
+  "tests": {
+    "path": "tests/test_state_guard_contract.py",
+    "cases": 5,
+    "deterministic_error_case": "invalid revision",
+    "regression_fix": "corrected assertRegex escaping for stable diagnostics"
+  },
+  "verification": {
+    "previous_ci": {
+      "run": 441,
+      "id": 36130620749,
+      "result": "failure",
+      "failure_step": "python -m unittest discover -s tests -v",
+      "diagnosis": "test regex patterns matched a literal backslash before the final period"
+    },
+    "current_head": "c20a78955d85d5d65c8336e879204e68693a2fd5",
+    "current_ci": "not yet observed",
+    "local": "not run in this environment"
+  },
+  "integration_boundary": "continuity.py recover_unlocked still requires wiring to this primitive before the recovery boundary is considered complete",
+  "next_action": "wait for CI on corrected head; if green, wire validate_state_payload into recover_unlocked without changing checksum-before-schema diagnostic ordering, then add recovery regression and require full CI before merge"
+}
