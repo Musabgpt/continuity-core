@@ -42,13 +42,13 @@ class StateGuardContractTests(unittest.TestCase):
     def test_missing_field_is_first_diagnostic(self):
         state = self.valid_state()
         del state["goal"]
-        with self.assertRaisesRegex(ValueError, r"^Transaction state invalid: missing field goal\\.$"):
+        with self.assertRaisesRegex(ValueError, r"^Transaction state invalid: missing field goal\.$"):
             validate_state_payload(state)
 
     def test_bool_revision_is_rejected(self):
         state = self.valid_state()
         state["revision"] = True
-        with self.assertRaisesRegex(ValueError, r"^Transaction state invalid: schema v2 requires non-negative integer revision\\.$"):
+        with self.assertRaisesRegex(ValueError, r"^Transaction state invalid: schema v2 requires non-negative integer revision\.$"):
             validate_state_payload(state)
 
     def test_schema_v1_remains_valid_without_revision(self):
