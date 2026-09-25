@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "feature": "transaction journal persisted-state integrity boundary",
+  "status": "verified",
+  "branch": "continuity/transaction-state-integrity",
+  "head_commit": "012ee3093ea8fb45904dae5accad04a4baff03df",
+  "pull_request": {
+    "number": 6,
+    "merge_commit": "d8df166c2d85b6df72a8f5029c956b0c909c937b",
+    "merged": true
+  },
+  "ci": {
+    "workflow": "continuity-ci",
+    "run_id": 36119534109,
+    "run_number": 433,
+    "conclusion": "success",
+    "verification_basis": "full workflow completed successfully"
+  },
+  "decision": "Mark the transaction-state integrity boundary verified after successful full CI and expected-head merge.",
+  "next_action": "Inspect recovery semantics and implement the smallest fail-closed guard in recover_unlocked() so recovered transaction state is schema-valid before it can be persisted; add deterministic regression coverage, run full CI, and merge only after success."
+}
