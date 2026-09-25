@@ -79,6 +79,12 @@ def audit_transaction(path):
     required = {"txid": str, "state": dict, "event": dict}
     for key, expected in required.items():
         if key not in tx or not isinstance(tx[key], expected): return diagnostic(False, 1, {"line": 1, "reason": f"transaction journal shape invalid: {key} must be {expected.__name__}"})
+    if "checksum" in tx:
+        checksum = tx.get("checksum")
+        if not isinstance(checksum, str): return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be a string"})
+        if len(checksum) != 64 or any(char not in "0123456789abcdef" for char in checksum): return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be 64 lowercase hex characters"})
+        material = {"txid": tx.get("txid"), "state": tx.get("state"), "event": tx.get("event")}
+        if checksum != digest(material): return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum mismatch"})
     state = tx["state"]
     state_required = {"schema_version": int, "project": str, "goal": str, "status": str, "constraints": list, "decisions": list, "next_action": (str, type(None)), "updated_at": str}
     for key, expected in state_required.items():
@@ -96,12 +102,6 @@ def audit_transaction(path):
     if state["schema_version"] == 2:
         revision = state.get("revision")
         if not isinstance(revision, int) or isinstance(revision, bool) or revision < 0: return diagnostic(False, 1, {"line": 1, "reason": "transaction state schema v2 requires non-negative integer revision"})
-    if "checksum" not in tx: return diagnostic(True, 1, None)
-    checksum = tx.get("checksum")
-    if not isinstance(checksum, str): return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be a string"})
-    if len(checksum) != 64 or any(char not in "0123456789abcdef" for char in checksum): return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum invalid: checksum must be 64 lowercase hex characters"})
-    material = {"txid": tx.get("txid"), "state": tx.get("state"), "event": tx.get("event")}
-    if checksum != digest(material): return diagnostic(False, 1, {"line": 1, "reason": "transaction journal checksum mismatch"})
     return diagnostic(True, 1, None)
 
 def audit_all(root):
