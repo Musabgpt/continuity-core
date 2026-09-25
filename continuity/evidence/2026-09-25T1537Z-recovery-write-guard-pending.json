@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "boundary": "recovery_state_validation",
+  "status": "pending_minimal_patch",
+  "inspection": {
+    "main_head_observed": "e38dde0a29da9dc94c8d6fbea04eeb186342f974",
+    "production_boundary": "continuity.py: recover_unlocked",
+    "current_order": [
+      "verify_tx_shape",
+      "verify_tx_checksum",
+      "append event if needed",
+      "atomic_text STATE from tx.state"
+    ],
+    "guard_primitive": "continuity_state_guard.validate_state_payload"
+  },
+  "attempt": {
+    "branch": "continuity/recovery-write-guard-v2",
+    "target": "insert validate_state_payload(tx[\"state\"]) after checksum and before event append/write",
+    "result": "blocked_before_write",
+    "reason": "connector safety layer rejected full-file production replacement; no unrelated or speculative rewrite was forced"
+  },
+  "safety": {
+    "h33_accessed": false,
+    "unrelated_external_changes": false
+  },
+  "next_action": "Use a repository-native minimal patch/edit path for continuity.py, then add a regression proving invalid transaction state cannot reach atomic_text(STATE, ...), run full CI, and merge only with expected_head_sha after success."
+}
