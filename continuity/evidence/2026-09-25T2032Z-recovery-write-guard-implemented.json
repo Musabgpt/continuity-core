@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "boundary": "recovery_write_guard",
+  "status": "implemented_pending_ci",
+  "implementation": {
+    "branch": "continuity/recovery-write-guard-v5",
+    "commit": "cf11de97e281f521772c89900ac5c8e08ac2a80a",
+    "ordering": "transaction shape -> checksum -> state schema -> append event -> write state -> delete transaction",
+    "guard": "continuity_state_guard.validate_state_payload(tx[\"state\"])",
+    "regression": "test_recovery_rejects_invalid_state_without_mutation"
+  },
+  "verification": {
+    "workflow_runs_for_commit": [],
+    "ci_result": "pending"
+  },
+  "safety": {
+    "h33_accessed": false,
+    "unrelated_external_changes": false
+  },
+  "next_action": "Open a pull request from continuity/recovery-write-guard-v5 when the write path permits it, then require full CI and merge only with expected_head_sha."
+}
