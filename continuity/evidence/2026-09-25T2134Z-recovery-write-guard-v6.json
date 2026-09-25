@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "evidence",
+  "status": "pending_write_path",
+  "scope": "recovery_write_guard",
+  "next_action": "Apply the minimal continuity.py guard and add a no-mutation regression, then observe CI before merge.",
+  "prohibited_repository": "H33",
+  "recorded_at": "2026-09-25T2134Z"
+}
