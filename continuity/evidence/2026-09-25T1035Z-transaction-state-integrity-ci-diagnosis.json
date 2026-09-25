@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "feature": "transaction journal persisted-state integrity boundary",
+  "status": "pending_verification",
+  "branch": "continuity/transaction-state-integrity",
+  "head_commit": "fd25579475c2f52d54c34b4dc96450e5dc08f5c0",
+  "diagnosis": {
+    "ci_run_id": 36113476090,
+    "ci_run_number": 429,
+    "failed_stage": "python -m unittest discover -s tests -v",
+    "root_cause": "The new transaction-state schema validation ran before the pre-existing checksum diagnostic contract. Existing checksum contract tests intentionally use minimal state payloads to isolate checksum type/format errors, so they now received state-schema errors instead of the established checksum errors.",
+    "evidence": "tests/test_checksum_contract.py constructs transactions with state={} and expects stable checksum diagnostics; the failing CI stage was unittest.",
+    "local_verification": "blocked because this execution environment cannot resolve github.com for checkout"
+  },
+  "implementation": {
+    "commit": "fd25579475c2f52d54c34b4dc96450e5dc08f5c0",
+    "change": "Validate transaction checksum before validating the embedded persisted-state schema, preserving the established diagnostic precedence while still rejecting schema-invalid state when checksum is valid or absent."
+  },
+  "decision": "Do not merge or mark verified until the new head completes the full CI sequence.",
+  "next_action": "Verify CI for fd25579475c2f52d54c34b4dc96450e5dc08f5c0; if all required stages pass, merge PR #6 with expected_head_sha, mark this evidence verified, then inspect recover_unlocked for direct fail-closed enforcement."
+}
