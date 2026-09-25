@@ -3,6 +3,7 @@ from pathlib import Path
 
 SOURCE=Path(__file__).resolve().parents[1]/"continuity.py"
 INTEGRITY_SOURCE=Path(__file__).resolve().parents[1]/"continuity_integrity.py"
+GUARD_SOURCE=Path(__file__).resolve().parents[1]/"continuity_state_guard.py"
 
 class ContinuityTests(unittest.TestCase):
     def run_cli(self, root, *args):
@@ -12,6 +13,7 @@ class ContinuityTests(unittest.TestCase):
     def setup_cli(self, root):
         root.joinpath("continuity.py").write_text(SOURCE.read_text(encoding="utf-8"),encoding="utf-8")
         shutil.copy2(INTEGRITY_SOURCE, root/"continuity_integrity.py")
+        shutil.copy2(GUARD_SOURCE, root/"continuity_state_guard.py")
 
     def test_init_event_next_handoff(self):
         with tempfile.TemporaryDirectory() as d:
@@ -113,6 +115,28 @@ class ContinuityTests(unittest.TestCase):
             self.assertEqual((root/"continuity/events.jsonl").read_text(encoding="utf-8"),events_before)
             self.assertEqual(self.run_cli(root,"next","safe","--expect-revision","1").returncode,0)
             state=json.loads((root/"continuity/state.json").read_text(encoding="utf-8")); self.assertEqual(state["revision"],2); self.assertEqual(state["next_action"],"safe")
+
+    def test_recovery_rejects_invalid_state_without_mutation(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.setup_cli(root)
+            self.assertEqual(self.run_cli(root,"init","--project","A","--goal","B").returncode,0)
+            state=json.loads((root/"continuity/state.json").read_text(encoding="utf-8"))
+            state["revision"]=-1
+            txid="recovery-invalid-state"
+            event={"ts":"2026-09-25T00:00:00Z","type":"note","message":"should not commit","txid":txid}
+            material={"txid":txid,"state":state,"event":event}
+            import hashlib
+            checksum=hashlib.sha256(json.dumps(material,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
+            txn={**material,"checksum":checksum}
+            (root/"continuity/transaction.json").write_text(json.dumps(txn,separators=(",",":"))+"\n",encoding="utf-8")
+            state_before=(root/"continuity/state.json").read_text(encoding="utf-8")
+            events_before=(root/"continuity/events.jsonl").read_text(encoding="utf-8")
+            r=self.run_cli(root,"handoff","--format","json")
+            self.assertNotEqual(r.returncode,0)
+            self.assertIn("Transaction state invalid",r.stderr)
+            self.assertEqual((root/"continuity/state.json").read_text(encoding="utf-8"),state_before)
+            self.assertEqual((root/"continuity/events.jsonl").read_text(encoding="utf-8"),events_before)
+            self.assertTrue((root/"continuity/transaction.json").exists())
 
     def test_new_events_emit_verifiable_hash_chain(self):
         with tempfile.TemporaryDirectory() as d:
