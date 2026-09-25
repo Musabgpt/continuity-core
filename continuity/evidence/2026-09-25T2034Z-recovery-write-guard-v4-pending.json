@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "boundary": "recovery_state_validation",
+  "status": "implemented_pending_write_path",
+  "inspected": {
+    "main_head": "e38dde0a29da9dc94c8d6fbea04eeb186342f974",
+    "open_prs": 0,
+    "h33_accessed": false
+  },
+  "current_gap": {
+    "function": "recover_unlocked",
+    "current_order": ["transaction_shape", "checksum", "append_event", "write_state", "delete_transaction"],
+    "required_order": ["transaction_shape", "checksum", "state_schema", "append_event", "write_state", "delete_transaction"]
+  },
+  "attempt": {
+    "branch": "continuity/recovery-write-guard-v4",
+    "target": "wire validate_state_payload after checksum",
+    "result": "blocked_before_write",
+    "reason": "GitHub content update safety gate rejected the production-file replacement; no production change was made"
+  },
+  "verification": {
+    "ci": "not_run",
+    "merge": "not_attempted"
+  },
+  "next_action": "Use a repository-native patch-capable write path for the minimal continuity.py change, then add the invalid-state no-mutation regression and require full CI before merge."
+}
