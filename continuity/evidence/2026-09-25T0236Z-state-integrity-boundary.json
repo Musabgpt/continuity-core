@@ -5,13 +5,14 @@
   "branch": "continuity/state-integrity-boundary",
   "commits": [
     "831bf3dd9366ae765f02002e85261428461ddcc4",
-    "a65e13aeb669c2faa20730bd5b10d24a9618b58b"
+    "a65e13aeb669c2faa20730bd5b10d24a9618b58b",
+    "3b391f624217f168912162bad1e3ff30ee78e1a6"
   ],
   "change": "Extend the non-mutating integrity audit to validate continuity/state.json shape and schema invariants, so read-only snapshot consumers cannot receive a valid-looking snapshot from malformed persisted state.",
-  "regression": "tests/test_readonly_integrity_contract.py::test_snapshot_refuses_invalid_state_shape corrupts the v2 revision invariant and requires identical structured rejection across repeated snapshot calls; existing event-corruption and valid-snapshot contracts remain in the suite.",
+  "regression": "tests/test_readonly_integrity_contract.py::test_snapshot_refuses_invalid_state_shape corrupts the v2 revision invariant and requires identical structured rejection across repeated snapshot calls; tests/test_aggregate_audit_contract.py now supplies a valid state fixture and locks the expanded aggregate diagnostic key order.",
   "verification": {
-    "local": "not run in this environment",
-    "ci": "pending; require full repository CI before verification"
+    "local": "blocked: this environment cannot reach github.com to materialize the repository checkout",
+    "ci": "run 36082836271 failed in unittest discovery because the pre-existing aggregate audit contract still expected the old five-key result and fixtures omitted the newly required state.json; corrected in commit 3b391f624217f168912162bad1e3ff30ee78e1a6"
   },
-  "next_action": "Run and inspect the full CI sequence for the branch; if all stages pass, merge the focused contract with expected_head_sha, mark this evidence verified, and record the next deterministic continuity boundary inside the repository."
+  "next_action": "Inspect the next CI run for the corrected head; if the full unit, human validation, structured validation, and aggregate integrity sequence succeeds, merge with expected_head_sha, mark this evidence verified, and record the next deterministic continuity boundary inside the repository."
 }
