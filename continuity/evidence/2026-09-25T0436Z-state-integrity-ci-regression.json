@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "feature": "persisted state integrity boundary",
+  "status": "pending_verification",
+  "branch": "continuity/state-integrity-boundary",
+  "parent_commit": "1ae97d2bcbe6319be1f7e64b4d63f68f0dbd04d5",
+  "verification": {
+    "ci_runs": [
+      {
+        "run": 36087042598,
+        "job": 107921170925,
+        "conclusion": "failure",
+        "completed_at": "2026-09-25T02:38:13Z"
+      },
+      {
+        "run": 36091126917,
+        "job": 107933602375,
+        "conclusion": "failure",
+        "completed_at": "2026-09-25T03:38:08Z"
+      }
+    ],
+    "latest_observed": "checkout and Python setup succeeded; unittest discovery failed; all later validation steps were skipped",
+    "failure_detail": "Available GitHub evidence exposes step-level failure but not the UTF-8 unittest log payload, so the exact failing assertion cannot be established without guessing",
+    "local": "blocked: execution environment cannot reach github.com to materialize the repository checkout"
+  },
+  "decision": "Do not merge or mark verified. Do not guess the failing test from the step-level failure alone.",
+  "next_action": "Obtain exact unittest failure from available CI log evidence; then make the smallest targeted correction, rerun the full verification sequence, and only merge with expected_head_sha after every required stage succeeds."
+}

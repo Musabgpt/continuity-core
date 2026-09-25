@@ -9,8 +9,10 @@ class IntegrityTests(unittest.TestCase):
 
     def setup(self, root):
         root.joinpath("continuity_integrity.py").write_text(SOURCE.read_text(encoding="utf-8"), encoding="utf-8")
-        (root/"continuity").mkdir()
-        (root/"continuity/events.jsonl").write_text(json.dumps({"type":"note","message":"legacy"})+"\n", encoding="utf-8")
+        continuity=root/"continuity"; continuity.mkdir()
+        state={"schema_version":2,"project":"A","goal":"B","status":"active","constraints":[],"decisions":[],"next_action":None,"updated_at":"2026-09-25T00:00:00Z","revision":0}
+        (continuity/"state.json").write_text(json.dumps(state, sort_keys=True, separators=(",", ":"))+"\n", encoding="utf-8")
+        (continuity/"events.jsonl").write_text(json.dumps({"type":"note","message":"legacy"})+"\n", encoding="utf-8")
 
     def test_legacy_events_remain_readable(self):
         with tempfile.TemporaryDirectory() as d:
@@ -34,6 +36,7 @@ class IntegrityTests(unittest.TestCase):
                 "schema_version": 1,
                 "valid": True,
                 "first_break": None,
+                "state": {"schema_version": 1, "valid": True, "checked": 1, "first_break": None},
                 "events": {"schema_version": 1, "valid": True, "checked": 1, "first_break": None},
                 "transaction": {"schema_version": 1, "valid": True, "checked": 0, "first_break": None},
             })
@@ -57,7 +60,8 @@ class IntegrityTests(unittest.TestCase):
             root=Path(d); self.setup(root)
             r=self.execute(root, "--audit-all")
             self.assertEqual(r.returncode, 0, r.stdout+r.stderr)
-            self.assertEqual(list(json.loads(r.stdout)), ["events", "first_break", "schema_version", "transaction", "valid"])
+            self.assertEqual(list(json.loads(r.stdout)), ["events", "first_break", "schema_version", "state", "transaction", "valid"])
+            self.assertEqual(list(json.loads(r.stdout)["state"]), ["checked", "first_break", "schema_version", "valid"])
             self.assertEqual(list(json.loads(r.stdout)["events"]), ["checked", "first_break", "schema_version", "valid"])
             self.assertEqual(list(json.loads(r.stdout)["transaction"]), ["checked", "first_break", "schema_version", "valid"])
 

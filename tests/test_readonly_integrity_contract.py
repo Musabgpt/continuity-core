@@ -43,6 +43,26 @@ class ReadonlyIntegrityTests(unittest.TestCase):
             self.assertEqual(first, expected)
             self.assertEqual(second, expected)
 
+    def test_snapshot_refuses_invalid_state_shape(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            self.setup_cli(root)
+            self.assertEqual(self.run_cli(root, "init", "--project", "A", "--goal", "B").returncode, 0)
+            path = root / "continuity/state.json"
+            state = json.loads(path.read_text(encoding="utf-8"))
+            state["revision"] = -1
+            path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+            first = snapshot(root)
+            second = snapshot(root)
+            expected = {
+                "schema_version": 1,
+                "valid": False,
+                "error": "continuity integrity invalid",
+                "integrity": {"scope": "state", "line": 1, "reason": "state schema v2 requires non-negative integer revision"},
+            }
+            self.assertEqual(first, expected)
+            self.assertEqual(second, expected)
+
     def test_snapshot_preserves_valid_read_only_contract(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
