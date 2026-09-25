@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "feature": "transaction journal persisted-state integrity boundary",
+  "status": "pending_verification",
+  "branch": "continuity/transaction-state-integrity",
+  "parent_commit": "70bdcad5dae97e7bcc7f71a5c192cef4b06a1451",
+  "implementation": {
+    "commit": "45fcfaed7fa639ad3de476608523ca3da78f8f48",
+    "scope": [
+      "audit_transaction now validates the persisted transaction state against the supported state schema",
+      "invalid v2 revision is rejected deterministically even when the transaction checksum is valid",
+      "existing checksum, event-chain, and legacy pre-checksum contracts remain covered"
+    ]
+  },
+  "verification": {
+    "local": "blocked: execution environment cannot materialize the GitHub checkout",
+    "ci": "pending"
+  },
+  "decision": "Do not merge or mark verified until the full CI verification sequence succeeds.",
+  "next_action": "Run full CI for this branch; if all required stages pass, merge with expected_head_sha, then update this evidence to verified and inspect the remaining recovery path for direct core-level fail-closed enforcement."
+}
