@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "feature": "persisted state integrity boundary",
+  "status": "pending_verification",
+  "branch": "continuity/state-integrity-boundary",
+  "commits": [
+    "831bf3dd9366ae765f02002e85261428461ddcc4",
+    "a65e13aeb669c2faa20730bd5b10d24a9618b58b"
+  ],
+  "change": "Extend the non-mutating integrity audit to validate continuity/state.json shape and schema invariants, so read-only snapshot consumers cannot receive a valid-looking snapshot from malformed persisted state.",
+  "regression": "tests/test_readonly_integrity_contract.py::test_snapshot_refuses_invalid_state_shape corrupts the v2 revision invariant and requires identical structured rejection across repeated snapshot calls; existing event-corruption and valid-snapshot contracts remain in the suite.",
+  "verification": {
+    "local": "not run in this environment",
+    "ci": "pending; require full repository CI before verification"
+  },
+  "next_action": "Run and inspect the full CI sequence for the branch; if all stages pass, merge the focused contract with expected_head_sha, mark this evidence verified, and record the next deterministic continuity boundary inside the repository."
+}
