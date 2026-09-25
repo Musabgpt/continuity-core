@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "boundary": "recovery_state_validation",
+  "status": "verified_primitive_pending_recovery_integration",
+  "verified": {
+    "pr": 7,
+    "head": "396bec66fdf25db5aa0d9495c5f8d516bae47616",
+    "ci_run": 445,
+    "ci_id": 36135743316,
+    "ci_result": "success",
+    "merge_commit": "2aa5211a2ea76b9a6e6cc411acfaf1184e15bedb"
+  },
+  "implementation": {
+    "primitive": "continuity_state_guard.validate_state_payload",
+    "contract": "pure non-mutating persisted-state validation",
+    "recovery_write_guard": "not yet wired into continuity.py recover_unlocked"
+  },
+  "attempted_next_step": {
+    "branch": "continuity/recovery-write-guard",
+    "target": "wire checksum-then-schema validation into recover_unlocked",
+    "result": "pending",
+    "reason": "the repository write interface rejected the full-file replacement as unsafe; no production rewrite was forced"
+  },
+  "safety": {
+    "h33_accessed": false,
+    "unrelated_external_changes": false
+  },
+  "next_action": "Apply a minimal patch to continuity.py recover_unlocked that preserves checksum-before-schema diagnostics, add a regression proving invalid transaction state never reaches atomic_text(STATE,...), then require full CI before merge."
+}
